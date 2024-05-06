@@ -44,7 +44,7 @@ export function Landing() {
                   Get Started
                 </Link>
                 <Link
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                   href="#"
                 >
                   Learn More
@@ -117,8 +117,8 @@ export function Landing() {
             <div className="grid w-full grid-cols-1 items-stretch justify-center divide-y md:grid-cols-2 md:divide-y-0 md:divide-x">
               <div className="mx-auto flex w-full flex-col items-start justify-center p-6 sm:p-8">
                 <blockquote className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal">
-                  “The AI-generated notes and explanations helped me understand complex concepts in a way that
-                  traditional materials couldn't. I saw a significant improvement in my grades.”
+                  The AI-generated notes and explanations helped me understand complex concepts in a way that
+                  traditional materials couldnt. I saw a significant improvement in my grades.
                 </blockquote>
                 <div className="mt-4 flex items-center space-x-2">
                   <Avatar>
@@ -133,8 +133,8 @@ export function Landing() {
               </div>
               <div className="mx-auto flex w-full flex-col items-start justify-center p-6 sm:p-8">
                 <blockquote className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal">
-                  “I was struggling with a complex subject, but the AI's personalized notes and the ability to ask
-                  questions through chat or voice assistant helped me catch up and even excel.”
+                  I was struggling with a complex subject, but the AIs personalized notes and the ability to ask
+                  questions through chat or voice assistant helped me catch up and even excel.
                 </blockquote>
                 <div className="mt-4 flex items-center space-x-2">
                   <Avatar>
@@ -155,7 +155,7 @@ export function Landing() {
   )
 }
 
-function BarChartIcon(props) {
+function BarChartIcon(props: any) {
   return (
     <svg
       {...props}
@@ -177,7 +177,7 @@ function BarChartIcon(props) {
 }
 
 
-function LightbulbIcon(props) {
+function LightbulbIcon(props: any) {
   return (
     <svg
       {...props}
@@ -199,7 +199,7 @@ function LightbulbIcon(props) {
 }
 
 
-function SparklesIcon(props) {
+function SparklesIcon(props: any) {
   return (
     <svg
       {...props}

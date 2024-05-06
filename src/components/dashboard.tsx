@@ -363,7 +363,7 @@ export function Dashboard() {
   )
 }
 
-function DeleteIcon(props) {
+function DeleteIcon(props: any) {
   return (
     <svg
       {...props}
@@ -385,7 +385,7 @@ function DeleteIcon(props) {
 }
 
 
-function DownloadIcon(props) {
+function DownloadIcon(props: any) {
   return (
     <svg
       {...props}
@@ -407,7 +407,7 @@ function DownloadIcon(props) {
 }
 
 
-function HomeIcon(props) {
+function HomeIcon(props: any) {
   return (
     <svg
       {...props}
@@ -428,7 +428,7 @@ function HomeIcon(props) {
 }
 
 
-function MoveVerticalIcon(props) {
+function MoveVerticalIcon(props: any) {
   return (
     <svg
       {...props}
@@ -450,7 +450,7 @@ function MoveVerticalIcon(props) {
 }
 
 
-function ShareIcon(props) {
+function ShareIcon(props: any) {
   return (
     <svg
       {...props}
@@ -472,7 +472,7 @@ function ShareIcon(props) {
 }
 
 
-function TagIcon(props) {
+function TagIcon(props: any) {
   return (
     <svg
       {...props}
@@ -493,7 +493,7 @@ function TagIcon(props) {
 }
 
 
-function TicketIcon(props) {
+function TicketIcon(props: any) {
   return (
     <svg
       {...props}
@@ -516,7 +516,7 @@ function TicketIcon(props) {
 }
 
 
-function UsersIcon(props) {
+function UsersIcon(props: any) {
   return (
     <svg
       {...props}
@@ -539,7 +539,7 @@ function UsersIcon(props) {
 }
 
 
-function WalletIcon(props) {
+function WalletIcon(props: any) {
   return (
     <svg
       {...props}
