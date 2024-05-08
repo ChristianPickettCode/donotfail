@@ -73,6 +73,15 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
+    fontFamily: {
+      body: [
+        '"Open Sans"',
+        '"Helvetica Neue"',
+        "Helvetica",
+        "Arial",
+        "sans-serif",
+      ],
+    },
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

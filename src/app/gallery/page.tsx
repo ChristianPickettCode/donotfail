@@ -1,11 +1,10 @@
 import { Gallery } from "@/components/gallery";
-import { Landing } from "@/components/landing";
-import { Slides } from "@/components/slides";
+import { Sidebar } from "@/components/sidebar";
 
 export default function Page() {
     return (
-        <main>
+        <Sidebar>
             <Gallery />
-        </main>
+        </Sidebar>
     );
 }
