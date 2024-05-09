@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { CSPostHogProvider } from './providers'
+import PostHogPageView from "./PostHogPageView";
 
 // "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <CSPostHogProvider>
         <body className={openSans.className}>
+          <PostHogPageView />
           {children}
         </body>
       </CSPostHogProvider>
