@@ -4,6 +4,12 @@ import { UploadModal } from "./upload-modal"
 import { useEffect, useState } from "react"
 import { GetSlides } from "@/app/action"
 
+const emojiList = ["😇", "🤩", "🥳", "🎉", "🎊", "🎈", "🎁", "🎀", "🌟", "💫", "✨", "🪐", "🌠", "🔥", "🎇", "🎆", "🌌", "🌈", "☄️",
+  "💥", "💢", "💫", "💦", "🌊", "💧", "💤", "🌪️", "🌫️", "🌬️", "🌀"]
+
+const bgColorList = ["bg-red-500", "bg-yellow-500", "bg-green-500", "bg-blue-500", "bg-indigo-500", "bg-purple-500", "bg-pink-500",
+  "bg-red-300", "bg-yellow-300", "bg-green-300", "bg-blue-300", "bg-indigo-300", "bg-purple-300", "bg-pink-300"]
+
 export function Gallery() {
   const [slides, setSlides] = useState([])
 
@@ -32,7 +38,7 @@ export function Gallery() {
           slides?.map((item: any, index) => (
             <Link key={index} href={`/gallery/${item?._id}`}>
               <div key={index} className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <img
+                {/* <img
                   alt="Course Thumbnail"
                   className="h-48 w-full object-cover transition-all duration-300 group-hover:scale-105"
                   height="200"
@@ -42,7 +48,11 @@ export function Gallery() {
                     objectFit: "cover",
                   }}
                   width="300"
-                />
+                /> */}
+                <div className={`h-48 w-full flex items-center justify-center object-cover transition-all duration-300 group-hover:scale-105 ${bgColorList[index % bgColorList.length]}`}>
+                  <span className="text-xl">{emojiList[index % emojiList.length]}</span>
+                </div>
+
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300 group-hover:text-primary">
                     {item?.name}
