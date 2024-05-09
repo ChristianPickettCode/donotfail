@@ -9,6 +9,8 @@ import { PauseIcon, PlayIcon } from "lucide-react";
 import Markdown from 'react-markdown'
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
+import { Card } from "./ui/card";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 
@@ -20,6 +22,10 @@ export function Slides({ params }: any) {
   const [generationLoading, setGenerationLoading] = useState(false);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
+
+  const [chatLog, setChatLog] = useState<any[]>([]);
+
+  const [vapiVisible, setVapiVisible] = useState(false);
 
 
   useEffect(() => {
@@ -39,6 +45,18 @@ export function Slides({ params }: any) {
       audio.removeEventListener('ended', handleEnded);
     };
   }, []);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setVapiVisible((open) => !open)
+      }
+    }
+
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [])
 
   useEffect(() => {
     GetSlideImages(params.slide_id)
@@ -86,11 +104,51 @@ export function Slides({ params }: any) {
       vapi.start("ed4c5eb8-d772-4f0f-be11-40502187e74d");
 
       vapi.on("volume-level", (volume) => {
-        console.log(`Assistant volume level: ${volume}`);
+        // console.log(`Assistant volume level: ${volume}`);
       });
 
       vapi.on("message", (message) => {
         console.log(message);
+        if (message.type === "conversation-update") {
+          console.log(message.content);
+          const conv_reverse = message.conversation.reverse();
+          setChatLog(conv_reverse)
+        }
+        if (message.type === "function-call") {
+          console.log(message);
+          if (message.functionCall.name = "move-to-slide") {
+            console.log("move-to-slide")
+            const slideNumber = message.functionCall.parameters.slideNumber
+            console.log("slideNumber", slideNumber)
+            const slideId = slideImages[slideNumber - 1]._id;
+            document.getElementById(`s${slideNumber}`)?.scrollIntoView({ behavior: "smooth" });
+          }
+
+          // explain slide if slide has generated text
+          if (message.functionCall.name = "explain-slide") {
+            console.log("explain-slide")
+            const slideNumber = message.functionCall.parameters.slideNumber
+            console.log("slideNumber", slideNumber)
+            const slideId = slideImages[slideNumber - 1]._id;
+            const slideText = slideImages[slideNumber - 1].generated_text;
+            if (slideText) {
+              sendMsg(slideText);
+            } else {
+              console.log("Slide text not generated")
+              if (vapi) {
+                vapi.send({
+                  type: "add-message",
+                  message: {
+                    role: "system",
+                    content: "Sorry, I don't have notes for this slide. You would need to generate notes first."
+                  },
+                });
+
+              }
+            }
+          }
+
+        }
       });
 
       vapi.on("error", (e) => {
@@ -103,6 +161,7 @@ export function Slides({ params }: any) {
 
       vapi.on("call-end", () => {
         console.log("Call has ended.");
+        setIsVapiStarted(false);
       });
 
       vapi.on("speech-start", () => {
@@ -211,6 +270,22 @@ export function Slides({ params }: any) {
   }
 
 
+  const sendMsg = (slideText: string) => {
+    if (vapi) {
+      const MSG = `
+      Current Slide : \n
+      ${slideText}
+      `
+      vapi.send({
+        type: "add-message",
+        message: {
+          role: "system",
+          content: MSG
+        },
+      });
+    }
+  }
+
 
 
   return (
@@ -250,6 +325,8 @@ export function Slides({ params }: any) {
                       </>
                   }
 
+                  {item.generated_text && isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => sendMsg(item.generated_text)}>🤖 Ask Marcus</Button> : ""}
+
                 </div>
                 <Markdown className='text-sm' >{item.generated_text}</Markdown>
               </div>
@@ -261,19 +338,56 @@ export function Slides({ params }: any) {
         ))
       }
 
-      {/* <div className="fixed bottom-4 right-4">
-        {
-          isVapiStarted ? (
-            <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
-              -
-            </button>
-          ) : (
-            <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
-              +
-            </button>
-          )
-        }
-      </div> */}
+      {
+        vapiVisible &&
+
+        <div className="fixed bottom-4 right-4">
+          {
+            isVapiStarted ? (
+              <>
+                <Card className="fixed bottom-20 right-4 w-80">
+                  <div className="flex flex-col h-96 overflow-y-auto">
+                    <div className="flex flex-col h-full p-4 space-y-4">
+                      <div className="flex flex-row justify-between">
+                        <h2 className="font-bold text-lg">Chat</h2>
+                        {/* <button className="text-sm text-gray-500" onClick={sendMsg}>TEST</button> */}
+
+                      </div>
+                      <div className="flex flex-col space-y-4">
+                        {
+                          chatLog.map((message, index) => (
+                            <div key={index} className="flex flex-row space-x-4">
+                              <Avatar>
+                                <AvatarFallback>{message.role === "assistant" ? "A" : "U"}</AvatarFallback>
+                              </Avatar>
+                              <div className="flex flex-col space-y-1">
+                                <p className="font-bold">{message.role === "assistant" ? "Assistant" : "You"}</p>
+                                <p className="text-sm">{message.content}</p>
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+                <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
+                  -
+                </button>
+              </>
+            ) : (
+
+              <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
+                +
+              </button>
+            )
+          }
+        </div>
+
+
+
+      }
+
 
     </main >
   )

@@ -1,3 +1,4 @@
+"use client"
 import { Gallery } from "@/components/gallery";
 import { Sidebar } from "@/components/sidebar";
 
@@ -6,5 +7,6 @@ export default function Page() {
         <Sidebar>
             <Gallery />
         </Sidebar>
+
     );
 }

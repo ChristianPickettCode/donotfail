@@ -29,6 +29,7 @@ export function Sidebar({
                 console.log(err)
             })
     }, [])
+
     return (
         <div className="flex">
             <aside className="sticky top-0 h-screen min-w-56 max-w-56 bg-gray-100 text-gray-800 p-4">
