@@ -7,6 +7,8 @@ const nextConfig = {
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
         SERVER_URL: process.env.SERVER_URL,
+        NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+        NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     },
     images: {
         remotePatterns: [

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Open_Sans } from "next/font/google";
 import "./globals.css";
+import { CSPostHogProvider } from './providers'
 
 // "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 
@@ -19,9 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={openSans.className}>
-        {children}
-      </body>
+      <CSPostHogProvider>
+        <body className={openSans.className}>
+          {children}
+        </body>
+      </CSPostHogProvider>
     </html>
   );
 }

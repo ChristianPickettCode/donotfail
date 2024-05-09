@@ -3,6 +3,8 @@ import Link from "next/link"
 import { UploadModal } from "./upload-modal"
 import { useEffect, useState } from "react"
 import { GetSlides } from "@/app/action"
+import { Button } from "./ui/button"
+import posthog from "posthog-js"
 
 const emojiList = ["😇", "🤩", "🥳", "🎉", "🎊", "🎈", "🎁", "🎀", "🌟", "💫", "✨", "🪐", "🌠", "🔥", "🎇", "🎆", "🌌", "🌈", "☄️",
   "💥", "💢", "💫", "💦", "🌊", "💧", "💤", "🌪️", "🌫️", "🌬️", "🌀"]
@@ -28,11 +30,17 @@ export function Gallery() {
     console.log("delete slide", id)
   }
 
+  const testSomething = () => {
+    console.log("test")
+    posthog.capture('my event', { property: 'value' })
+  }
+
   return (
     <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
       <div className="flex justify-end mb-4">
         <UploadModal />
       </div>
+      {/* <Button onClick={testSomething}>TEST</Button> */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {
           slides?.map((item: any, index) => (
