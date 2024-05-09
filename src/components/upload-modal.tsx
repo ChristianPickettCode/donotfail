@@ -22,6 +22,14 @@ import { Progress } from "./ui/progress"
 import { Link } from "lucide-react"
 import { useRouter } from "next/navigation"
 
+import { AlertCircle } from "lucide-react"
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 
 const formSchema = z.object({
   name: z.string(),
@@ -43,6 +51,7 @@ export function UploadModal() {
   const [progress, setProgress] = useState(0)
   const [slideId, setSlideId] = useState("")
   const { push } = useRouter()
+  const [hasError, setHasError] = useState(false)
 
   const computeSHA256 = async (file: File) => {
     const buffer = await file.arrayBuffer()
@@ -123,10 +132,17 @@ export function UploadModal() {
                   console.log(res_us)
                   ConvertPdfToImages(res_c.data._id)
                     .then((res) => {
-                      console.log(res)
-                      setProgress(100)
-                      setSlideId(res_c.data._id)
-                      push(`/gallery/${res_c.data._id}`)
+                      if (res.status_code == 200) {
+                        console.log(res)
+                        setProgress(100)
+                        setSlideId(res_c.data._id)
+                        push(`/gallery/${res_c.data._id}`)
+                      } else {
+                        console.log(res)
+                        setHasError(true)
+                      }
+
+
                     })
                     .catch((err) => {
                       console.log(err)
@@ -214,6 +230,17 @@ export function UploadModal() {
               <Button variant="outline" onClick={() => form.reset()}>View</Button>
             </Link>
           }
+          {
+            hasError &&
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Error uploading file. Please refresh and try again. If the slide is created but empty or if their are missing slides (at the end) please delete it and try again.
+              </AlertDescription>
+            </Alert>
+          }
+
         </Form>
       </DialogContent>
     </Dialog>
