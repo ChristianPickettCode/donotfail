@@ -76,7 +76,7 @@ const CommandBar = (props: Props) => {
                     <CommandSeparator />
                 </CommandList>
             </CommandDialog>
-            <div className="fixed top-4 right-4">
+            <div className="fixed top-2 right-4">
                 <Button variant="outline" onClick={() => setOpen((open) => !open)}><CommandIcon size={16} />CMD-K</Button>
             </div>
         </>

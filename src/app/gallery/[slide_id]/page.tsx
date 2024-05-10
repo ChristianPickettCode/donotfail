@@ -2,6 +2,7 @@
 import { GetSlide, GetSlideImages } from '@/app/action'
 import DeleteModal from '@/components/delete-modal'
 import { Sidebar } from '@/components/sidebar'
+import { Sidebar2 } from '@/components/sidebar2'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -37,7 +38,7 @@ const Page = ({ params }: any) => {
     }, [slide_id])
 
     return (
-        <Sidebar>
+        <Sidebar2>
             <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
                 <div className="flex justify-end mb-4">
                     <Link href={`/slides/${slide_id}`}>
@@ -68,7 +69,7 @@ const Page = ({ params }: any) => {
                     }
                 </div>
             </main>
-        </Sidebar>
+        </Sidebar2>
 
     )
 }

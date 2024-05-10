@@ -5,7 +5,7 @@ import { Separator } from "./ui/separator";
 import { useEffect, useState } from "react";
 import { GenerateAudio, GenerateSlideImageText, GetSlide, GetSlideImages, Ping } from "@/app/action";
 import { Button } from "./ui/button";
-import { PauseIcon, PlayIcon } from "lucide-react";
+import { CommandIcon, PauseIcon, PlayIcon } from "lucide-react";
 import Markdown from 'react-markdown'
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
@@ -14,7 +14,11 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 
-export function Slides({ params }: any) {
+type Props = {
+  params: any
+}
+
+export function Slides(props: Props) {
   const [vapi, setVapi] = useState<Vapi | null>(null);
   const [isVapiStarted, setIsVapiStarted] = useState(false);
   const [slideImages, setSlideImages] = useState<any[]>([]);
@@ -56,7 +60,7 @@ export function Slides({ params }: any) {
   }, [])
 
   useEffect(() => {
-    GetSlideImages(params.slide_id)
+    GetSlideImages(props.params.slide_id)
       .then((res) => {
         console.log(res);
         console.log(res.data);
@@ -66,12 +70,12 @@ export function Slides({ params }: any) {
         console.log(err);
       });
 
-    GetSlide(params.slide_id)
+    GetSlide(props.params.slide_id)
       .then((res) => {
         console.log(res);
         setSlide(res.data);
       })
-  }, [params.slide_id]);
+  }, [props.params.slide_id]);
 
   const startVapi = () => {
     if (vapi) {
@@ -287,7 +291,7 @@ export function Slides({ params }: any) {
 
   return (
     <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
-      <div className="mb-8 md:mb-6 lg:mb-8">
+      <div className="mb-8 md:mb-6 lg:mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:text-5xl">
           {slide?.name}
         </h1>
@@ -295,20 +299,22 @@ export function Slides({ params }: any) {
       {
         slideImages?.map((item, index) => (
           <div key={index} id={`s${index + 1}`}>
-            <section key={index} className="flex w-full mb-8 mt-10 pl-4 pr-8">
-              {/* <img
-                alt="Placeholder Image"
-                className="h-[60vh] w-auto bg-gray-300"
-                src={item.image_url}
-              /> */}
-              {/* <Image src={item.image_url} height={500} width={500} alt="Slide Image" /> */}
-              <PhotoProvider>
-                <PhotoView src={item.image_url}>
-                  <img src={item.image_url} className="w-[40vw] h-auto object-contain" alt="" />
-                </PhotoView>
-              </PhotoProvider>
+            <section key={index} className="flex flex-col md:flex-row w-full mb-8 mt-10 pl-4 pr-8">
+              <div className="md:w-1/2">
+                {/* <img
+                  alt="Placeholder Image"
+                  className="h-[60vh] w-auto bg-gray-300"
+                  src={item.image_url}
+                /> */}
+                {/* <Image src={item.image_url} height={500} width={500} alt="Slide Image" /> */}
+                <PhotoProvider>
+                  <PhotoView src={item.image_url}>
+                    <img src={item.image_url} className="w-full h-auto object-contain mb-4" alt="" />
+                  </PhotoView>
+                </PhotoProvider>
+              </div>
 
-              <div className="flex flex-col ml-6 w-1/2 md:w-full">
+              <div className="flex flex-col md:ml-6 w-full md:w-1/2">
                 <div className="flex flex-row mb-2">
                   {!item.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(item._id)}>✨ Generate Notes</Button> :
 
