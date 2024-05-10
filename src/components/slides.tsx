@@ -25,8 +25,6 @@ export function Slides({ params }: any) {
 
   const [chatLog, setChatLog] = useState<any[]>([]);
 
-  const [vapiVisible, setVapiVisible] = useState(false);
-
 
   useEffect(() => {
     const vapi = new Vapi(VAPI_API_KEY);
@@ -50,7 +48,6 @@ export function Slides({ params }: any) {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setVapiVisible((open) => !open)
       }
     }
 
@@ -338,57 +335,48 @@ export function Slides({ params }: any) {
         ))
       }
 
-      {
-        vapiVisible &&
+      <div className="fixed bottom-4 right-4">
+        {
+          isVapiStarted ? (
+            <>
+              <Card className="fixed bottom-20 right-4 w-80">
+                <div className="flex flex-col h-96 overflow-y-auto">
+                  <div className="flex flex-col h-full p-4 space-y-4">
+                    <div className="flex flex-row justify-between">
+                      <h2 className="font-bold text-lg">Chat</h2>
+                      {/* <button className="text-sm text-gray-500" onClick={sendMsg}>TEST</button> */}
 
-        <div className="fixed bottom-4 right-4">
-          {
-            isVapiStarted ? (
-              <>
-                <Card className="fixed bottom-20 right-4 w-80">
-                  <div className="flex flex-col h-96 overflow-y-auto">
-                    <div className="flex flex-col h-full p-4 space-y-4">
-                      <div className="flex flex-row justify-between">
-                        <h2 className="font-bold text-lg">Chat</h2>
-                        {/* <button className="text-sm text-gray-500" onClick={sendMsg}>TEST</button> */}
-
-                      </div>
-                      <div className="flex flex-col space-y-4">
-                        {
-                          chatLog.map((message, index) => (
-                            <div key={index} className="flex flex-row space-x-4">
-                              <Avatar>
-                                <AvatarFallback>{message.role === "assistant" ? "A" : "U"}</AvatarFallback>
-                              </Avatar>
-                              <div className="flex flex-col space-y-1">
-                                <p className="font-bold">{message.role === "assistant" ? "Assistant" : "You"}</p>
-                                <p className="text-sm">{message.content}</p>
-                              </div>
+                    </div>
+                    <div className="flex flex-col space-y-4">
+                      {
+                        chatLog.map((message, index) => (
+                          <div key={index} className="flex flex-row space-x-4">
+                            <Avatar>
+                              <AvatarFallback>{message.role === "assistant" ? "A" : "U"}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col space-y-1">
+                              <p className="font-bold">{message.role === "assistant" ? "Assistant" : "You"}</p>
+                              <p className="text-sm">{message.content}</p>
                             </div>
-                          ))
-                        }
-                      </div>
+                          </div>
+                        ))
+                      }
                     </div>
                   </div>
-                </Card>
-                <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
-                  -
-                </button>
-              </>
-            ) : (
-
-              <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
-                +
+                </div>
+              </Card>
+              <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
+                -
               </button>
-            )
-          }
-        </div>
+            </>
+          ) : (
 
-
-
-      }
-
-
+            <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
+              +
+            </button>
+          )
+        }
+      </div>
     </main >
   )
 }
