@@ -11,6 +11,7 @@ import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import CommandBar from "./commandbar";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 
@@ -28,6 +29,8 @@ export function Slides(props: Props) {
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
   const [chatLog, setChatLog] = useState<any[]>([]);
+
+
 
 
   useEffect(() => {
@@ -288,6 +291,16 @@ export function Slides(props: Props) {
   }
 
 
+  useEffect(() => {
+    const slideNumber = window.location.hash.slice(2); // Extract the slide id from the URL
+    console.log("slideNumber", slideNumber);
+    const slideElement = document.getElementById(`s${slideNumber}`);
+    if (slideElement) {
+      slideElement.scrollIntoView({ behavior: "smooth" }); // Scroll to the corresponding slide element
+    }
+  }, [slideImages]);
+
+
 
   return (
     <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
@@ -383,6 +396,7 @@ export function Slides(props: Props) {
           )
         }
       </div>
+      {/* <CommandBar /> */}
     </main >
   )
 }

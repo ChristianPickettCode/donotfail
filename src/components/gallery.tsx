@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { UploadModal } from "./upload-modal"
 import { useEffect, useState } from "react"
-import { GetSlides } from "@/app/action"
+import { AddSlideToSpace, GetSlides } from "@/app/action"
 import { Button } from "./ui/button"
 import posthog from "posthog-js"
 
@@ -12,7 +12,10 @@ const emojiList = ["😇", "🤩", "🥳", "🎉", "🎊", "🎈", "🎁", "🎀
 const bgColorList = ["bg-red-500", "bg-yellow-500", "bg-green-500", "bg-blue-500", "bg-indigo-500", "bg-purple-500", "bg-pink-500",
   "bg-red-300", "bg-yellow-300", "bg-green-300", "bg-blue-300", "bg-indigo-300", "bg-purple-300", "bg-pink-300"]
 
-export function Gallery() {
+type Props = {
+}
+
+export function Gallery(props: Props) {
   const [slides, setSlides] = useState([])
 
   useEffect(() => {
@@ -35,11 +38,14 @@ export function Gallery() {
     posthog.capture('my event', { property: 'value' })
   }
 
+
+
   return (
     <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
       <div className="flex justify-end mb-4">
-        <UploadModal />
+        {/* <UploadModal /> */}
       </div>
+
       {/* <Button onClick={testSomething}>TEST</Button> */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {
