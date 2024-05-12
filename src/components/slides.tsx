@@ -5,7 +5,7 @@ import { Separator } from "./ui/separator";
 import { useEffect, useState } from "react";
 import { GenerateAudio, GenerateSlideImageText, GetSlide, GetSlideImages, Ping } from "@/app/action";
 import { Button } from "./ui/button";
-import { CommandIcon, PauseIcon, PlayIcon } from "lucide-react";
+import { CommandIcon, Mic, MicOffIcon, PauseIcon, PlayIcon } from "lucide-react";
 import Markdown from 'react-markdown'
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
@@ -385,13 +385,13 @@ export function Slides(props: Props) {
                 </div>
               </Card>
               <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
-                -
+                <Mic />
               </button>
             </>
           ) : (
 
             <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
-              +
+              <MicOffIcon />
             </button>
           )
         }
