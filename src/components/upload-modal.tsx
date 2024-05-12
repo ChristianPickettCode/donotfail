@@ -127,7 +127,8 @@ export function UploadModal(props: Props) {
               const d = {
                 _id: res_c.data._id,
                 name: res_c.data.name,
-                pdf_url: fileUrl
+                pdf_url: fileUrl,
+                space_id: props.spaceId
               } as any
 
               UpdateSlide(d)
