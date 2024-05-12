@@ -13,6 +13,8 @@ import { Search } from "@/app/action";
 import Markdown from 'react-markdown';
 import { Button } from './ui/button';
 import { CommandIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import Loader from './ui/loader';
 
 type Props = {}
 
@@ -21,6 +23,8 @@ const CommandBar = (props: Props) => {
     const [loading, setLoading] = useState(false)
     const [answer, setAnswer] = useState("")
     const [open, setOpen] = useState(false)
+
+    const { push } = useRouter()
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -35,14 +39,39 @@ const CommandBar = (props: Props) => {
     }, [])
 
     const askQuestion = (question: string) => {
-        console.log("askQuestion")
+        console.log("askQuestion", question)
         Search({ question, context: "" })
             .then((res) => {
                 console.log(res);
-                let response = res.choices[0].message.content
-                console.log(response)
-                setAnswer(response)
-                setLoading(false)
+                if (res.choices[0].finish_reason === "tool_calls") {
+                    const tools = res.choices[0].message.tool_calls
+                    for (const tool of tools) {
+                        console.log(tool)
+                        const func = tool.function.name
+                        const arg = JSON.parse(tool.function.arguments)
+                        console.log(func, arg)
+                        if (func == "move-to-slide") {
+                            setOpen(false)
+                            setLoading(false)
+                            console.log("Moving to slide", arg.slideNumber)
+
+                            const slideElement = document.getElementById(`s${arg.slideNumber}`);
+                            if (slideElement) {
+                                slideElement.scrollIntoView({ behavior: "smooth" }); // Scroll to the corresponding slide element
+                                push(`#${slideElement.id}`); // Add slide ID to the URL
+                            }
+
+
+                        }
+                    }
+
+                } else {
+                    let response = res.choices[0].message.content
+                    console.log(response)
+                    setAnswer(response)
+                    setLoading(false)
+                }
+
             })
             .catch((err) => {
                 console.log(err);
@@ -64,6 +93,9 @@ const CommandBar = (props: Props) => {
                 />
                 <CommandList>
                     <CommandEmpty className="px-4 text-left py-2">
+                        {/* {
+                            loading && <Loader className='h-4' />
+                        } */}
                         <Markdown>{answer}</Markdown>
                     </CommandEmpty>
                     <CommandGroup heading="Previous Response">

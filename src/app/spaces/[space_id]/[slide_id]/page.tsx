@@ -1,11 +1,21 @@
 "use client"
-import { GetSlide, GetSlideImages } from '@/app/action'
+import { AddSlideToSpace, GetSlide, GetSlideImages, GetSpaces } from '@/app/action'
 import DeleteModal from '@/components/delete-modal'
 import { Sidebar } from '@/components/sidebar'
 import { Sidebar2 } from '@/components/sidebar2'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { useRouter } from 'next/navigation'
 
 type Props = {}
 
@@ -14,6 +24,9 @@ const Page = ({ params }: any) => {
     const { slide_id } = params
     // const [slide, setSlide] = useState<any>(null)
     const [slideImages, setSlideImages] = useState<any[]>([])
+    const [selectedSpace, setSelectedSpace] = useState<any>(null)
+    const [spaces, setSpaces] = useState<any[]>([])
+    const { push } = useRouter()
 
     useEffect(() => {
         // GetSlide(slide_id)
@@ -37,10 +50,53 @@ const Page = ({ params }: any) => {
             })
     }, [slide_id])
 
+    useEffect(() => {
+        GetSpaces()
+            .then((res) => {
+                console.log(res)
+                setSpaces(res.data)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [])
+
+    const addToSpace = () => {
+        console.log("add to space")
+        console.log(selectedSpace)
+        console.log(slide_id)
+        AddSlideToSpace({ space_id: selectedSpace, slide_id })
+            .then((res) => {
+                console.log(res)
+                push("/spaces")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+
     return (
         <Sidebar2>
             <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
                 <div className="flex justify-end mb-4">
+                    {/* <Select onValueChange={setSelectedSpace} >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Add to space" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {
+                                    spaces?.map((item: any, index) => (
+                                        <SelectItem key={index} value={item._id} >
+                                            {item.name}
+                                        </SelectItem>
+                                    ))
+                                }
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <Button onClick={addToSpace}>Add to Space</Button> */}
                     <Link href={`/slides/${slide_id}`}>
                         <Button variant="outline" className='mr-2'>View</Button>
                     </Link>

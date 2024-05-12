@@ -11,7 +11,7 @@ export function AboutUs() {
             Donotfail.ai generates detailed notes from your slides. Our assistant answers questions about the content
             through text or voice.
           </p>
-          <Link href="/gallery">
+          <Link href="/spaces">
             <Button className="mt-2">Explore</Button>
           </Link>
         </div>

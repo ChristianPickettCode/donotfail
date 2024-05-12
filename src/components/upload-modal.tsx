@@ -36,7 +36,10 @@ const formSchema = z.object({
   file: z.string(),
 })
 
-export function UploadModal() {
+type Props = {
+  spaceId: string
+}
+export function UploadModal(props: Props) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -105,6 +108,7 @@ export function UploadModal() {
     console.log('creating slide')
     const data = {
       name: form.getValues().name,
+      space_id: props.spaceId
     }
     try {
       CreateSlide(data)
