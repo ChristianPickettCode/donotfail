@@ -140,7 +140,7 @@ export function UploadModal(props: Props) {
                         console.log(res)
                         setProgress(100)
                         setSlideId(res_c.data._id)
-                        push(`/gallery/${res_c.data._id}`)
+                        push(`/spaces/${props.spaceId}/${res_c.data._id}`)
                       } else {
                         console.log(res)
                         setHasError(true)
@@ -230,7 +230,7 @@ export function UploadModal(props: Props) {
             progress > 0 && progress < 100 && <p>This can take up to a couple minutes 🙂</p>
           }
           {
-            progress == 100 && <Link href={`/gallery/${slideId}`}>
+            progress == 100 && <Link href={`/spaces/${props.spaceId}/${slideId}`}>
               <Button variant="outline" onClick={() => form.reset()}>View</Button>
             </Link>
           }
