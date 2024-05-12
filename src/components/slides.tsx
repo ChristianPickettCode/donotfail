@@ -13,6 +13,7 @@ import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import CommandBar from "./commandbar";
 import Loader from "./ui/loader";
+import { useRouter } from "next/navigation";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID as string;
@@ -31,6 +32,7 @@ export function Slides(props: Props) {
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
   const [chatLog, setChatLog] = useState<any[]>([]);
+  const { push } = useRouter()
 
   useEffect(() => {
     const vapi = new Vapi(VAPI_API_KEY);
@@ -188,7 +190,7 @@ export function Slides(props: Props) {
     }
   }
 
-  const generateSlideImageText = (slideImageId: string) => {
+  const generateSlideImageText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
     console.log("generateSlideImageText")
     GenerateSlideImageText(slideImageId)
@@ -209,6 +211,7 @@ export function Slides(props: Props) {
             })
           })
           setGenerationLoading(false);
+          push(`#s${index + 1}`)
         }
       })
       .catch((err) => {
@@ -216,7 +219,7 @@ export function Slides(props: Props) {
       });
   }
 
-  const generateAudio = (slideImageId: string) => {
+  const generateAudio = (slideImageId: string, index: number) => {
     console.log("generateAudio")
     setGenerationLoading(true);
     GenerateAudio({ slide_image_id: slideImageId })
@@ -234,6 +237,7 @@ export function Slides(props: Props) {
           })
         })
         setGenerationLoading(false);
+        push(`#s${index + 1}`)
       })
       .catch((err) => {
         console.log(err);
@@ -332,9 +336,9 @@ export function Slides(props: Props) {
 
               <div className="flex flex-col md:ml-6 w-full md:w-1/2">
                 <div className="flex flex-row mb-2">
-                  {!item.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(item._id)}>✨ Generate Notes</Button> :
+                  {!item.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(item._id, index)}>✨ Generate Notes</Button> :
 
-                    !item.audio_url ? <Button variant="outline" onClick={() => generateAudio(item._id)}>✨ Generate Audio</Button>
+                    !item.audio_url ? <Button variant="outline" onClick={() => generateAudio(item._id, index)}>✨ Generate Audio</Button>
                       : <>
                         {audioPlaying ? (
                           <Button variant="outline" onClick={handlePauseAudio}><PauseIcon size={"1em"} /></Button>
