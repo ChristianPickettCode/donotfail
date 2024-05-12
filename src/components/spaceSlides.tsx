@@ -33,7 +33,9 @@ export function SpaceSlides(props: Props) {
         GetSpaceSlides(props.spaceId)
             .then((res) => {
                 console.log(res)
-                setSlides(res.data)
+                // sort by name
+                let sorted = res.data.sort((a: any, b: any) => (a.name > b.name) ? 1 : -1)
+                setSlides(sorted)
             })
             .catch((err) => {
                 console.log(err)

@@ -12,6 +12,7 @@ import 'react-photo-view/dist/react-photo-view.css';
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import CommandBar from "./commandbar";
+import Loader from "./ui/loader";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID as string;
@@ -30,9 +31,6 @@ export function Slides(props: Props) {
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
   const [chatLog, setChatLog] = useState<any[]>([]);
-
-
-
 
   useEffect(() => {
     const vapi = new Vapi(VAPI_API_KEY);
@@ -210,6 +208,7 @@ export function Slides(props: Props) {
               return item;
             })
           })
+          setGenerationLoading(false);
         }
       })
       .catch((err) => {
@@ -219,6 +218,7 @@ export function Slides(props: Props) {
 
   const generateAudio = (slideImageId: string) => {
     console.log("generateAudio")
+    setGenerationLoading(true);
     GenerateAudio({ slide_image_id: slideImageId })
       .then((res) => {
         console.log(res);
@@ -233,6 +233,7 @@ export function Slides(props: Props) {
             return item;
           })
         })
+        setGenerationLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -345,6 +346,8 @@ export function Slides(props: Props) {
 
                   {item.generated_text && isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => sendMsg(item.generated_text)}>🤖 Ask Marcus</Button> : ""}
 
+                  {/* loading */}
+                  {generationLoading ? <Loader /> : ""}
                 </div>
                 <Markdown className='text-sm' >{item.generated_text}</Markdown>
               </div>
