@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import CommandBar from "./commandbar";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
+const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID as string;
 
 type Props = {
   params: any
@@ -105,7 +106,8 @@ export function Slides(props: Props) {
       //   name: "My Inline Assistant",
       // });
 
-      vapi.start("ed4c5eb8-d772-4f0f-be11-40502187e74d");
+      // vapi.start("ed4c5eb8-d772-4f0f-be11-40502187e74d");
+      vapi.start(VAPI_ASSISTANT_ID)
 
       vapi.on("volume-level", (volume) => {
         // console.log(`Assistant volume level: ${volume}`);
