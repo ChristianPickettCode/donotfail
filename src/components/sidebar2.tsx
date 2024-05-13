@@ -8,7 +8,7 @@ import { EyeIcon, HomeIcon, MenuSquareIcon, PencilLine, TextSearchIcon, UploadIc
 import { Badge } from "./ui/badge"
 import { Gallery } from "./gallery"
 import { useEffect, useState } from "react"
-import { GetSlides } from "@/app/action"
+import { GetSlides, GetSpaces } from "@/app/action"
 
 export function Sidebar2({
   children,
@@ -16,14 +16,23 @@ export function Sidebar2({
   children: React.ReactNode;
 }>) {
 
-  const [slides, setSlides] = useState([])
+  const [spaces, setSpaces] = useState([])
 
   useEffect(() => {
     console.log("Gallery")
-    GetSlides()
+    // GetSlides()
+    //   .then((res) => {
+    //     console.log(res)
+    //     setSlides(res.data)
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+
+    GetSpaces()
       .then((res) => {
         console.log(res)
-        setSlides(res.data)
+        setSpaces(res.data)
       })
       .catch((err) => {
         console.log(err)
@@ -65,8 +74,8 @@ export function Sidebar2({
                   </CollapsibleTrigger>
 
                   {
-                    slides?.map((item: any, index: number) => (
-                      <Link key={index} href={`/slides/${item?._id}`}>
+                    spaces?.map((item: any, index: number) => (
+                      <Link key={index} href={`/spaces/${item?._id}`}>
                         <CollapsibleContent>
                           <span className="ml-6 w-40 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                             {/* <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
@@ -195,8 +204,8 @@ export function Sidebar2({
                         </CollapsibleTrigger>
 
                         {
-                          slides?.map((item: any, index: number) => (
-                            <Link key={index} href={`/slides/${item?._id}`}>
+                          spaces?.map((item: any, index: number) => (
+                            <Link key={index} href={`/spaces/${item?._id}`}>
                               <CollapsibleContent>
                                 <span className="ml-6 w-40 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                                   {/* <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
