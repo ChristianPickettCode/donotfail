@@ -11,42 +11,43 @@ export function Landing2() {
               accelerated learning
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-              Enhance your learning experience with our AI-powered platform. Get personalized notes, explanations, and
+              {/* Enhance your learning experience with our AI-powered platform. Get personalized notes, explanations, and
               guidance tailored to your needs, helping you understand complex concepts more easily and learn at an
-              accelerated pace.
+              accelerated pace. */}
+
+              The platform uses AI to boost your learning by providing custom notes, clear explanations, and guidance. It helps you grasp difficult topics faster. Features include AI-assisted explanations of slides, note creation, flashcard and quiz generation, and a virtual AI tutor for personalized support.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left text-gray-500 dark:text-gray-400">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left text-gray-500 dark:text-gray-400">
             <ul className="space-y-2">
-              <li className="flex items-center gap-2">
+              {/* <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
                 Explain your slides with AI
-              </li>
-              <li className="flex items-center gap-2">
+              </li> */}
+              {/* <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
                 Get summarized notes
-              </li>
-              <li className="flex items-center gap-2">
+              </li> */}
+              {/* <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
                 Generate notes
               </li>
-
-            </ul>
-            <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
                 Generate flashcards
-              </li>
-              <li className="flex items-center gap-2">
+              </li> */}
+            </ul>
+            <ul className="space-y-2">
+              {/* <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
                 Generate quizzes
               </li>
               <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
-                AI Tutor for real-time assistance
-              </li>
+                AI Tutor
+              </li> */}
             </ul>
-            <ul className="space-y-2">
+            {/* <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4" />
                 Personalized learning paths
@@ -59,21 +60,21 @@ export function Landing2() {
                 <CheckIcon className="h-4 w-4" />
                 Analyze your learning progress
               </li>
-            </ul>
+            </ul> */}
           </div>
           <div className="space-x-4">
             <Link
               className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
               href="/spaces"
             >
-              Get Started
+              Dashboard
             </Link>
-            <Link
+            {/* <Link
               className="inline-flex h-9 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
               href="/us"
             >
               Learn More
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
