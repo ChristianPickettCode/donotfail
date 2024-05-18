@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react'
 import { Separator } from './ui/separator'
 import MarkdownWithLatex from '@/app/MarkdownWithLatex'
