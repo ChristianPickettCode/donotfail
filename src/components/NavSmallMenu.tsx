@@ -55,29 +55,27 @@ const NavSmallMenu = (props: Props) => {
                 </Link>
                 <DropdownMenuSeparator />
 
-                <Link href="/spaces">
-                    {/* <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                         Explore
                     </DropdownMenuItem> */}
-                    <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>
-                            <span>Explore</span>
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                            <DropdownMenuSubContent>
-                                {
-                                    spaces.map((space: any, index) => (
-                                        <Link key={index} href={`/spaces/${space.id}`}>
-                                            <DropdownMenuItem>
-                                                {space.name}
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    ))
-                                }
-                            </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                    </DropdownMenuSub>
-                </Link>
+                <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                        <span>Explore</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                            {
+                                spaces.map((space: any, index) => (
+                                    <Link key={index} href={`/spaces/${space.id}`}>
+                                        <DropdownMenuItem>
+                                            {space.name}
+                                        </DropdownMenuItem>
+                                    </Link>
+                                ))
+                            }
+                        </DropdownMenuSubContent>
+                    </DropdownMenuPortal>
+                </DropdownMenuSub>
 
                 <Link href="/spaces">
                     <DropdownMenuItem>

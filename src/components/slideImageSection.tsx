@@ -60,19 +60,23 @@ const SlideImageSection = (props: Props) => {
     GenerateAudio({ slide_image_id: slideImageId })
       .then((res) => {
         console.log(res);
-        props.setSlideImages((prev: any) => {
-          return prev.map((item: any) => {
-            if (item.id === slideImageId) {
-              return {
-                ...item,
-                audio_url: res.data,
+        if (res.status_code == 200) {
+          console.log("Audio generated successfully");
+          props.setSlideImages((prev: any) => {
+            return prev.map((item: any) => {
+              if (item.id === slideImageId) {
+                return {
+                  ...item,
+                  audio_url: res.data,
+                }
               }
-            }
-            return item;
+              return item;
+            })
           })
-        })
-        setGenerationLoading(false);
-        push(`#s${index + 1}`)
+          setGenerationLoading(false);
+          // push(`#s${index + 1}`)
+        }
+
       })
       .catch((err) => {
         console.log(err);
