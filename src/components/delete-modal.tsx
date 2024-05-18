@@ -18,26 +18,28 @@ import { DeleteSlide } from '@/app/action'
 import { Input } from './ui/input'
 
 type Props = {
-    slideId: string
+    params: any
 }
 
 const DeleteModal = (props: Props) => {
-    const wait = () => new Promise((resolve) => setTimeout(resolve, 2000));
     const [isOpen, setIsOpen] = React.useState(false)
     const { push } = useRouter()
     const [deleteText, setDeleteText] = React.useState("")
+    const [deleting, setDeleting] = React.useState(false)
 
     const handleDelete = () => {
         console.log("deleting")
         if (deleteText !== "DELETE") {
             return
         }
-        DeleteSlide(props.slideId)
+        setDeleting(true)
+        console.log("deleting", props.params.slide_id)
+        DeleteSlide(props.params.slide_id)
             .then((res) => {
                 console.log(res)
                 if (res.status_code === 200) {
                     console.log("deleted")
-                    push("/gallery")
+                    push(`/spaces/${props.params.space_id}`)
                 }
             })
             .catch((err) => {
@@ -45,6 +47,8 @@ const DeleteModal = (props: Props) => {
             })
 
     }
+
+    // console.log("DeleteModal", props.params)
 
     return (
         <>
@@ -60,7 +64,7 @@ const DeleteModal = (props: Props) => {
 
                         <div className='flex justify-end'>
                             <Button variant="outline" className='mr-2' onClick={() => setIsOpen(false)}>Cancel</Button>
-                            <Button className='bg-[hsl(var(--destructive))] hover:bg-red-600' onClick={handleDelete}>Delete</Button>
+                            <Button className='bg-[hsl(var(--destructive))] hover:bg-red-600' onClick={handleDelete} disabled={deleting}>Delete</Button>
                         </div>
                     </AlertDialogHeader>
                 </AlertDialogContent>

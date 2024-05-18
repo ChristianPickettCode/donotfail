@@ -32,7 +32,7 @@ export function Sidebar2({
     GetSpaces()
       .then((res) => {
         console.log(res)
-        setSpaces(res.data)
+        setSpaces(res)
       })
       .catch((err) => {
         console.log(err)
@@ -75,7 +75,7 @@ export function Sidebar2({
 
                   {
                     spaces?.map((item: any, index: number) => (
-                      <Link key={index} href={`/spaces/${item?._id}`}>
+                      <Link key={index} href={`/spaces/${item?.id}`}>
                         <CollapsibleContent>
                           <span className="ml-6 w-40 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                             {/* <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>

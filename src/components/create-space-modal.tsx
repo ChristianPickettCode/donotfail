@@ -50,7 +50,7 @@ export function CreateSpaceModal() {
                 .then((res_c) => {
                     console.log(res_c)
                     setOpen(false)
-                    push(`/spaces/${res_c.data._id}`)
+                    push(`/spaces/${res_c.InsertedID}`)
                 })
                 .catch((err) => {
                     console.log(err)

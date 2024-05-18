@@ -19,31 +19,30 @@ import { useRouter } from 'next/navigation'
 
 type Props = {}
 
+// Use server side rendering ** 
 const Page = ({ params }: any) => {
 
     const { slide_id } = params
-    // const [slide, setSlide] = useState<any>(null)
+    const [slide, setSlide] = useState<any>(null)
     const [slideImages, setSlideImages] = useState<any[]>([])
     const [selectedSpace, setSelectedSpace] = useState<any>(null)
     const [spaces, setSpaces] = useState<any[]>([])
     const { push } = useRouter()
 
     useEffect(() => {
-        // GetSlide(slide_id)
-        //     .then((res) => {
-        //         console.log(res)
-        //         console.log(res.data)
-        //         setSlide(res.data)
-        //     })
-        //     .catch((err) => {
-        //         console.log(err)
-        //     })
+        GetSlide(slide_id)
+            .then((res) => {
+                // console.log(res)
+                setSlide(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
 
         GetSlideImages(slide_id)
             .then((res) => {
-                console.log(res)
-                console.log(res.data)
-                setSlideImages(res.data)
+                // console.log(res)
+                setSlideImages(res)
             })
             .catch((err) => {
                 console.log(err)
@@ -53,8 +52,8 @@ const Page = ({ params }: any) => {
     useEffect(() => {
         GetSpaces()
             .then((res) => {
-                console.log(res)
-                setSpaces(res.data)
+                // console.log(res)
+                setSpaces(res)
             })
             .catch((err) => {
                 console.log(err)
@@ -67,7 +66,7 @@ const Page = ({ params }: any) => {
         console.log(slide_id)
         AddSlideToSpace({ space_id: selectedSpace, slide_id })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 push("/spaces")
             })
             .catch((err) => {
@@ -79,8 +78,10 @@ const Page = ({ params }: any) => {
     return (
         <Sidebar2>
             <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
-                <div className="flex justify-end mb-4">
-                    {/* <Select onValueChange={setSelectedSpace} >
+                <div className='flex justify-between'>
+                    <h1 className="text-2xl font-semibold">{slide?.name}</h1>
+                    <div className="flex justify-end mb-4">
+                        {/* <Select onValueChange={setSelectedSpace} >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Add to space" />
                         </SelectTrigger>
@@ -97,11 +98,14 @@ const Page = ({ params }: any) => {
                         </SelectContent>
                     </Select>
                     <Button onClick={addToSpace}>Add to Space</Button> */}
-                    <Link href={`/slides/${slide_id}`}>
-                        <Button variant="outline" className='mr-2'>View</Button>
-                    </Link>
-                    <DeleteModal slideId={slide_id} />
+                        <Link href={`/slides/${slide_id}`}>
+                            <Button variant="outline" className='mr-2'>View</Button>
+                        </Link>
+                        <DeleteModal params={params} />
+                    </div>
+
                 </div>
+
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {

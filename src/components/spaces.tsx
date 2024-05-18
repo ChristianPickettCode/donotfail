@@ -19,8 +19,8 @@ function Spaces({ }: Props) {
         console.log("Spaces")
         GetSpaces()
             .then((res) => {
-                console.log(res)
-                setSpaces(res.data)
+                // console.log(res)
+                setSpaces(res)
 
             })
             .catch((err) => {
@@ -38,7 +38,7 @@ function Spaces({ }: Props) {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {
                     spaces?.map((item: any, index) => (
-                        <Link key={index} href={`/spaces/${item?._id}`}>
+                        <Link key={index} href={`/spaces/${item?.id}`}>
                             <div key={index} className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                 <div className={`h-48 w-full flex items-center justify-center object-cover transition-all duration-300 group-hover:scale-105 ${bgColorList[index % bgColorList.length]}`}>
                                     <span className="text-xl">{emojiList[index % emojiList.length]}</span>

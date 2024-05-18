@@ -32,10 +32,10 @@ export function SpaceSlides(props: Props) {
 
         GetSpaceSlides(props.spaceId)
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 // sort by name
-                let sorted = res.data.sort((a: any, b: any) => (a.name > b.name) ? 1 : -1)
-                setSlides(sorted)
+                // let sorted = res.data.sort((a: any, b: any) => (a.name > b.name) ? 1 : -1)
+                setSlides(res)
             })
             .catch((err) => {
                 console.log(err)
@@ -63,7 +63,7 @@ export function SpaceSlides(props: Props) {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {
                     slides?.map((item: any, index) => (
-                        <Link key={index} href={`/spaces/${props.spaceId}/${item?._id}`}>
+                        <Link key={index} href={`/spaces/${props.spaceId}/${item?.id}`}>
                             <div key={index} className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                 {/* <img
                   alt="Course Thumbnail"
