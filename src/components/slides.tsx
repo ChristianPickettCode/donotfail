@@ -261,7 +261,7 @@ export function Slides(props: Props) {
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:text-5xl">
           {slide?.name}
         </h1>
-        {/* <Button variant="outline" className="mt-2" onClick={generateAllSlideText} disabled={generatedAllSlideText}>🚀 GENERATE ALL SLIDE TEXT</Button> */}
+        <Button variant="outline" className="mt-2" onClick={generateAllSlideText} disabled={generatedAllSlideText}>🚀 GENERATE ALL SLIDE TEXT</Button>
         <Button variant="outline" className="mt-2" onClick={generateAllAudio} disabled={generatedAllSlideText}>🎶 GENERATE ALL AUDIO TEXT</Button>
       </div>
       {
