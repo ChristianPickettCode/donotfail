@@ -24,7 +24,7 @@ const SlideImageSection = (props: Props) => {
 
   const [generationLoading, setGenerationLoading] = useState(false);
   const [thisAudioPlaying, setThisAudioPlaying] = useState(false);
-  const { push } = useRouter()
+  const { push, refresh } = useRouter()
   const [slideImage, setSlideImage] = useState<any>(props.item);
 
 
@@ -94,6 +94,11 @@ const SlideImageSection = (props: Props) => {
 
           setGenerationLoading(false);
           // push(`#s${index + 1}`)
+        } else {
+          console.log("Audio generation failed");
+          // push(`#s${index + 1}`)
+          refresh()
+          setGenerationLoading(false);
         }
 
       })
