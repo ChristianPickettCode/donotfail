@@ -43,34 +43,38 @@ const CommandBar = (props: Props) => {
         Search({ question, context: "" })
             .then((res) => {
                 console.log(res);
-                if (res.choices[0].finish_reason === "tool_calls") {
-                    const tools = res.choices[0].message.tool_calls
-                    for (const tool of tools) {
-                        console.log(tool)
-                        const func = tool.function.name
-                        const arg = JSON.parse(tool.function.arguments)
-                        console.log(func, arg)
-                        if (func == "move-to-slide") {
-                            setOpen(false)
-                            setLoading(false)
-                            console.log("Moving to slide", arg.slideNumber)
+                // if (res.choices[0].finish_reason === "tool_calls") {
+                //     const tools = res.choices[0].message.tool_calls
+                //     for (const tool of tools) {
+                //         console.log(tool)
+                //         const func = tool.function.name
+                //         const arg = JSON.parse(tool.function.arguments)
+                //         console.log(func, arg)
+                //         if (func == "move-to-slide") {
+                //             setOpen(false)
+                //             setLoading(false)
+                //             console.log("Moving to slide", arg.slideNumber)
 
-                            const slideElement = document.getElementById(`s${arg.slideNumber}`);
-                            if (slideElement) {
-                                slideElement.scrollIntoView({ behavior: "smooth" }); // Scroll to the corresponding slide element
-                                push(`#${slideElement.id}`); // Add slide ID to the URL
-                            }
+                //             const slideElement = document.getElementById(`s${arg.slideNumber}`);
+                //             if (slideElement) {
+                //                 slideElement.scrollIntoView({ behavior: "smooth" }); // Scroll to the corresponding slide element
+                //                 push(`#${slideElement.id}`); // Add slide ID to the URL
+                //             }
 
 
-                        }
-                    }
+                //         }
+                //     }
 
-                } else {
-                    let response = res.choices[0].message.content
-                    console.log(response)
-                    setAnswer(response)
-                    setLoading(false)
-                }
+                // } else {
+                //     let response = res.choices[0].message.content
+                //     console.log(response)
+                //     setAnswer(response)
+                //     setLoading(false)
+                // }
+                let response = res.data
+                console.log(response)
+                setAnswer(response)
+                setLoading(false)
 
             })
             .catch((err) => {

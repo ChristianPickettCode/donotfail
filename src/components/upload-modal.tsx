@@ -16,7 +16,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { ConvertPdfToImages, CreateSlide, UpdateSlide } from "@/app/action"
+import { ConvertPdfToImages, CreateSlide, GenerateAllImageText, UpdateSlide } from "@/app/action"
 import { getSignedURL } from "@/utils/aws/requests"
 import { Progress } from "./ui/progress"
 import { Link } from "lucide-react"
@@ -55,6 +55,7 @@ export function UploadModal(props: Props) {
   const [slideId, setSlideId] = useState("")
   const { push } = useRouter()
   const [hasError, setHasError] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   const computeSHA256 = async (file: File) => {
     const buffer = await file.arrayBuffer()
@@ -90,6 +91,7 @@ export function UploadModal(props: Props) {
   }
 
   const onUpload = () => {
+    setIsUploading(true)
     console.log('uploading')
     console.log(form.getValues())
     handleCreateSlide()
@@ -106,52 +108,71 @@ export function UploadModal(props: Props) {
 
   const handleCreateSlide = async () => {
     console.log('creating slide')
+    const name = form.getValues().name
+    const space_id = props.spaceId
     const data = {
-      name: form.getValues().name,
-      space_id: props.spaceId
+      name,
+      space_id
     }
     try {
       CreateSlide(data)
         .then((res_c) => {
-          setProgress(25)
+          setProgress(20)
           console.log(res_c)
-          const id = res_c.data._id
-          console.log(id)
-          handleUpload(file!, id)
+          const InsertedID = res_c.InsertedID
+          console.log(InsertedID)
+          handleUpload(file!, InsertedID)
             .then((res_uf) => {
-              setProgress(50)
+              setProgress(40)
               console.log('res_c', res_uf)
               console.log('File upload result:', res_uf);
               const fileUrl = res_uf.url.split("?")[0]
+              console.log(fileUrl)
 
               const d = {
-                _id: res_c.data._id,
-                name: res_c.data.name,
+                id: InsertedID,
+                name: name,
                 pdf_url: fileUrl,
-                space_id: props.spaceId
+                space_id: space_id
               } as any
+
+              console.log(d)
 
               UpdateSlide(d)
                 .then((res_us) => {
-                  setProgress(75)
+
                   console.log(res_us)
-                  ConvertPdfToImages(res_c.data._id)
-                    .then((res) => {
-                      if (res.status_code == 200) {
+
+                  if (res_us.ModifiedCount == 1) {
+                    setProgress(60)
+                    ConvertPdfToImages(InsertedID)
+                      .then((res) => {
                         console.log(res)
-                        setProgress(100)
-                        setSlideId(res_c.data._id)
-                        push(`/spaces/${props.spaceId}/${res_c.data._id}`)
-                      } else {
-                        console.log(res)
-                        setHasError(true)
-                      }
+                        if (res.status_code == 200) {
+                          console.log(res)
+                          setProgress(80)
+                          GenerateAllImageText(InsertedID)
+                            .then((res) => {
+                              console.log(res)
+                              setProgress(100)
+                              // setSlideId(res_c.data._id)
+                              push(`/spaces/${space_id}/${InsertedID}`)
+                            })
+                            .catch((err) => {
+                              console.log(err)
+                            })
+                        } else {
+                          console.log(res)
+                          setHasError(true)
+                        }
 
 
-                    })
-                    .catch((err) => {
-                      console.log(err)
-                    })
+                      })
+                      .catch((err) => {
+                        console.log(err)
+                      })
+                  }
+
                 })
                 .catch((err) => {
                   console.log(err)
@@ -222,8 +243,8 @@ export function UploadModal(props: Props) {
               }}
             />
 
-            <Button type="submit" className="w-full mt-2" onClick={onUpload}>
-              Submit
+            <Button type="submit" className="w-full mt-2" onClick={onUpload} disabled={isUploading}>
+              Generate
             </Button>
           </form>
           <Progress value={progress} />

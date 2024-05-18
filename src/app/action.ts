@@ -1,3 +1,4 @@
+"use server";
 import axios from "axios";
 
 const serverUrl = process.env.SERVER_URL!;
@@ -5,7 +6,7 @@ const serverUrl = process.env.SERVER_URL!;
 export async function CreateSlide(data: any) {
   console.log("CreateSlide");
   try {
-    const response = await axios.post(serverUrl + "/slides", data, {});
+    const response = await axios.post(serverUrl + "/slide", data, {});
 
     // Return the response from the external endpoint
     return response.data;
@@ -19,17 +20,13 @@ export async function CreateSlide(data: any) {
 }
 
 export async function UpdateSlide(data: {
-  _id: string;
+  id: string;
   pdf_url: string;
   name: string;
 }) {
   console.log("UpdateSlide");
   try {
-    const response = await axios.put(
-      serverUrl + `/slides/${data._id}`,
-      data,
-      {}
-    );
+    const response = await axios.put(serverUrl + `/slide/${data.id}`, data, {});
 
     // Return the response from the external endpoint
     return response.data;
@@ -46,7 +43,7 @@ export async function ConvertPdfToImages(slideId: string) {
   console.log("ConvertPdfToImages");
   try {
     const response = await axios.post(
-      serverUrl + `/slides/${slideId}/pdf-to-images`,
+      serverUrl + `/convert-pdf-to-images/${slideId}`,
       {},
       {}
     );
@@ -81,7 +78,7 @@ export async function GetSlides() {
 export async function GetSlide(slideId: string) {
   console.log("GetSlide");
   try {
-    const response = await axios.get(serverUrl + `/slides/${slideId}`, {});
+    const response = await axios.get(serverUrl + `/slide/${slideId}`, {});
 
     // Return the response from the external endpoint
     return response.data;
@@ -98,7 +95,7 @@ export async function GetSlideImages(slideId: string) {
   console.log("GetSlideImages");
   try {
     const response = await axios.get(
-      serverUrl + `/slides/${slideId}/images`,
+      serverUrl + `/slide/images/${slideId}`,
       {}
     );
 
@@ -188,7 +185,7 @@ export async function GenerateAudio(data: { slide_image_id: string }) {
 export async function DeleteSlide(slideId: string) {
   console.log("DeleteSlide");
   try {
-    const response = await axios.delete(serverUrl + `/slides/${slideId}`, {});
+    const response = await axios.delete(serverUrl + `/slide/${slideId}`, {});
 
     // Return the response from the external endpoint
     return response.data;
@@ -205,7 +202,7 @@ export async function DeleteSlide(slideId: string) {
 export async function CreateSpace(data: any) {
   console.log("CreateSpace");
   try {
-    const response = await axios.post(serverUrl + "/spaces", data, {});
+    const response = await axios.post(serverUrl + "/space", data, {});
 
     // Return the response from the external endpoint
     return response.data;
@@ -240,7 +237,7 @@ export async function GetSpaceSlides(spaceId: string) {
   console.log("GetSpaceSlides");
   try {
     const response = await axios.get(
-      serverUrl + `/spaces/${spaceId}/slides`,
+      serverUrl + `/space-slides/${spaceId}`,
       {}
     );
 
@@ -306,7 +303,48 @@ export async function RemoveSlideFromSpace(data: {
 export async function DeleteSpace(spaceId: string) {
   console.log("DeleteSpace");
   try {
-    const response = await axios.delete(serverUrl + `/spaces/${spaceId}`, {});
+    const response = await axios.delete(serverUrl + `/space/${spaceId}`, {});
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+export async function GenerateAllImageText(slideId: string) {
+  console.log("GenerateAllImageText");
+  try {
+    const response = await axios.post(
+      serverUrl + `/generate-all-image-text/${slideId}`,
+      {},
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// generate notes
+export async function GenerateNotes(slideId: string) {
+  console.log("GenerateNotes");
+  try {
+    const response = await axios.post(
+      serverUrl + `/generate-notes/${slideId}`,
+      {},
+      {}
+    );
 
     // Return the response from the external endpoint
     return response.data;

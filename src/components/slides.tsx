@@ -1,19 +1,14 @@
 "use client"
 import Vapi from "@vapi-ai/web";
 
-import { Separator } from "./ui/separator";
 import { useEffect, useState } from "react";
-import { GenerateAudio, GenerateSlideImageText, GetSlide, GetSlideImages, Ping } from "@/app/action";
+import { GenerateAllImageText, GetSlide, GetSlideImages } from "@/app/action";
 import { Button } from "./ui/button";
-import { CommandIcon, Mic, MicOffIcon, PauseIcon, PlayIcon } from "lucide-react";
-import Markdown from 'react-markdown'
-import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { Mic, MicOffIcon } from "lucide-react";
 import 'react-photo-view/dist/react-photo-view.css';
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import CommandBar from "./commandbar";
-import Loader from "./ui/loader";
-import { useRouter } from "next/navigation";
+import SlideImageSection from "./slideImageSection";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID as string;
@@ -27,12 +22,14 @@ export function Slides(props: Props) {
   const [isVapiStarted, setIsVapiStarted] = useState(false);
   const [slideImages, setSlideImages] = useState<any[]>([]);
   const [slide, setSlide] = useState<any>({});
-  const [generationLoading, setGenerationLoading] = useState(false);
+
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
   const [chatLog, setChatLog] = useState<any[]>([]);
-  const { push } = useRouter()
+
+  const [generatedAllSlideText, setGeneratedAllSlideText] = useState(false);
+
 
   useEffect(() => {
     const vapi = new Vapi(VAPI_API_KEY);
@@ -66,9 +63,8 @@ export function Slides(props: Props) {
   useEffect(() => {
     GetSlideImages(props.params.slide_id)
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        setSlideImages(res.data);
+        // console.log(res);
+        setSlideImages(res);
       })
       .catch((err) => {
         console.log(err);
@@ -77,11 +73,12 @@ export function Slides(props: Props) {
     GetSlide(props.params.slide_id)
       .then((res) => {
         console.log(res);
-        setSlide(res.data);
+        setSlide(res);
       })
   }, [props.params.slide_id]);
 
   const startVapi = () => {
+    setChatLog([]);
     if (vapi) {
       // vapi.start({
       //   transcriber: {
@@ -190,95 +187,7 @@ export function Slides(props: Props) {
     }
   }
 
-  const generateSlideImageText = (slideImageId: string, index: number) => {
-    setGenerationLoading(true);
-    console.log("generateSlideImageText")
-    GenerateSlideImageText(slideImageId)
-      .then((response) => {
-        console.log(response);
-        if (response.status_code === 200) {
-          console.log("Text generated successfully");
-          console.log(response.data);
-          setSlideImages((prev) => {
-            return prev.map((item) => {
-              if (item._id === slideImageId) {
-                return {
-                  ...item,
-                  generated_text: response.data,
-                }
-              }
-              return item;
-            })
-          })
-          setGenerationLoading(false);
-          push(`#s${index + 1}`)
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 
-  const generateAudio = (slideImageId: string, index: number) => {
-    console.log("generateAudio")
-    setGenerationLoading(true);
-    GenerateAudio({ slide_image_id: slideImageId })
-      .then((res) => {
-        console.log(res);
-        setSlideImages((prev) => {
-          return prev.map((item) => {
-            if (item._id === slideImageId) {
-              return {
-                ...item,
-                audio_url: res.data,
-              }
-            }
-            return item;
-          })
-        })
-        setGenerationLoading(false);
-        push(`#s${index + 1}`)
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  const ping = (slideImageId: string) => {
-    Ping()
-      .then((res) => {
-        console.log(res.data);
-        setSlideImages((prev) => {
-          return prev.map((item) => {
-            if (item._id === slideImageId) {
-              return {
-                ...item,
-                generated_text: res.data,
-              }
-            }
-            return item;
-          })
-        })
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  const handlePauseAudio = () => {
-    if (audioPlayer != null) {
-      audioPlayer.pause();
-      setAudioPlaying(false);
-    }
-  }
-
-  const handlePlayAudio = (audio_url: string) => {
-    if (audioPlayer != null) {
-      audioPlayer.src = audio_url
-      audioPlayer.play();
-      setAudioPlaying(true);
-    }
-  }
 
 
   const sendMsg = (slideText: string) => {
@@ -307,6 +216,20 @@ export function Slides(props: Props) {
     }
   }, [slideImages]);
 
+  const generateAllSlideText = () => {
+    setGeneratedAllSlideText(true);
+    console.log("Generating all slide text", props.params.slide_id);
+    GenerateAllImageText(props.params.slide_id)
+      .then((res) => {
+        console.log(res);
+        setSlideImages(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+  }
+
 
 
   return (
@@ -315,51 +238,21 @@ export function Slides(props: Props) {
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:text-5xl">
           {slide?.name}
         </h1>
+        {/* <Button variant="outline" className="mt-2" onClick={generateAllSlideText} disabled={generatedAllSlideText}>🚀 GENERATE ALL SLIDE TEXT</Button> */}
       </div>
       {
         slideImages?.map((item, index) => (
-          <div key={index} id={`s${index + 1}`}>
-            <section key={index} className="flex flex-col md:flex-row w-full mb-8 mt-10 pl-4 pr-8">
-              <div className="md:w-1/2">
-                {/* <img
-                  alt="Placeholder Image"
-                  className="h-[60vh] w-auto bg-gray-300"
-                  src={item.image_url}
-                /> */}
-                {/* <Image src={item.image_url} height={500} width={500} alt="Slide Image" /> */}
-                <PhotoProvider>
-                  <PhotoView src={item.image_url}>
-                    <img src={item.image_url} className="w-full h-auto object-contain mb-4" alt="" />
-                  </PhotoView>
-                </PhotoProvider>
-              </div>
-
-              <div className="flex flex-col md:ml-6 w-full md:w-1/2">
-                <div className="flex flex-row mb-2">
-                  {!item.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(item._id, index)}>✨ Generate Notes</Button> :
-
-                    !item.audio_url ? <Button variant="outline" onClick={() => generateAudio(item._id, index)}>✨ Generate Audio</Button>
-                      : <>
-                        {audioPlaying ? (
-                          <Button variant="outline" onClick={handlePauseAudio}><PauseIcon size={"1em"} /></Button>
-                        ) : (
-                          <Button variant="outline" onClick={() => handlePlayAudio(item.audio_url)}><PlayIcon size={"1em"} /></Button>
-                        )}
-                      </>
-                  }
-
-                  {item.generated_text && isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => sendMsg(item.generated_text)}>🤖 Ask Marcus</Button> : ""}
-
-                  {/* loading */}
-                  {generationLoading ? <Loader /> : ""}
-                </div>
-                <Markdown className='text-sm' >{item.generated_text}</Markdown>
-              </div>
-
-            </section >
-            <p className='text-right pr-2'>{index + 1}</p>
-            <Separator />
-          </div >
+          <SlideImageSection
+            key={index}
+            index={index}
+            item={item}
+            audioPlayer={audioPlayer}
+            setAudioPlaying={setAudioPlaying}
+            isVapiStarted={isVapiStarted}
+            sendMsg={sendMsg}
+            setSlideImages={setSlideImages}
+            audioPlaying={audioPlaying}
+          />
         ))
       }
 
