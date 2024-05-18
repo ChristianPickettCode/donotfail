@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Separator } from './ui/separator'
 import MarkdownWithLatex from '@/app/MarkdownWithLatex'
 import { Button } from './ui/button'
@@ -24,6 +24,8 @@ const SlideImageSection = (props: Props) => {
   const [generationLoading, setGenerationLoading] = useState(false);
   const [thisAudioPlaying, setThisAudioPlaying] = useState(false);
   const { push } = useRouter()
+  const [slideImage, setSlideImage] = useState<any>(props.item);
+
 
   const generateSlideImageText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
@@ -34,19 +36,27 @@ const SlideImageSection = (props: Props) => {
         if (response.status == "success") {
           console.log("Text generated successfully");
           // console.log(response.data);
-          props.setSlideImages((prev: any) => {
-            return prev.map((item: any) => {
-              if (item.id === slideImageId) {
-                return {
-                  ...item,
-                  generated_text: response.data,
-                }
-              }
-              return item;
-            })
+          // props.setSlideImages((prev: any) => {
+          //   return prev.map((item: any) => {
+          //     if (item.id === slideImageId) {
+          //       return {
+          //         ...item,
+          //         generated_text: response.data,
+          //       }
+          //     }
+          //     return item;
+          //   })
+          // })
+
+          setSlideImage((prev: any) => {
+            return {
+              ...prev,
+              generated_text: response.data,
+            }
           })
+
           setGenerationLoading(false);
-          push(`#s${index + 1}`)
+          // push(`#s${index + 1}`)
         }
       })
       .catch((err) => {
@@ -59,20 +69,28 @@ const SlideImageSection = (props: Props) => {
     setGenerationLoading(true);
     GenerateAudio({ slide_image_id: slideImageId })
       .then((res) => {
-        console.log(res);
-        if (res.status_code == 200) {
+        console.log("Audio RESPONSE:", res);
+        if (res?.status_code == 200 && res.data) {
           console.log("Audio generated successfully");
-          props.setSlideImages((prev: any) => {
-            return prev.map((item: any) => {
-              if (item.id === slideImageId) {
-                return {
-                  ...item,
-                  audio_url: res.data,
-                }
-              }
-              return item;
-            })
+          // props.setSlideImages((prev: any) => {
+          //   return prev.map((item: any) => {
+          //     if (item.id === slideImageId) {
+          //       return {
+          //         ...item,
+          //         audio_url: res.data,
+          //       }
+          //     }
+          //     return item;
+          //   })
+          // })
+
+          setSlideImage((prev: any) => {
+            return {
+              ...prev,
+              audio_url: res.data,
+            }
           })
+
           setGenerationLoading(false);
           // push(`#s${index + 1}`)
         }
@@ -133,33 +151,33 @@ const SlideImageSection = (props: Props) => {
                 /> */}
           {/* <Image src={item.image_url} height={500} width={500} alt="Slide Image" /> */}
           <PhotoProvider>
-            <PhotoView src={props.item.image_url}>
-              <img src={props.item.image_url} className="w-full h-auto object-contain mb-4" alt="" />
+            <PhotoView src={slideImage.image_url}>
+              <img src={slideImage.image_url} className="w-full h-auto object-contain mb-4" alt="" />
             </PhotoView>
           </PhotoProvider>
         </div>
 
         <div className="flex flex-col md:ml-6 w-full md:w-1/2">
           <div className="flex flex-row mb-2">
-            {!props.item.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(props.item.id, props.index)}>✨ Generate Notes</Button> :
+            {!slideImage.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(slideImage.id, props.index)}>✨ Generate Notes</Button> :
 
-              !props.item.audio_url ? <Button variant="outline" onClick={() => generateAudio(props.item.id, props.index)}>✨ Generate Audio</Button>
+              !slideImage.audio_url ? <Button variant="outline" onClick={() => generateAudio(slideImage.id, props.index)}>✨ Generate Audio</Button>
                 : <>
                   {props.audioPlaying && thisAudioPlaying ? (
                     <Button variant="outline" onClick={handlePauseAudio}><PauseIcon size={"1em"} /></Button>
                   ) : (
-                    <Button variant="outline" onClick={() => handlePlayAudio(props.item.audio_url)}><PlayIcon size={"1em"} /></Button>
+                    <Button variant="outline" onClick={() => handlePlayAudio(slideImage.audio_url)}><PlayIcon size={"1em"} /></Button>
                   )}
                 </>
             }
-            {/* <Button variant="outline" className="ml-2" onClick={() => generateAudio(props.item.id, props.index)}>✨ Audio<RefreshCwIcon /></Button> */}
+            {/* <Button variant="outline" className="ml-2" onClick={() => generateAudio(slideImage.id, props.index)}>✨ Audio<RefreshCwIcon /></Button> */}
 
-            {props.item.generated_text && props.isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => props.sendMsg(props.item.generated_text)}>🤖 Ask Marcus</Button> : ""}
+            {slideImage.generated_text && props.isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => props.sendMsg(slideImage.generated_text)}>🤖 Ask Marcus</Button> : ""}
 
             {/* loading */}
             {generationLoading ? <Loader /> : ""}
           </div>
-          <MarkdownWithLatex markdownText={props.item.generated_text ? props.item.generated_text : ""} />
+          <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} />
         </div>
 
       </section >
