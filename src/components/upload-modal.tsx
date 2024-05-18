@@ -218,12 +218,12 @@ export function UploadModal(props: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Upload File</Button>
+        <Button variant="outline">Add</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Upload File</DialogTitle>
-          <DialogDescription>Choose a file to upload and give it a name.</DialogDescription>
+          <DialogTitle>Add Slide PDF</DialogTitle>
+          <DialogDescription>Choose a file to upload and give it a name. (only supports pdfs)</DialogDescription>
         </DialogHeader>
         <Form {...form} >
           <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md w-full flex flex-col gap-4">

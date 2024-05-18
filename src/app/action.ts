@@ -377,3 +377,20 @@ export async function GenerateAllAudioForSlide(slideId: string) {
     return { error: errorMessage };
   }
 }
+
+// GetSpace by id
+export async function GetSpace(spaceId: string) {
+  console.log("GetSpace");
+  try {
+    const response = await axios.get(serverUrl + `/space/${spaceId}`, {});
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

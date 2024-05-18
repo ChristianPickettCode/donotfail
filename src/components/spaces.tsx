@@ -14,13 +14,19 @@ const bgColorList = ["bg-red-500", "bg-yellow-500", "bg-green-500", "bg-blue-500
 
 function Spaces({ }: Props) {
     const [spaces, setSpaces] = useState([])
+    // print url
+    // console.log(window.location.href.split('/')[3])
 
     useEffect(() => {
         console.log("Spaces")
         GetSpaces()
             .then((res) => {
                 // console.log(res)
-                setSpaces(res)
+                if (res != null) {
+                    console.log(res)
+                    setSpaces(res)
+                }
+
 
             })
             .catch((err) => {
@@ -31,9 +37,12 @@ function Spaces({ }: Props) {
 
     return (
         <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
-            <div className="flex justify-end mb-4">
-                <CreateSpaceModal />
-            </div>
+            {window?.location && window.location?.href.split('/')[3] === "spaces" &&
+                <div className="flex justify-end mb-4">
+                    <CreateSpaceModal />
+                </div>
+            }
+
             {/* <Button onClick={testSomething}>TEST</Button> */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {

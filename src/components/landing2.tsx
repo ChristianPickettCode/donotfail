@@ -8,11 +8,11 @@ export function Landing2() {
           <div className="space-y-2">
             <h3 className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl lg:text-4xl/none">
               {/* Learn Faster with AI */}
-              donotfail.ai
+              Donotfail.ai
             </h3>
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
               {/* Learn Faster with AI */}
-              accelerated learning
+              Accelerated learning
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
               {/* Enhance your learning experience with our AI-powered platform. Get personalized notes, explanations, and
@@ -20,7 +20,7 @@ export function Landing2() {
               accelerated pace. */}
 
               {/* The platform uses AI to boost your learning by providing custom notes, clear explanations, and guidance. It helps you grasp difficult topics faster. Features include AI-assisted explanations of slides, note creation, flashcard and quiz generation, and a virtual AI tutor for personalized support. */}
-              generate lecture notes, flashcards, quizzes, just from you slides.
+              Generate lecture notes, flashcards, quizzes, just from your <u>slides</u>
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left text-gray-500 dark:text-gray-400">

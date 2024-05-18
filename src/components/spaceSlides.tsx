@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { UploadModal } from "./upload-modal"
 import { useEffect, useState } from "react"
-import { AddSlideToSpace, GetSlides, GetSpaceSlides } from "@/app/action"
+import { AddSlideToSpace, GetSlides, GetSpace, GetSpaceSlides } from "@/app/action"
 import { Button } from "./ui/button"
 import posthog from "posthog-js"
 
@@ -18,17 +18,19 @@ type Props = {
 
 export function SpaceSlides(props: Props) {
     const [slides, setSlides] = useState([])
+    const [selectedSpace, setSelectedSpace] = useState<any>(null)
     console.log(props)
 
     useEffect(() => {
-        // GetSlides()
-        //     .then((res) => {
-        //         console.log(res)
-        //         setSlides(res.data)
-        //     })
-        //     .catch((err) => {
-        //         console.log(err)
-        //     })
+
+        GetSpace(props.spaceId)
+            .then((res) => {
+                console.log(res)
+                setSelectedSpace(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
 
         GetSpaceSlides(props.spaceId)
             .then((res) => {
@@ -55,7 +57,8 @@ export function SpaceSlides(props: Props) {
 
     return (
         <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-between mb-4">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300 group-hover:text-primary">{selectedSpace?.name}</h2>
                 <UploadModal spaceId={props.spaceId} />
             </div>
 
