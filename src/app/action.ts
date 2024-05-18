@@ -356,3 +356,24 @@ export async function GenerateNotes(slideId: string) {
     return { error: errorMessage };
   }
 }
+
+// GenerateAllAudioForSlide
+export async function GenerateAllAudioForSlide(slideId: string) {
+  console.log("GenerateAllAudioForSlide");
+  try {
+    const response = await axios.post(
+      serverUrl + `/generate-all-audio/${slideId}`,
+      {},
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

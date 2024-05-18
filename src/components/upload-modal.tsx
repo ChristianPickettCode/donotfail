@@ -16,7 +16,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { ConvertPdfToImages, CreateSlide, GenerateAllImageText, UpdateSlide } from "@/app/action"
+import { ConvertPdfToImages, CreateSlide, GenerateAllAudioForSlide, GenerateAllImageText, UpdateSlide } from "@/app/action"
 import { getSignedURL } from "@/utils/aws/requests"
 import { Progress } from "./ui/progress"
 import { Link } from "lucide-react"
@@ -53,7 +53,7 @@ export function UploadModal(props: Props) {
   const [submitting, setSubmitting] = useState(false)
   const [progress, setProgress] = useState(0)
   const [slideId, setSlideId] = useState("")
-  const { push } = useRouter()
+  const { push, refresh } = useRouter()
   const [hasError, setHasError] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
 
@@ -117,13 +117,13 @@ export function UploadModal(props: Props) {
     try {
       CreateSlide(data)
         .then((res_c) => {
-          setProgress(20)
+          setProgress(15)
           console.log(res_c)
           const InsertedID = res_c.InsertedID
           console.log(InsertedID)
           handleUpload(file!, InsertedID)
             .then((res_uf) => {
-              setProgress(40)
+              setProgress(30)
               console.log('res_c', res_uf)
               console.log('File upload result:', res_uf);
               const fileUrl = res_uf.url.split("?")[0]
@@ -144,19 +144,40 @@ export function UploadModal(props: Props) {
                   console.log(res_us)
 
                   if (res_us.ModifiedCount == 1) {
-                    setProgress(60)
+                    setProgress(45)
                     ConvertPdfToImages(InsertedID)
                       .then((res) => {
                         console.log(res)
                         if (res.status_code == 200) {
                           console.log(res)
-                          setProgress(80)
+                          setProgress(60)
                           GenerateAllImageText(InsertedID)
                             .then((res) => {
                               console.log(res)
-                              setProgress(100)
-                              // setSlideId(res_c.data._id)
-                              push(`/spaces/${space_id}/${InsertedID}`)
+                              setProgress(75)
+                              if (res?.status == "success") {
+                                GenerateAllAudioForSlide(InsertedID)
+                                  .then((res) => {
+                                    console.log(res);
+                                    // setSlideImages(res.data);
+                                    if (res?.status == "success") {
+                                      console.log("Audio generated successfully");
+                                      setProgress(100)
+                                      push(`/spaces/${space_id}/${InsertedID}`)
+
+                                    } else {
+                                      console.log("Audio generation failed");
+                                    }
+                                  })
+                                  .catch((err) => {
+                                    console.log(err);
+                                  });
+
+                              } else {
+                                console.log(res)
+                                refresh()
+                              }
+
                             })
                             .catch((err) => {
                               console.log(err)

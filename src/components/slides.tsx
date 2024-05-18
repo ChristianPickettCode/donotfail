@@ -2,13 +2,14 @@
 import Vapi from "@vapi-ai/web";
 
 import { useEffect, useState } from "react";
-import { GenerateAllImageText, GetSlide, GetSlideImages } from "@/app/action";
+import { GenerateAllAudioForSlide, GenerateAllImageText, GetSlide, GetSlideImages } from "@/app/action";
 import { Button } from "./ui/button";
 import { Mic, MicOffIcon } from "lucide-react";
 import 'react-photo-view/dist/react-photo-view.css';
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import SlideImageSection from "./slideImageSection";
+import { useRouter } from "next/navigation";
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID as string;
@@ -29,6 +30,8 @@ export function Slides(props: Props) {
   const [chatLog, setChatLog] = useState<any[]>([]);
 
   const [generatedAllSlideText, setGeneratedAllSlideText] = useState(false);
+
+  const { push, refresh } = useRouter()
 
 
   useEffect(() => {
@@ -230,6 +233,26 @@ export function Slides(props: Props) {
 
   }
 
+  const generateAllAudio = () => {
+    setGeneratedAllSlideText(true);
+    console.log("Generating all audio", props.params.slide_id);
+    GenerateAllAudioForSlide(props.params.slide_id)
+      .then((res) => {
+        console.log(res);
+        // setSlideImages(res.data);
+        if (res?.status == "success") {
+          console.log("Audio generated successfully");
+          refresh()
+
+        } else {
+          console.log("Audio generation failed");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
 
 
   return (
@@ -239,6 +262,7 @@ export function Slides(props: Props) {
           {slide?.name}
         </h1>
         {/* <Button variant="outline" className="mt-2" onClick={generateAllSlideText} disabled={generatedAllSlideText}>🚀 GENERATE ALL SLIDE TEXT</Button> */}
+        <Button variant="outline" className="mt-2" onClick={generateAllAudio} disabled={generatedAllSlideText}>🎶 GENERATE ALL AUDIO TEXT</Button>
       </div>
       {
         slideImages?.map((item, index) => (
