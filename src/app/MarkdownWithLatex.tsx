@@ -24,10 +24,11 @@ const MarkdownWithLatex = ({ markdownText }: any) => {
     return (
         <ReactMarkdown
             className="markdown-content"
-            children={preprocessMarkdown(markdownText)}
             remarkPlugins={[[remarkMath, remarkMathOptions]]} // Pass options as the second element of the array
             rehypePlugins={[rehypeRaw, rehypeKatex]} // Include rehypeRaw for HTML, rehypeKatex for LaTeX
-        />
+        >
+            {preprocessMarkdown(markdownText)}
+        </ReactMarkdown>
     );
 };
 

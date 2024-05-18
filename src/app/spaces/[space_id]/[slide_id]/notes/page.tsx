@@ -2,7 +2,9 @@ import React from 'react'
 import { Sidebar2 } from "@/components/sidebar2";
 import SlideNotes from '@/components/slideNotes';
 
-type Props = {}
+type Props = {
+    params: any
+}
 
 const Page = (props: Props) => {
 
