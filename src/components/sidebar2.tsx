@@ -165,7 +165,7 @@ export function Sidebar2({
                 {/* <span className="sr-only">Toggle navigation menu</span> */}
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="top">
               <div className="flex h-full max-h-screen flex-col gap-4">
                 <div className="flex h-[60px] items-center border-b px-2">
                   <Link className="flex items-center gap-2 font-semibold" href="/">
@@ -182,11 +182,11 @@ export function Sidebar2({
                         type="search"
                       />
                     </div> */}
-                    <nav className="space-y-2">
-                      <Collapsible>
-                        <Link href="/gallery">
-                          <CollapsibleTrigger>
-                            <span className="w-80 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
+                    <nav className="space-y-2 w-[100%]">
+                      <Collapsible className="w-[100%]">
+                        <Link href="/gallery" className="w-[100%]">
+                          <CollapsibleTrigger className="w-[100%]">
+                            <span className="w-[100%] flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                               <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
                                 <HomeIcon size={20} />
                               </span>
@@ -196,8 +196,8 @@ export function Sidebar2({
                         </Link>
                       </Collapsible>
                       <Collapsible>
-                        <CollapsibleTrigger>
-                          <span className="w-80 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
+                        <CollapsibleTrigger className="w-[100%]">
+                          <span className="flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                             <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
                               <EyeIcon size={20} />
                             </span>
@@ -208,8 +208,8 @@ export function Sidebar2({
                         {
                           spaces?.map((item: any, index: number) => (
                             <Link key={index} href={`/spaces/${item?._id}`}>
-                              <CollapsibleContent>
-                                <span className="ml-6 w-40 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
+                              <CollapsibleContent className="w-[100%]">
+                                <span className="ml-6 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                                   {/* <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
                                                 <StarIcon size={20} />
                                             </span> */}
@@ -226,8 +226,8 @@ export function Sidebar2({
 
                       <Collapsible disabled>
                         <Link href="/">
-                          <CollapsibleTrigger>
-                            <span className="w-80 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
+                          <CollapsibleTrigger className="w-[100%]">
+                            <span className="flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                               <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
                                 <WalletCardsIcon size={20} />
                               </span>
@@ -243,8 +243,8 @@ export function Sidebar2({
                       <Link href="/quiz">
                         <Collapsible disabled>
 
-                          <CollapsibleTrigger>
-                            <span className="w-80 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
+                          <CollapsibleTrigger className="w-[100%]">
+                            <span className="flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                               <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
                                 <TextSearchIcon size={20} />
                               </span>
@@ -260,8 +260,8 @@ export function Sidebar2({
 
                       <Collapsible disabled>
                         <Link href="/">
-                          <CollapsibleTrigger>
-                            <span className="w-80 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
+                          <CollapsibleTrigger className="w-[100%]">
+                            <span className="flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                               <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
                                 <PencilLine size={20} />
                               </span>
