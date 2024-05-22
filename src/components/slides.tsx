@@ -275,6 +275,7 @@ export function Slides(props: Props) {
             </>
           ) : null
         }
+        <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
       </div>
       {
         slideImages?.map((item, index) => (

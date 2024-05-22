@@ -148,45 +148,46 @@ export function UploadModal(props: Props) {
                     ConvertPdfToImages(InsertedID)
                       .then((res) => {
                         console.log(res)
-                        if (res.status_code == 200) {
-                          console.log(res)
-                          setProgress(100)
-                          push(`/spaces/${space_id}/${InsertedID}`)
-                          // GenerateAllImageText(InsertedID)
-                          //   .then((res) => {
-                          //     console.log(res)
-                          //     setProgress(75)
-                          //     if (res?.status == "success") {
-                          //       GenerateAllAudioForSlide(InsertedID)
-                          //         .then((res) => {
-                          //           console.log(res);
-                          //           // setSlideImages(res.data);
-                          //           if (res?.status == "success") {
-                          //             console.log("Audio generated successfully");
-                          //             setProgress(100)
-                          //             push(`/spaces/${space_id}/${InsertedID}`)
+                        push(`/spaces/${space_id}/${InsertedID}`)
+                        // if (res.status_code == 200) {
+                        console.log(res)
+                        // setProgress(100)
+                        // push(`/spaces/${space_id}/${InsertedID}`)
+                        // GenerateAllImageText(InsertedID)
+                        //   .then((res) => {
+                        //     console.log(res)
+                        //     setProgress(75)
+                        //     if (res?.status == "success") {
+                        //       GenerateAllAudioForSlide(InsertedID)
+                        //         .then((res) => {
+                        //           console.log(res);
+                        //           // setSlideImages(res.data);
+                        //           if (res?.status == "success") {
+                        //             console.log("Audio generated successfully");
+                        //             setProgress(100)
+                        //             push(`/spaces/${space_id}/${InsertedID}`)
 
-                          //           } else {
-                          //             console.log("Audio generation failed");
-                          //           }
-                          //         })
-                          //         .catch((err) => {
-                          //           console.log(err);
-                          //         });
+                        //           } else {
+                        //             console.log("Audio generation failed");
+                        //           }
+                        //         })
+                        //         .catch((err) => {
+                        //           console.log(err);
+                        //         });
 
-                          //     } else {
-                          //       console.log(res)
-                          //       refresh()
-                          //     }
+                        //     } else {
+                        //       console.log(res)
+                        //       refresh()
+                        //     }
 
-                          //   })
-                          //   .catch((err) => {
-                          //     console.log(err)
-                          //   })
-                        } else {
-                          console.log(res)
-                          setHasError(true)
-                        }
+                        //   })
+                        //   .catch((err) => {
+                        //     console.log(err)
+                        //   })
+                        // } else {
+                        // console.log(res)
+                        // setHasError(true)
+                        // }
 
 
                       })
