@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { CollapsibleTrigger, CollapsibleContent, Collapsible } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
-import { EyeIcon, HomeIcon, MenuSquareIcon, PencilLine, TextSearchIcon, UploadIcon, WalletCardsIcon } from "lucide-react"
+import { EyeIcon, HomeIcon, MenuSquareIcon, PencilLine, SunIcon, TextSearchIcon, UploadIcon, WalletCardsIcon } from "lucide-react"
 import { Badge } from "./ui/badge"
 import { Gallery } from "./gallery"
 import { useEffect, useState } from "react"
@@ -108,8 +108,9 @@ export function Sidebar2({
                   </Link>
                 </Collapsible>
 
-                <Collapsible disabled>
-                  <Link href="/">
+                <Link href="/quiz">
+                  <Collapsible>
+
                     <CollapsibleTrigger>
                       <span className="w-60 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                         <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
@@ -121,8 +122,9 @@ export function Sidebar2({
                         </div>
                       </span>
                     </CollapsibleTrigger>
-                  </Link>
-                </Collapsible>
+
+                  </Collapsible>
+                </Link>
 
                 <Collapsible disabled>
                   <Link href="/">
@@ -144,10 +146,10 @@ export function Sidebar2({
             </div>
           </div>
           <div className="mt-auto p-4">
-            <Link href="https://donotfail.canny.io/feature-requests">
+            <Link href="https://tally.so/r/nPAKBx">
               <Button className="w-full">
-                <UploadIcon className="mr-2 h-4 w-4" />
-                Request Feature
+                <SunIcon className="mr-2 h-4 w-4" />
+                Join Wailist
               </Button>
             </Link>
           </div>
@@ -238,8 +240,9 @@ export function Sidebar2({
                         </Link>
                       </Collapsible>
 
-                      <Collapsible disabled>
-                        <Link href="/">
+                      <Link href="/quiz">
+                        <Collapsible disabled>
+
                           <CollapsibleTrigger>
                             <span className="w-80 flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                               <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
@@ -251,8 +254,9 @@ export function Sidebar2({
                               </div>
                             </span>
                           </CollapsibleTrigger>
-                        </Link>
-                      </Collapsible>
+
+                        </Collapsible>
+                      </Link>
 
                       <Collapsible disabled>
                         <Link href="/">
