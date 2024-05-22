@@ -184,7 +184,7 @@ export function Sidebar2({
                     </div> */}
                     <nav className="space-y-2 w-[100%]">
                       <Collapsible className="w-[100%]">
-                        <Link href="/gallery" className="w-[100%]">
+                        <Link href="/spaces" className="w-[100%]">
                           <CollapsibleTrigger className="w-[100%]">
                             <span className="w-[100%] flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500 text-left">
                               <span className="flex-shrink-0" style={{ width: '20px', height: '20px' }}>
