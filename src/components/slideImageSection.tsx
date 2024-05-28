@@ -18,6 +18,10 @@ type Props = {
   audioPlaying: any;
   isVapiStarted: any;
   sendMsg: any;
+  length: number;
+  audioIndex: number;
+  setAudioIndex: any;
+  autoPlay: boolean
 }
 
 const SlideImageSection = (props: Props) => {
@@ -139,12 +143,27 @@ const SlideImageSection = (props: Props) => {
   const handlePlayAudio = (audio_url: string) => {
     if (props.audioPlayer != null) {
       props.audioPlayer.src = audio_url
-      props.audioPlayer.playbackRate = 1.2;
+      props.audioPlayer.playbackRate = 1.75;
       props.audioPlayer.play();
       props.setAudioPlaying(true);
       setThisAudioPlaying(true);
+      props.audioPlayer.onended = () => {
+        const nextIndex = props.index + 1;
+        if (nextIndex < props.length) {
+          document.getElementById(`s${nextIndex + 1}`)?.scrollIntoView({ behavior: "smooth" });
+          props.setAudioIndex(nextIndex);
+        } else {
+          props.setAudioPlaying(false);
+        }
+      }
     }
   }
+
+  useEffect(() => {
+    if (props.audioIndex == props.index && props.autoPlay) {
+      handlePlayAudio(slideImage.audio_url);
+    }
+  }, [props.audioIndex, props.autoPlay])
 
   return (
     <div key={props.index} id={`s${props.index + 1}`}>

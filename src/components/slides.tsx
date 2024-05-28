@@ -32,6 +32,9 @@ export function Slides(props: Props) {
   const [generatedAllSlideText, setGeneratedAllSlideText] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
 
+  const [audioIndex, setAudioIndex] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(false);
+
   const { push, refresh } = useRouter()
 
 
@@ -309,11 +312,13 @@ export function Slides(props: Props) {
           quizQuestions && quizQuestions.length > 0 ? (
             <Button variant="outline" className="mt-2" onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>🧠 VIEW QUIZ</Button>
           ) :
-            <>
-              <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
-            </>
+            slideImages && slideImages.some(item => !item.generated_text) ? (
+              <>
+                <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
+              </>
+            ) : null
         }
-        {/* <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button> */}
+        <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button>
         <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
       </div>
       {
@@ -328,6 +333,10 @@ export function Slides(props: Props) {
             sendMsg={sendMsg}
             setSlideImages={setSlideImages}
             audioPlaying={audioPlaying}
+            length={slideImages.length}
+            setAudioIndex={setAudioIndex}
+            audioIndex={audioIndex}
+            autoPlay={autoPlay}
           />
         ))
       }
