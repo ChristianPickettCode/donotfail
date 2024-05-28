@@ -306,7 +306,7 @@ export function Slides(props: Props) {
             <>
               <Button variant="outline" className="mt-2" onClick={generateAllAudio} disabled={generatedAllSlideText}>🎶 GENERATE ALL AUDIO TEXT</Button>
             </>
-          ) : <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button>
+          ) : null
         }
         {
           quizQuestions && quizQuestions.length > 0 ? (
@@ -318,7 +318,7 @@ export function Slides(props: Props) {
               </>
             ) : null
         }
-
+        <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button>
         <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
       </div>
       {
