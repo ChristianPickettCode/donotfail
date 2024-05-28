@@ -3,7 +3,7 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import ConfettiExplosion from 'react-confetti-explosion';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, MutableRefObject } from "react";
 import { DeleteQuizQuestion, GetQuizQuestions, GetSlide, GetSpace } from "@/app/action";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
@@ -157,7 +157,7 @@ const Quizzes = (props: Props) => {
     setAnswer("");
     setAnswerResponse(false);
     setIsCorrect(false);
-    setIsExploding(false);
+    resetTimer()
   }
 
   const removeQuestion = () => {
@@ -181,7 +181,51 @@ const Quizzes = (props: Props) => {
       })
   }
 
-  const [isExploding, setIsExploding] = useState(false);
+  const [timer, setTimer] = useState(15);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startTimer = () => {
+    intervalRef.current = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer === 0) {
+          clearInterval(intervalRef.current as ReturnType<typeof setInterval>);
+          intervalRef.current = null;
+          console.log("Timer stopped");
+          return 0;
+        }
+        return prevTimer - 1;
+      });
+      console.log("Timer tick");
+    }, 1000);
+
+    console.log("Timer started");
+  };
+
+  const stopTimer = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current as ReturnType<typeof setInterval>);
+      intervalRef.current = null;
+    }
+    console.log("Timer stopped");
+  };
+
+  const resetTimer = () => {
+    stopTimer();
+    setTimer(15);
+    startTimer();
+    console.log("Timer reset");
+  };
+
+  useEffect(() => {
+    startTimer();
+
+    return () => {
+      stopTimer();
+      console.log("Cleanup: Timer stopped");
+    };
+  }, []);
+
+
   return (
     <div className="flex flex-col h-screen md:flex-row">
       <aside className="w-full md:w-1/5 bg-gray-100 p-4 overflow-y-auto">
@@ -223,6 +267,13 @@ const Quizzes = (props: Props) => {
                             </div>
                           </PopoverContent>
                         </Popover>
+
+                        {/* Add timer */}
+                        <div className="mt-2 flex space-x-2 justify-center">
+                          <span>Timer</span>
+                          <span>{timer}</span>
+                        </div>
+
                       </header>
 
 
