@@ -262,7 +262,8 @@ const Quizzes = (props: Props) => {
                                   <AlertCircle className="h-4 w-4" />
                                   <AlertTitle>Incorrect</AlertTitle>
                                   <AlertDescription>
-                                    You have answered the question incorrectly.
+                                    <p>You have answered the question incorrectly. </p>
+                                    <p>Answer : {selectedQuestion?.answer}</p>
                                   </AlertDescription>
                                 </Alert>
                               )

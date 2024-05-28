@@ -312,11 +312,11 @@ export function Slides(props: Props) {
           quizQuestions && quizQuestions.length > 0 ? (
             <Button variant="outline" className="mt-2" onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>🧠 VIEW QUIZ</Button>
           ) :
-            slideImages && slideImages.some(item => !item.generated_text) ? (
-              <>
+            slideImages && slideImages.some(item => !item.generated_text) ?
+              null
+              : <>
                 <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
               </>
-            ) : null
         }
         <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button>
         <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
