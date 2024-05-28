@@ -108,7 +108,7 @@ export function Sidebar2({
                   </Link>
                 </Collapsible>
 
-                <Link href="/quiz">
+                {/* <Link href="/quiz">
                   <Collapsible>
 
                     <CollapsibleTrigger>
@@ -124,7 +124,7 @@ export function Sidebar2({
                     </CollapsibleTrigger>
 
                   </Collapsible>
-                </Link>
+                </Link> */}
 
                 <Collapsible disabled>
                   <Link href="/">
@@ -240,7 +240,7 @@ export function Sidebar2({
                         </Link>
                       </Collapsible>
 
-                      <Link href="/quiz">
+                      {/* <Link href="/quiz">
                         <Collapsible disabled>
 
                           <CollapsibleTrigger className="w-[100%]">
@@ -256,7 +256,7 @@ export function Sidebar2({
                           </CollapsibleTrigger>
 
                         </Collapsible>
-                      </Link>
+                      </Link> */}
 
                       <Collapsible disabled>
                         <Link href="/">

@@ -83,11 +83,11 @@ const NavSmallMenu = (props: Props) => {
                     </DropdownMenuItem>
                 </Link>
 
-                <Link href="/spaces">
+                {/* <Link href="/spaces">
                     <DropdownMenuItem>
                         Quizzes
                     </DropdownMenuItem>
-                </Link>
+                </Link> */}
 
                 <Link href="/spaces">
                     <DropdownMenuItem>

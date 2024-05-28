@@ -394,3 +394,64 @@ export async function GetSpace(spaceId: string) {
     return { error: errorMessage };
   }
 }
+
+// GenerateQuizForSlide
+export async function GenerateQuizForSlide(slideId: string) {
+  console.log("GenerateQuizForSlide");
+  try {
+    const response = await axios.post(
+      serverUrl + `/generate-quiz/${slideId}`,
+      {},
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Get all quiz questions for a slide
+export async function GetQuizQuestions(slideId: string) {
+  console.log("GetQuizQuestions");
+  try {
+    const response = await axios.get(
+      serverUrl + `/quiz-questions/${slideId}`,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Delete quiz question by quiz id
+export async function DeleteQuizQuestion(quizId: string) {
+  console.log("DeleteQuizQuestion");
+  try {
+    const response = await axios.delete(
+      serverUrl + `/quiz-question/${quizId}`,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

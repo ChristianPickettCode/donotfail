@@ -2,7 +2,7 @@
 import Vapi from "@vapi-ai/web";
 
 import { useEffect, useState } from "react";
-import { GenerateAllAudioForSlide, GenerateAllImageText, GetSlide, GetSlideImages } from "@/app/action";
+import { GenerateAllAudioForSlide, GenerateAllImageText, GetSlide, GetSlideImages, GenerateQuizForSlide, GetQuizQuestions } from "@/app/action";
 import { Button } from "./ui/button";
 import { Mic, MicOffIcon } from "lucide-react";
 import 'react-photo-view/dist/react-photo-view.css';
@@ -30,6 +30,7 @@ export function Slides(props: Props) {
   const [chatLog, setChatLog] = useState<any[]>([]);
 
   const [generatedAllSlideText, setGeneratedAllSlideText] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
 
   const { push, refresh } = useRouter()
 
@@ -77,6 +78,17 @@ export function Slides(props: Props) {
       .then((res) => {
         console.log(res);
         setSlide(res);
+      })
+
+    GetQuizQuestions(props.params.slide_id)
+      .then((res) => {
+        console.log(res);
+        if (res?.status == "success") {
+          setQuizQuestions(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       })
   }, [props.params.slide_id]);
 
@@ -253,6 +265,24 @@ export function Slides(props: Props) {
       });
   }
 
+  const generateQuiz = () => {
+    console.log("Generating quiz", props.params.slide_id);
+    GenerateQuizForSlide(props.params.slide_id)
+      .then((res) => {
+        console.log(res);
+        // setSlideImages(res.data);
+        if (res?.status == "success") {
+          console.log("Quiz generated successfully");
+          push(`/slides/${props.params.slide_id}/quiz`)
+
+        } else {
+          console.log("Quiz generation failed");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
 
   return (
@@ -275,6 +305,15 @@ export function Slides(props: Props) {
             </>
           ) : null
         }
+        {
+          quizQuestions.length == 0 ? (
+            <>
+              <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
+            </>
+          ) :
+            <Button variant="outline" className="mt-2" onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>🧠 VIEW QUIZ</Button>
+        }
+        {/* <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button> */}
         <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
       </div>
       {
