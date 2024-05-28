@@ -306,12 +306,12 @@ export function Slides(props: Props) {
           ) : null
         }
         {
-          quizQuestions?.length == 0 ? (
+          quizQuestions && quizQuestions.length > 0 ? (
+            <Button variant="outline" className="mt-2" onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>🧠 VIEW QUIZ</Button>
+          ) :
             <>
               <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
             </>
-          ) :
-            <Button variant="outline" className="mt-2" onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>🧠 VIEW QUIZ</Button>
         }
         {/* <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button> */}
         <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
