@@ -306,7 +306,7 @@ export function Slides(props: Props) {
           ) : null
         }
         {
-          quizQuestions.length == 0 ? (
+          quizQuestions?.length == 0 ? (
             <>
               <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
             </>
