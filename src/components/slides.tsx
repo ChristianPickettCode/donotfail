@@ -35,6 +35,8 @@ export function Slides(props: Props) {
   const [audioIndex, setAudioIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(false);
 
+  const [QuizBtnDisabled, setQuizBtnDisabled] = useState(false);
+
   const { push, refresh } = useRouter()
 
 
@@ -269,6 +271,7 @@ export function Slides(props: Props) {
   }
 
   const generateQuiz = () => {
+    setQuizBtnDisabled(true); // Disable the button to prevent multiple clicks
     console.log("Generating quiz", props.params.slide_id);
     GenerateQuizForSlide(props.params.slide_id)
       .then((res) => {
@@ -315,7 +318,7 @@ export function Slides(props: Props) {
             slideImages && slideImages.some(item => !item.generated_text) ?
               null
               : <>
-                <Button variant="outline" className="mt-2" onClick={generateQuiz}>🧠 GENERATE QUIZ</Button>
+                <Button variant="outline" className="mt-2" onClick={generateQuiz} disabled={QuizBtnDisabled}>🧠 GENERATE QUIZ</Button>
               </>
         }
         <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button>

@@ -1,15 +1,12 @@
 "use client"
-import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import ConfettiExplosion from 'react-confetti-explosion';
 import { useEffect, useRef, useState, MutableRefObject } from "react";
 import { DeleteQuizQuestion, GetQuizQuestions, GetSlide, GetSpace } from "@/app/action";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
-import { AlertCircle, Check, CheckCircle } from "lucide-react";
+import { AlertCircle, CheckCircle } from "lucide-react";
 import Confetti from "react-confetti";
 import arrayShuffle from 'array-shuffle';
 
@@ -244,8 +241,6 @@ const Quizzes = (props: Props) => {
         </nav>
       </aside>
       <main className="flex-1 p-8 flex flex-col">
-
-
         {
           questions.length > 0 ? (
             <>
@@ -273,9 +268,7 @@ const Quizzes = (props: Props) => {
                           <span>Timer</span>
                           <span>{timer}</span>
                         </div>
-
                       </header>
-
 
                       <section className="flex flex-col items-center w-[80%]">
                         <h2 className="text-xl font-semibold mb-2">Question {selectedQuestion?.index}</h2>
