@@ -55,6 +55,7 @@ export function UploadModal(props: Props) {
   const [slideId, setSlideId] = useState("")
   const { push, refresh } = useRouter()
   const [hasError, setHasError] = useState(false)
+  const [errorText, setErrorText] = useState("")
   const [isUploading, setIsUploading] = useState(false)
 
   const computeSHA256 = async (file: File) => {
@@ -91,6 +92,32 @@ export function UploadModal(props: Props) {
   }
 
   const onUpload = () => {
+    console.log('uploading')
+    console.log(form.getValues())
+    // VAlidate pdf and type
+    if (!form.getValues().name) {
+      setHasError(true)
+      setErrorText('Please enter a name for the file.')
+      return
+    }
+    if (!form.getValues().file) {
+      setHasError(true)
+      setErrorText('Please select a file to upload.')
+      return
+    }
+    if (!file) {
+      setHasError(true)
+      setErrorText('Please select a file to upload.')
+      return
+    }
+    if (file.type !== 'application/pdf') {
+      setHasError(true)
+      setErrorText('Please select a PDF file.')
+      return
+    }
+
+    setHasError(false)
+
     setIsUploading(true)
     console.log('uploading')
     console.log(form.getValues())
@@ -100,10 +127,16 @@ export function UploadModal(props: Props) {
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files)
     if (e.target.files) {
-      setFile(e.target.files[0])
-      form.setValue('file', e.target.files[0].name)
+      const file = e.target.files[0]
+      if (file.type !== 'application/pdf') {
+        setHasError(true)
+        setErrorText('Please select a PDF file.')
+        return
+      }
+      setHasError(false)
+      setFile(file)
+      form.setValue('file', file.name)
     }
-
   }
 
   const handleCreateSlide = async () => {
@@ -187,6 +220,8 @@ export function UploadModal(props: Props) {
                         // } else {
                         // console.log(res)
                         // setHasError(true)
+                        // setErrorText(res.message)
+                        // setErrorText(Error uploading file. Please refresh and try again. If the slide is created but empty or if their are missing slides (at the end) please delete it and try again.)
                         // }
 
 
@@ -266,7 +301,7 @@ export function UploadModal(props: Props) {
               }}
             />
 
-            <Button type="submit" className="w-full mt-2" onClick={onUpload} disabled={isUploading}>
+            <Button type="submit" className="w-full mt-2" onClick={onUpload} disabled={isUploading || form?.getValues()?.name == ''}>
               Generate
             </Button>
           </form>
@@ -285,7 +320,7 @@ export function UploadModal(props: Props) {
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
-                Error uploading file. Please refresh and try again. If the slide is created but empty or if their are missing slides (at the end) please delete it and try again.
+                {errorText}
               </AlertDescription>
             </Alert>
           }
