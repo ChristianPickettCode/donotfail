@@ -3,6 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
+import 'katex/dist/katex.min.css';
 
 const MarkdownWithLatex = ({ markdownText }: any) => {
 
@@ -11,7 +13,11 @@ const MarkdownWithLatex = ({ markdownText }: any) => {
         // console.log(markdownText)
         const processedText = markdownText
             .replace(/\\\[/g, '$$$')  // Replace all occurrences of \[ with $$
-            .replace(/\\\]/g, '$$$'); // Replace all occurrences of \] with $$
+            .replace(/\\\]/g, '$$$') // Replace all occurrences of \] with $$
+            // Replace all occurrences of \( with $$\(
+            .replace(/\\\(/g, '$$$')
+            // Replace all occurrences of \) with $$\)
+            .replace(/\\\)/g, '$$$');
 
         return processedText;
     };
@@ -23,8 +29,8 @@ const MarkdownWithLatex = ({ markdownText }: any) => {
 
     return (
         <ReactMarkdown
-            className="markdown-content"
-            remarkPlugins={[[remarkMath, remarkMathOptions]]} // Pass options as the second element of the array
+            className="markdown-content text-wrap break-words"
+            remarkPlugins={[[remarkMath, remarkMathOptions], remarkGfm]}  // Pass options as the second element of the array
             rehypePlugins={[rehypeRaw, rehypeKatex]} // Include rehypeRaw for HTML, rehypeKatex for LaTeX
         >
             {preprocessMarkdown(markdownText)}
