@@ -4,10 +4,17 @@ import { Separator } from './ui/separator'
 import MarkdownWithLatex from '@/app/MarkdownWithLatex'
 import { Button } from './ui/button'
 import { PhotoProvider, PhotoView } from 'react-photo-view'
-import { PauseIcon, PlayIcon, RefreshCwIcon } from 'lucide-react'
+import { AudioLinesIcon, PauseIcon, PlayIcon, RefreshCwIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { GenerateAudio, GenerateSlideImageText, Ping } from '@/app/action'
 import Loader from './ui/loader'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type Props = {
   index: number;
@@ -27,14 +34,16 @@ type Props = {
 const SlideImageSection = (props: Props) => {
 
   const [generationLoading, setGenerationLoading] = useState(false);
+  const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
   const [thisAudioPlaying, setThisAudioPlaying] = useState(false);
   const { push, refresh } = useRouter()
   const [slideImage, setSlideImage] = useState<any>(props.item);
 
 
-  const generateSlideImageText = (slideImageId: string, index: number) => {
+
+  const handleGenerateText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
-    console.log("generateSlideImageText")
+    console.log("handleGenerateText")
     GenerateSlideImageText(slideImageId)
       .then((response) => {
         // console.log(response);
@@ -69,10 +78,11 @@ const SlideImageSection = (props: Props) => {
       });
   }
 
-  const generateAudio = (slideImageId: string, index: number) => {
-    console.log("generateAudio, slideImageId: ", slideImageId, "index: ", index)
-    setGenerationLoading(true);
-    GenerateAudio({ slide_image_id: slideImageId })
+  const handleGenerateAudio = (slideImageId: string, index: number) => {
+    setIsGeneratingAudio(true);
+    console.log("handleGenerateAudio, slideImageId: ", slideImageId, "index: ", index)
+    // setGenerationLoading(true);
+    GenerateAudio({ slide_image_id: slideImageId, update: false })
       .then((res) => {
         console.log("Audio RESPONSE:", res);
         if (res?.status_code == 200 && res.data) {
@@ -96,7 +106,8 @@ const SlideImageSection = (props: Props) => {
             }
           })
 
-          setGenerationLoading(false);
+          // setGenerationLoading(false);
+          setIsGeneratingAudio(false);
           // push(`#s${index + 1}`)
         } else {
           console.log("Audio generation failed");
@@ -140,9 +151,9 @@ const SlideImageSection = (props: Props) => {
     }
   }
 
-  const handlePlayAudio = (audio_url: string) => {
+  const handlePlayAudio = () => {
     if (props.audioPlayer != null) {
-      props.audioPlayer.src = audio_url
+      props.audioPlayer.src = slideImage.audio_url
       props.audioPlayer.playbackRate = 1.75;
       props.audioPlayer.play();
       props.setAudioPlaying(true);
@@ -159,9 +170,59 @@ const SlideImageSection = (props: Props) => {
     }
   }
 
+  // refresh generated text and audio
+  const handleRefresh = (slideImageId: string, index: number) => {
+    console.log("handleRefresh")
+    setGenerationLoading(true);
+    // Generate text and then audio using generated text
+    GenerateSlideImageText(slideImageId)
+      .then((response) => {
+        console.log(response);
+        if (response.status == "success") {
+          console.log("Text generated successfully");
+
+          GenerateAudio({ slide_image_id: slideImageId, update: true })
+            .then((res) => {
+              console.log("Audio RESPONSE:", res);
+              if (res?.status_code == 200 && res.data) {
+                console.log("Audio generated successfully");
+                setSlideImage((prev: any) => {
+                  return {
+                    ...prev,
+                    generated_text: response.data,
+                    audio_url: res.data,
+                  }
+                })
+                props.setSlideImages((prev: any) => {
+                  return prev.map((item: any) => {
+                    if (item.id === slideImageId) {
+                      return {
+                        ...item,
+                        generated_text: response.data,
+                        audio_url: res.data,
+                      }
+                    }
+                    return item;
+                  })
+                })
+                setGenerationLoading(false);
+              } else {
+                console.log("Audio generation failed");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   useEffect(() => {
     if (props.audioIndex == props.index && props.autoPlay) {
-      handlePlayAudio(slideImage.audio_url);
+      handlePlayAudio();
     }
   }, [props.audioIndex, props.autoPlay])
 
@@ -169,22 +230,55 @@ const SlideImageSection = (props: Props) => {
     <div key={props.index} id={`s${props.index + 1}`}>
       <section key={props.index} className="flex flex-col md:flex-row w-full mb-8 mt-10 pl-4 pr-8">
         <div className="md:w-1/2">
-          {/* <img
-                  alt="Placeholder Image"
-                  className="h-[60vh] w-auto bg-gray-300"
-                  src={item.image_url}
-                /> */}
-          {/* <Image src={item.image_url} height={500} width={500} alt="Slide Image" /> */}
           <PhotoProvider>
             <PhotoView src={slideImage.image_url}>
-              <img src={slideImage.image_url} className="w-full h-auto object-contain mb-4" alt="" />
+              <img src={slideImage.image_url} className="w-full h-auto object-contain mb-4" alt="Slide Image" />
             </PhotoView>
           </PhotoProvider>
+          <div className="flex flex-row items-center space-x-2">
+            {!slideImage.generated_text ? (
+              <Button variant="outline" className="h-10" onClick={() => handleGenerateText(slideImage.id, props.index)}>
+                {generationLoading ? <Loader className='w-4 h-4 m-0' /> : "✨ Get Notes"}
+              </Button>
+            ) : !slideImage.audio_url ? (
+              <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id, props.index)} disabled={isGeneratingAudio}>
+                {isGeneratingAudio ? <Loader className='w-4 h-4 m-0' /> : <PlayIcon size={"1em"} />}
+              </Button>
+            ) : (
+              <>
+                {props.audioPlaying && thisAudioPlaying ? (
+                  <Button variant="outline" className="h-10" onClick={handlePauseAudio}>
+                    <PauseIcon size={"1em"} />
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="h-10" onClick={() => handlePlayAudio()}>
+                    <PlayIcon size={"1em"} />
+                  </Button>
+                )}
+              </>
+            )}
+            {/* <Select>
+              <SelectTrigger className="ml-2 h-10 w-24">
+                <SelectValue>1.75x</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1.25">1.25x</SelectItem>
+                <SelectItem value="1.5">1.5x</SelectItem>
+                <SelectItem value="1.75">1.75x</SelectItem>
+                <SelectItem value="2">2x</SelectItem>
+              </SelectContent>
+            </Select> */}
+            {slideImage.generated_text && (
+              <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id, props.index)} disabled={generationLoading}>
+                {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col md:ml-6 w-full md:w-1/2">
-          <div className="flex flex-row mb-2">
-            {!slideImage.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(slideImage.id, props.index)}>✨ Generate Notes</Button> :
+          {/* <div className="flex flex-row mb-2"> */}
+          {/* {!slideImage.generated_text ? <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(slideImage.id, props.index)}>✨ Generate Notes</Button> :
 
               !slideImage.audio_url ? <Button variant="outline" onClick={() => generateAudio(slideImage.id, props.index)}>✨ Generate Audio</Button>
                 : <>
@@ -194,16 +288,19 @@ const SlideImageSection = (props: Props) => {
                     <Button variant="outline" onClick={() => handlePlayAudio(slideImage.audio_url)}><PlayIcon size={"1em"} /></Button>
                   )}
                 </>
-            }
-            {/* <Button variant="outline" className="ml-2" onClick={() => generateAudio(slideImage.id, props.index)}>✨ Audio<RefreshCwIcon /></Button> */}
-            {/* <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(slideImage.id, props.index)}>✨ Generate Notes</Button> */}
+            } */}
+          {/* <Button variant="outline" className="ml-2" onClick={() => generateAudio(slideImage.id, props.index)}>✨ Audio<RefreshCwIcon /></Button> */}
+          {/* <Button variant="outline" className="mr-2" onClick={() => generateSlideImageText(slideImage.id, props.index)}>✨ Generate Notes</Button> */}
 
-            {slideImage.generated_text && props.isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => props.sendMsg(slideImage.generated_text)}>🤖 Ask Marcus</Button> : ""}
+          {/* {slideImage.generated_text && props.isVapiStarted ? <Button variant="outline" className="ml-2" onClick={() => props.sendMsg(slideImage.generated_text)}>🤖 Ask Marcus</Button> : ""} */}
 
-            {/* loading */}
-            {generationLoading ? <Loader /> : ""}
-          </div>
-          <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} />
+          {/* loading */}
+          {/* {generationLoading ? <Loader className='w-8 m-0' /> : ""} */}
+          {/* </div> */}
+          {
+            generationLoading ? <Loader className='w-6 m-0' /> : <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={true} />
+          }
+
         </div>
 
       </section >

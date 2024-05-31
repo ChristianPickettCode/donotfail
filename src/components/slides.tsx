@@ -2,17 +2,41 @@
 import Vapi from "@vapi-ai/web";
 
 import { useEffect, useState } from "react";
-import { GenerateAllAudioForSlide, GenerateAllImageText, GetSlide, GetSlideImages, GenerateQuizForSlide, GetQuizQuestions } from "@/app/action";
+import { GenerateAllAudioForSlide, GenerateAllImageText, GetSlide, GetSlideImages, GenerateQuizForSlide, GetQuizQuestions, GetSpaces, GetSpaceSlides } from "@/app/action";
 import { Button } from "./ui/button";
-import { Mic, MicOffIcon } from "lucide-react";
+import { MenuIcon, Mic, MicOffIcon } from "lucide-react";
 import 'react-photo-view/dist/react-photo-view.css';
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import SlideImageSection from "./slideImageSection";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
+import { useToast } from "@/components/ui/use-toast"
+
 
 const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY as string;
 const VAPI_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID as string;
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import NavSmallMenu from "./NavSmallMenu";
+import Link from "next/link";
 
 type Props = {
   params: any
@@ -23,6 +47,8 @@ export function Slides(props: Props) {
   const [isVapiStarted, setIsVapiStarted] = useState(false);
   const [slideImages, setSlideImages] = useState<any[]>([]);
   const [slide, setSlide] = useState<any>({});
+  const [spaceSlides, setSpaceSlides] = useState<any[]>([]);
+  const [selectedSpace, setSelectedSpace] = useState<any>(null);
 
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
@@ -37,7 +63,11 @@ export function Slides(props: Props) {
 
   const [QuizBtnDisabled, setQuizBtnDisabled] = useState(false);
 
+  const [spaces, setSpaces] = useState<any[]>([])
+
+
   const { push, refresh } = useRouter()
+  const { toast } = useToast()
 
 
   useEffect(() => {
@@ -239,6 +269,11 @@ export function Slides(props: Props) {
   const generateAllSlideText = () => {
     setGeneratedAllSlideText(true);
     console.log("Generating all slide text", props.params.slide_id);
+    toast({
+      title: "Generating all slide notes",
+      description: "This might take a minute, please refresh if notes not showing",
+      duration: 10000
+    })
     GenerateAllImageText(props.params.slide_id)
       .then((res) => {
         console.log(res);
@@ -253,6 +288,11 @@ export function Slides(props: Props) {
   const generateAllAudio = () => {
     setGeneratedAllSlideText(true);
     console.log("Generating all audio", props.params.slide_id);
+    toast({
+      title: "Generating all note audio",
+      description: "This might take a minute, please refresh if audio not showing",
+      duration: 10000
+    })
     GenerateAllAudioForSlide(props.params.slide_id)
       .then((res) => {
         console.log(res);
@@ -273,6 +313,11 @@ export function Slides(props: Props) {
   const generateQuiz = () => {
     setQuizBtnDisabled(true); // Disable the button to prevent multiple clicks
     console.log("Generating quiz", props.params.slide_id);
+    toast({
+      title: "Generating quiz",
+      description: "This might take up to a minute, please refresh if not redirected to quiz page",
+      duration: 10000
+    })
     GenerateQuizForSlide(props.params.slide_id)
       .then((res) => {
         console.log(res);
@@ -290,14 +335,159 @@ export function Slides(props: Props) {
       });
   }
 
+  useEffect(() => {
+    console.log("GET SPACES", slide.space_id)
+    // GetSlides()
+    GetSpaceSlides(slide.space_id)
+      .then((res) => {
+        console.log('NEW', res)
+        setSpaceSlides(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    GetSpaces()
+      .then((res) => {
+        console.log(res)
+        setSpaces(res)
+        // this space
+        const space = res.find((space: any) => space.id === slide.space_id)
+        setSelectedSpace(space)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [slide])
+
 
   return (
-    <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
-      <div className="mb-8 md:mb-6 lg:mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:text-5xl">
-          {slide?.name}
-        </h1>
-        {
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="fixed top-2 left-4"><MenuIcon size={16} /></Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" side='right'>
+          <Link href="/">
+            <DropdownMenuLabel>donotfail.ai</DropdownMenuLabel>
+          </Link>
+          <DropdownMenuSeparator />
+
+          <Link href="/spaces">
+            <DropdownMenuItem>
+              Home
+            </DropdownMenuItem>
+          </Link>
+          {spaceSlides.length > 0 && selectedSpace &&
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <span>{selectedSpace?.name}</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  {/* {
+                  spaces.map((space: any, index) => (
+                    <Link key={index} href={`/spaces/${space.id}`}>
+                      <DropdownMenuItem>
+                        {space.name}
+                      </DropdownMenuItem>
+                    </Link>
+                  ))
+                } */}
+                  {
+                    spaceSlides.map((spaceSlide: any, index) => (
+                      <Link key={index} href={`/slides/${spaceSlide?.id}`}>
+                        <DropdownMenuItem>
+                          {spaceSlide.name}
+                        </DropdownMenuItem>
+                      </Link>
+                    ))
+                  }
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+          }
+
+
+
+          {/* <Link href="/spaces">
+            <DropdownMenuItem>
+              Flashcards
+            </DropdownMenuItem>
+          </Link> */}
+
+          {/* <Link href="/spaces">
+                    <DropdownMenuItem>
+                        Quizzes
+                    </DropdownMenuItem>
+                </Link> */}
+          {/* 
+          <Link href="/spaces">
+            <DropdownMenuItem>
+              Notes
+            </DropdownMenuItem>
+          </Link> */}
+
+          {
+            slideImages && slideImages.some(item => !item.generated_text) ? (
+              <DropdownMenuItem onClick={generateAllSlideText} disabled={generatedAllSlideText}>Generate All Slide Text</DropdownMenuItem>
+            ) : null}
+
+          {
+            slideImages && slideImages.some(item => !item.audio_url) ? (
+              <DropdownMenuItem onClick={generateAllAudio} disabled={generatedAllSlideText}>Generate All Audio</DropdownMenuItem>
+            ) : null}
+          {
+            quizQuestions && quizQuestions.length > 0 ? (
+              <DropdownMenuItem onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>View Quiz</DropdownMenuItem>
+            ) :
+              slideImages && slideImages.some(item => !item.generated_text) ?
+                null
+                : <DropdownMenuItem onClick={generateQuiz} disabled={QuizBtnDisabled}>Generate Quiz</DropdownMenuItem>
+          }
+
+          <DropdownMenuItem onClick={() => setAutoPlay(true)}>Auto Play All Audio</DropdownMenuItem>
+
+
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
+
+        <div className="mb-8 md:mb-6 lg:mb-8 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:text-5xl">
+            {slide?.name}
+          </h1>
+          {/* <div className='relative'>
+            <Select>
+              <SelectTrigger className="absolute right-6 top-2 w-20">
+                <SelectValue>Actions</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  slideImages && slideImages.some(item => !item.generated_text) ? (
+                    <SelectItem value="Generate All Slide Text" onClick={generateAllSlideText} disabled={generatedAllSlideText}>Generate All Slide Text</SelectItem>
+                  ) : null}
+                {
+                  slideImages && slideImages.some(item => !item.audio_url) ? (
+                    <SelectItem value="Generate All Audio" onClick={generateAllAudio} disabled={generatedAllSlideText}>Generate All Audio</SelectItem>
+                  ) : null}
+                {
+                  quizQuestions && quizQuestions.length > 0 ? (
+                    <SelectItem value="View Quiz" onClick={() => push(`/slides/${props.params.slide_id}/quiz`)}>View Quiz</SelectItem>
+                  ) :
+                    slideImages && slideImages.some(item => !item.generated_text) ?
+                      null
+                      : <SelectItem value="Generate Quiz" onClick={generateQuiz} disabled={QuizBtnDisabled}>Generate Quiz</SelectItem>
+                }
+
+                <SelectItem value="Auto Play All Audio" onClick={() => setAutoPlay(true)}>Auto Play All Audio</SelectItem>
+              </SelectContent>
+            </Select>
+          </div> */}
+
+
+          {/* {
           slideImages && slideImages.some(item => !item.generated_text) ? (
             <>
               <Button variant="outline" className="mt-2" onClick={generateAllSlideText} disabled={generatedAllSlideText}>🚀 GENERATE ALL SLIDE TEXT</Button>
@@ -320,73 +510,73 @@ export function Slides(props: Props) {
               : <>
                 <Button variant="outline" className="mt-2" onClick={generateQuiz} disabled={QuizBtnDisabled}>🧠 GENERATE QUIZ</Button>
               </>
-        }
-        <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button>
-        <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3>
-      </div>
-      {
-        slideImages?.map((item, index) => (
-          <SlideImageSection
-            key={index}
-            index={index}
-            item={item}
-            audioPlayer={audioPlayer}
-            setAudioPlaying={setAudioPlaying}
-            isVapiStarted={isVapiStarted}
-            sendMsg={sendMsg}
-            setSlideImages={setSlideImages}
-            audioPlaying={audioPlaying}
-            length={slideImages.length}
-            setAudioIndex={setAudioIndex}
-            audioIndex={audioIndex}
-            autoPlay={autoPlay}
-          />
-        ))
-      }
-
-      <div className="fixed bottom-4 right-4">
+        } */}
+          {/* <Button variant="outline" className="mt-2" onClick={() => setAutoPlay(true)}>🎧 AUTO PLAY ALL AUDIO</Button> */}
+          {/* <h3 className='mt-2'>Generation might take up to a minute, please refresh if text/audio not showing</h3> */}
+        </div>
         {
-          isVapiStarted ? (
-            <>
-              <Card className="fixed bottom-20 right-4 w-80">
-                <div className="flex flex-col h-96 overflow-y-auto">
-                  <div className="flex flex-col h-full p-4 space-y-4">
-                    <div className="flex flex-row justify-between">
-                      <h2 className="font-bold text-lg">Chat</h2>
-                      {/* <button className="text-sm text-gray-500" onClick={sendMsg}>TEST</button> */}
+          slideImages?.map((item, index) => (
+            <SlideImageSection
+              key={index}
+              index={index}
+              item={item}
+              audioPlayer={audioPlayer}
+              setAudioPlaying={setAudioPlaying}
+              isVapiStarted={isVapiStarted}
+              sendMsg={sendMsg}
+              setSlideImages={setSlideImages}
+              audioPlaying={audioPlaying}
+              length={slideImages.length}
+              setAudioIndex={setAudioIndex}
+              audioIndex={audioIndex}
+              autoPlay={autoPlay}
+            />
+          ))
+        }
 
-                    </div>
-                    <div className="flex flex-col space-y-4">
-                      {
-                        chatLog.map((message, index) => (
-                          <div key={index} className="flex flex-row space-x-4">
-                            <Avatar>
-                              <AvatarFallback>{message.role === "assistant" ? "A" : "U"}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex flex-col space-y-1">
-                              <p className="font-bold">{message.role === "assistant" ? "Assistant" : "You"}</p>
-                              <p className="text-sm">{message.content}</p>
+        <div className="fixed bottom-4 right-4">
+          {
+            isVapiStarted ? (
+              <>
+                <Card className="fixed bottom-20 right-4 w-80">
+                  <div className="flex flex-col h-96 overflow-y-auto">
+                    <div className="flex flex-col h-full p-4 space-y-4">
+                      <div className="flex flex-row justify-between">
+                        <h2 className="font-bold text-lg">Chat</h2>
+                        {/* <button className="text-sm text-gray-500" onClick={sendMsg}>TEST</button> */}
+
+                      </div>
+                      <div className="flex flex-col space-y-4">
+                        {
+                          chatLog.map((message, index) => (
+                            <div key={index} className="flex flex-row space-x-4">
+                              <Avatar>
+                                <AvatarFallback>{message.role === "assistant" ? "A" : "U"}</AvatarFallback>
+                              </Avatar>
+                              <div className="flex flex-col space-y-1">
+                                <p className="font-bold">{message.role === "assistant" ? "Assistant" : "You"}</p>
+                                <p className="text-sm">{message.content}</p>
+                              </div>
                             </div>
-                          </div>
-                        ))
-                      }
+                          ))
+                        }
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
-              <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
-                <Mic />
-              </button>
-            </>
-          ) : (
+                </Card>
+                <button className="bg-red-500 hover:bg-red-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={stopVapi}>
+                  <Mic />
+                </button>
+              </>
+            ) : (
 
-            <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
-              <MicOffIcon />
-            </button>
-          )
-        }
-      </div>
-      {/* <CommandBar /> */}
-    </main >
+              <button className="bg-blue-500 hover:bg-blue-600 text-white text-xl rounded-full w-12 h-12 flex items-center justify-center" onClick={startVapi}>
+                <MicOffIcon />
+              </button>
+            )
+          }
+        </div>
+      </main >
+    </>
   )
 }

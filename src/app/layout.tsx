@@ -3,6 +3,7 @@ import { Inter, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { CSPostHogProvider } from './providers'
 import PostHogPageView from "./PostHogPageView";
+import { Toaster } from "@/components/ui/toaster"
 
 // "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 
@@ -25,6 +26,7 @@ export default function RootLayout({
         <body className={openSans.className}>
           <PostHogPageView />
           {children}
+          <Toaster />
         </body>
       </CSPostHogProvider>
     </html>

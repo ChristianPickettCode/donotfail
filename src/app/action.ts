@@ -165,7 +165,10 @@ export async function Search(data: { question: string; context: string }) {
 }
 
 // generated audio for slide image text
-export async function GenerateAudio(data: { slide_image_id: string }) {
+export async function GenerateAudio(data: {
+  slide_image_id: string;
+  update: boolean;
+}) {
   console.log("GenerateAudio");
   try {
     const response = await axios.post(serverUrl + "/generate-audio", data, {});

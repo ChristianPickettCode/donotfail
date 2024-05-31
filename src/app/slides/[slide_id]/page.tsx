@@ -7,7 +7,7 @@ import { Slides } from "@/components/slides";
 export default function Page({ params }: any) {
     return (
         <>
-            <NavSmallMenu />
+            {/* <NavSmallMenu /> */}
             <Slides params={params} />
             <CommandBar />
         </>

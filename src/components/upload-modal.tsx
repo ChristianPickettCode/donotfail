@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import { useState } from "react"
 import { ConvertPdfToImages, CreateSlide, GenerateAllAudioForSlide, GenerateAllImageText, UpdateSlide } from "@/app/action"
 import { getSignedURL } from "@/utils/aws/requests"
@@ -140,117 +140,66 @@ export function UploadModal(props: Props) {
   }
 
   const handleCreateSlide = async () => {
-    console.log('creating slide')
-    const name = form.getValues().name
-    const space_id = props.spaceId
-    const data = {
-      name,
-      space_id
-    }
+    console.log('Creating slide');
+
+    const name = form.getValues().name;
+    const space_id = props.spaceId;
+    const data = { name, space_id };
+
     try {
-      CreateSlide(data)
-        .then((res_c) => {
-          setProgress(15)
-          console.log(res_c)
-          const InsertedID = res_c.InsertedID
-          console.log(InsertedID)
-          handleUpload(file!, InsertedID)
-            .then((res_uf) => {
-              setProgress(30)
-              console.log('res_c', res_uf)
-              console.log('File upload result:', res_uf);
-              const fileUrl = res_uf.url.split("?")[0]
-              console.log(fileUrl)
+      const res_c = await CreateSlide(data);
+      setProgress(25);
 
-              const d = {
-                id: InsertedID,
-                name: name,
-                pdf_url: fileUrl,
-                space_id: space_id
-              } as any
+      if (res_c.status_code !== 200) {
+        throw new Error('Error creating slide. Please refresh and try again.');
+      }
 
-              console.log(d)
+      console.log("Slide created successfully", res_c);
+      const InsertedID = res_c.result.InsertedID;
+      console.log(InsertedID);
 
-              UpdateSlide(d)
-                .then((res_us) => {
+      const res_uf = await handleUpload(file as File, InsertedID);
+      setProgress(50);
+      console.log('File upload result:', res_uf);
 
-                  console.log(res_us)
+      const fileUrl = res_uf.url.split("?")[0];
+      console.log(fileUrl);
 
-                  if (res_us.ModifiedCount == 1) {
-                    setProgress(45)
-                    ConvertPdfToImages(InsertedID)
-                      .then((res) => {
-                        console.log(res)
-                        push(`/spaces/${space_id}/${InsertedID}`)
-                        // if (res.status_code == 200) {
-                        console.log(res)
-                        // setProgress(100)
-                        // push(`/spaces/${space_id}/${InsertedID}`)
-                        // GenerateAllImageText(InsertedID)
-                        //   .then((res) => {
-                        //     console.log(res)
-                        //     setProgress(75)
-                        //     if (res?.status == "success") {
-                        //       GenerateAllAudioForSlide(InsertedID)
-                        //         .then((res) => {
-                        //           console.log(res);
-                        //           // setSlideImages(res.data);
-                        //           if (res?.status == "success") {
-                        //             console.log("Audio generated successfully");
-                        //             setProgress(100)
-                        //             push(`/spaces/${space_id}/${InsertedID}`)
+      const slideData = {
+        id: InsertedID,
+        name,
+        pdf_url: fileUrl,
+        space_id
+      };
 
-                        //           } else {
-                        //             console.log("Audio generation failed");
-                        //           }
-                        //         })
-                        //         .catch((err) => {
-                        //           console.log(err);
-                        //         });
+      console.log(slideData);
 
-                        //     } else {
-                        //       console.log(res)
-                        //       refresh()
-                        //     }
+      const res_us = await UpdateSlide(slideData);
 
-                        //   })
-                        //   .catch((err) => {
-                        //     console.log(err)
-                        //   })
-                        // } else {
-                        // console.log(res)
-                        // setHasError(true)
-                        // setErrorText(res.message)
-                        // setErrorText(Error uploading file. Please refresh and try again. If the slide is created but empty or if their are missing slides (at the end) please delete it and try again.)
-                        // }
+      if (res_us.status_code === 200 && res_us.result.ModifiedCount === 1) {
+        console.log("Slide updated successfully", res_us);
+        setProgress(75);
 
+        const res = await ConvertPdfToImages(InsertedID);
+        console.log(res);
 
-                      })
-                      .catch((err) => {
-                        console.log(err)
-                      })
-                  }
-
-                })
-                .catch((err) => {
-                  console.log(err)
-                })
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-
-
-    } catch (error) {
-      console.log(error)
+        if (res.status_code === 200) {
+          console.log(res);
+          setProgress(100);
+          push(`/spaces/${space_id}/${InsertedID}`);
+        } else {
+          throw new Error('Error converting pdf to images. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.');
+        }
+      } else {
+        throw new Error('Error saving slide. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.');
+      }
+    } catch (error: any) {
+      setHasError(true);
+      setErrorText(error.message);
+      console.log(error);
     }
+  };
 
-  }
 
   return (
     <Dialog>
