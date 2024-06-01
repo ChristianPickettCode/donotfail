@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { Separator } from './ui/separator'
 import MarkdownWithLatex from '@/app/MarkdownWithLatex'
 import { Button } from './ui/button'
@@ -29,6 +29,7 @@ type Props = {
   audioIndex: number;
   setAudioIndex: any;
   autoPlay: boolean
+  setAutoPlay: any
 }
 
 export const maxDuration = 300; // 5 minutes
@@ -169,6 +170,7 @@ const SlideImageSection = (props: Props) => {
       setThisAudioPlaying(true);
       props.audioPlayer.onended = () => {
         const nextIndex = props.index + 1;
+        props.setAutoPlay(true);
         if (nextIndex < props.length) {
           document.getElementById(`s${nextIndex + 1}`)?.scrollIntoView({ behavior: "smooth" });
           props.setAudioIndex(nextIndex);
@@ -263,9 +265,10 @@ const SlideImageSection = (props: Props) => {
           </PhotoProvider>
           <div className="flex flex-row items-center space-x-2">
             {!slideImage.generated_text ? (
-              <Button variant="outline" className="h-10" onClick={() => handleGenerateText(slideImage.id, props.index)}>
-                {generationLoading ? <Loader className='w-4 h-4 m-0' /> : "✨ Get Notes"}
-              </Button>
+              // <Button variant="outline" className="h-10" onClick={() => handleGenerateText(slideImage.id, props.index)}>
+              //   {generationLoading ? <Loader className='w-4 h-4 m-0' /> : "✨ Get Notes"}
+              // </Button>
+              ""
             ) : !slideImage.audio_url ? (
               <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id)} disabled={isGeneratingAudio}>
                 {isGeneratingAudio ? <Loader className='w-4 h-4 m-0' /> : <PlayIcon size={"1em"} />}

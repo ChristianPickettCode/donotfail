@@ -57,6 +57,7 @@ export function UploadModal(props: Props) {
   const [hasError, setHasError] = useState(false)
   const [errorText, setErrorText] = useState("")
   const [isUploading, setIsUploading] = useState(false)
+  const [progressText, setProgressText] = useState("Uploading...")
 
   const computeSHA256 = async (file: File) => {
     const buffer = await file.arrayBuffer()
@@ -157,6 +158,7 @@ export function UploadModal(props: Props) {
       console.log("Slide created successfully", res_c);
       const InsertedID = res_c.result.InsertedID;
       console.log(InsertedID);
+      setSlideId(InsertedID);
 
       const res_uf = await handleUpload(file as File, InsertedID);
       setProgress(30);
@@ -190,9 +192,47 @@ export function UploadModal(props: Props) {
           console.log("Event received:", event.data);
 
           if (event.data === "[DONE]") {
-            setProgress(100);
+            setProgress(70);
             eventSource.close();
-            push(`/spaces/${space_id}/${InsertedID}`);
+
+            // Start generating text for all images
+            const textEventSource = new EventSource(`${process.env.SERVER_URL!}/generate-all-image-text/${InsertedID}`);
+
+            let totalTexts = 0;
+            let processedTexts = 0;
+
+            textEventSource.onmessage = function (event) {
+              console.log("Event received:", event.data);
+
+              if (event.data === "[DONE]") {
+                setProgress(100);
+                textEventSource.close();
+                push(`/slides/${InsertedID}`);
+              } else {
+                try {
+                  const parsedData = JSON.parse(event.data);
+                  if (parsedData.totalImages) {
+                    totalTexts = parsedData.totalImages;
+                    console.log(`Total images to process: ${totalTexts}`);
+                  } else if (parsedData.processedImage) {
+                    processedTexts += 1;
+                    console.log(`Processed image text ${processedTexts} of ${totalTexts}`);
+                    const progress = 70 + ((processedTexts / totalTexts) * 30);
+                    setProgress(progress);
+                    setProgressText(`Generating notes... ${processedTexts}/${totalTexts}`)
+                  }
+                } catch (e) {
+                  console.log("Progress update:", event.data);
+                }
+              }
+            };
+
+            textEventSource.onerror = function (err) {
+              console.error("EventSource failed:", err);
+              setHasError(true);
+              setErrorText("Error generating text for images. Please refresh and try again.");
+              textEventSource.close();
+            };
           } else {
             try {
               const parsedData = JSON.parse(event.data);
@@ -202,7 +242,7 @@ export function UploadModal(props: Props) {
               } else if (parsedData.processedImage) {
                 processedImages += 1;
                 console.log(`Processed image ${processedImages} of ${totalImages}`);
-                const progress = 50 + ((processedImages / totalImages) * 50);
+                const progress = 50 + ((processedImages / totalImages) * 20);
                 setProgress(progress);
               }
             } catch (e) {
@@ -240,12 +280,6 @@ export function UploadModal(props: Props) {
             progress === 0 &&
             <DialogDescription>
               Upload a PDF file to create a slide
-            </DialogDescription>
-          }
-          {
-            progress > 0 && progress < 100 &&
-            <DialogDescription>
-              Processing...
             </DialogDescription>
           }
           {
@@ -303,14 +337,21 @@ export function UploadModal(props: Props) {
             </Form>
             :
             <>
-              <Progress value={progress} />
+              <><Progress value={Math.round(progress * 10) / 10} />{Math.round(progress * 10) / 10}%</>
               {
-                progress > 0 && progress < 100 && <p>This can take up to a couple minutes 🙂</p>
+                progress > 0 && progress < 100 &&
+                <>
+                  <p>{progressText}</p>
+                  <p>This can take up to a couple minutes 🙂</p>
+                </>
               }
               {
-                progress == 100 && <Link href={`/slides/${slideId}`}>
-                  <Button variant="outline" onClick={() => form.reset()} className="w-full">View</Button>
-                </Link>
+                progress > 75 &&
+                <>
+                  <Link href={`/slides/${slideId}`}>
+                    <Button variant="outline" onClick={() => form.reset()} className="w-full">View</Button>
+                  </Link>
+                </>
               }
             </>
         }

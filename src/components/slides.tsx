@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/select"
 import NavSmallMenu from "./NavSmallMenu";
 import Link from "next/link";
+import { ToastAction } from "./ui/toast";
 
 type Props = {
   params: any
@@ -264,6 +265,15 @@ export function Slides(props: Props) {
     if (slideElement) {
       slideElement.scrollIntoView({ behavior: "smooth" }); // Scroll to the corresponding slide element
     }
+    if (slideImages && slideImages.some(item => !item.generated_text)) {
+      const fraction = 1 - slideImages.filter(item => !item.generated_text).length / slideImages.length;
+      const title = `Notes are still being generated (${Math.round(fraction * 100)}% complete)`;
+      toast({
+        title: title,
+        description: "Please reload the page in a minute to see the rest of the notes",
+        duration: 10000,
+      })
+    }
   }, [slideImages]);
 
   const generateAllSlideText = () => {
@@ -433,10 +443,10 @@ export function Slides(props: Props) {
             </DropdownMenuItem>
           </Link> */}
 
-          {
+          {/* {
             slideImages && slideImages.some(item => !item.generated_text) ? (
               <DropdownMenuItem onClick={generateAllSlideText} disabled={generatedAllSlideText}>Generate All Slide Text</DropdownMenuItem>
-            ) : null}
+            ) : null} */}
 
           {
             slideImages && slideImages.some(item => !item.audio_url) ? (
@@ -451,7 +461,7 @@ export function Slides(props: Props) {
                 : <DropdownMenuItem onClick={generateQuiz} disabled={QuizBtnDisabled}>Generate Quiz</DropdownMenuItem>
           }
 
-          <DropdownMenuItem onClick={() => setAutoPlay(true)}>Auto Play All Audio</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => setAutoPlay(true)}>Auto Play All Audio</DropdownMenuItem> */}
 
 
         </DropdownMenuContent>
@@ -535,6 +545,7 @@ export function Slides(props: Props) {
               setAudioIndex={setAudioIndex}
               audioIndex={audioIndex}
               autoPlay={autoPlay}
+              setAutoPlay={setAutoPlay}
             />
           ))
         }
