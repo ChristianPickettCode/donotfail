@@ -443,10 +443,9 @@ export function Slides(props: Props) {
             </DropdownMenuItem>
           </Link> */}
 
-          {/* {
-            slideImages && slideImages.some(item => !item.generated_text) ? (
-              <DropdownMenuItem onClick={generateAllSlideText} disabled={generatedAllSlideText}>Generate All Slide Text</DropdownMenuItem>
-            ) : null} */}
+          {slideImages && slideImages.some(item => !item.generated_text) ? (
+            <DropdownMenuItem onClick={generateAllSlideText} disabled={generatedAllSlideText}>Generate Notes</DropdownMenuItem>
+          ) : null}
 
           {
             slideImages && slideImages.some(item => !item.audio_url) ? (
