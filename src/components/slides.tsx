@@ -378,6 +378,11 @@ export function Slides(props: Props) {
               Home
             </DropdownMenuItem>
           </Link>
+          <Link href={`/spaces/${slide.space_id}/${slide.id}`}>
+            <DropdownMenuItem>
+              Overview
+            </DropdownMenuItem>
+          </Link>
           {spaceSlides.length > 0 && selectedSpace &&
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>

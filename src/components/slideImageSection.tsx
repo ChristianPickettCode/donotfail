@@ -31,6 +31,8 @@ type Props = {
   autoPlay: boolean
 }
 
+export const maxDuration = 300;
+
 const SlideImageSection = (props: Props) => {
 
   const [generationLoading, setGenerationLoading] = useState(false);
@@ -112,8 +114,9 @@ const SlideImageSection = (props: Props) => {
         } else {
           console.log("Audio generation failed");
           // push(`#s${index + 1}`)
-          refresh()
           setGenerationLoading(false);
+          refresh()
+
         }
 
       })
@@ -171,54 +174,56 @@ const SlideImageSection = (props: Props) => {
   }
 
   // refresh generated text and audio
-  const handleRefresh = (slideImageId: string, index: number) => {
-    console.log("handleRefresh")
+  const handleRefresh = async (slideImageId: string, index: number) => {
+    console.log("handleRefresh");
     setGenerationLoading(true);
-    // Generate text and then audio using generated text
-    GenerateSlideImageText(slideImageId)
-      .then((response) => {
-        console.log(response);
-        if (response.status == "success") {
-          console.log("Text generated successfully");
 
-          GenerateAudio({ slide_image_id: slideImageId, update: true })
-            .then((res) => {
-              console.log("Audio RESPONSE:", res);
-              if (res?.status_code == 200 && res.data) {
-                console.log("Audio generated successfully");
-                setSlideImage((prev: any) => {
-                  return {
-                    ...prev,
-                    generated_text: response.data,
-                    audio_url: res.data,
-                  }
-                })
-                props.setSlideImages((prev: any) => {
-                  return prev.map((item: any) => {
-                    if (item.id === slideImageId) {
-                      return {
-                        ...item,
-                        generated_text: response.data,
-                        audio_url: res.data,
-                      }
-                    }
-                    return item;
-                  })
-                })
-                setGenerationLoading(false);
-              } else {
-                console.log("Audio generation failed");
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+    try {
+      // Generate text
+      const response = await GenerateSlideImageText(slideImageId);
+      console.log(response);
+
+      if (response.status !== "success") {
+        throw new Error("Text generation failed");
+      }
+
+      console.log("Text generated successfully");
+
+      // Generate audio using generated text
+      const res = await GenerateAudio({ slide_image_id: slideImageId, update: true });
+      console.log("Audio RESPONSE:", res);
+
+      if (res?.status_code === 200 && res.data) {
+        console.log("Audio generated successfully");
+
+        const updateState = (prev: any) => prev.map((item: any) => {
+          if (item.id === slideImageId) {
+            return {
+              ...item,
+              generated_text: response.data,
+              audio_url: res.data,
+            };
+          }
+          return item;
+        });
+
+        setSlideImage((prev: any) => ({
+          ...prev,
+          generated_text: response.data,
+          audio_url: res.data,
+        }));
+
+        props.setSlideImages(updateState);
+      } else {
+        throw new Error("Audio generation failed");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setGenerationLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     if (props.audioIndex == props.index && props.autoPlay) {
@@ -309,5 +314,6 @@ const SlideImageSection = (props: Props) => {
     </div >
   )
 }
+
 
 export default SlideImageSection
