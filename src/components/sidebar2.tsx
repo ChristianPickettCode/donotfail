@@ -149,7 +149,7 @@ export function Sidebar2({
             <Link href="https://tally.so/r/nPAKBx">
               <Button className="w-full">
                 <SunIcon className="mr-2 h-4 w-4" />
-                Join Wailist
+                Join Waitlist
               </Button>
             </Link>
           </div>

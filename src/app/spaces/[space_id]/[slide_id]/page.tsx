@@ -105,7 +105,7 @@ const Page = ({ params }: any) => {
                     </div>
 
                 </div>
-                <h3 className='mb-2'>Might take up to a minute for all slides to load, please refresh if some are missing</h3>
+                {/* <h3 className='mb-2'>Might take up to a minute for all slides to load, please refresh if some are missing</h3> */}
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {

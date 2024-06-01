@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "functions": {
-    "src/app/action.ts": {
-      "maxDuration": 300
-    }
-  }
-}

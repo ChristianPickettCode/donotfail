@@ -19,7 +19,6 @@ import { useState } from "react"
 import { ConvertPdfToImages, CreateSlide, GenerateAllAudioForSlide, GenerateAllImageText, UpdateSlide } from "@/app/action"
 import { getSignedURL } from "@/utils/aws/requests"
 import { Progress } from "./ui/progress"
-import { Link } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { AlertCircle } from "lucide-react"
@@ -29,6 +28,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
+import Link from "next/link"
 
 
 const formSchema = z.object({
@@ -148,7 +148,7 @@ export function UploadModal(props: Props) {
 
     try {
       const res_c = await CreateSlide(data);
-      setProgress(25);
+      setProgress(10);
 
       if (res_c.status_code !== 200) {
         throw new Error('Error creating slide. Please refresh and try again.');
@@ -159,7 +159,7 @@ export function UploadModal(props: Props) {
       console.log(InsertedID);
 
       const res_uf = await handleUpload(file as File, InsertedID);
-      setProgress(50);
+      setProgress(30);
       console.log('File upload result:', res_uf);
 
       const fileUrl = res_uf.url.split("?")[0];
@@ -178,18 +178,45 @@ export function UploadModal(props: Props) {
 
       if (res_us.status_code === 200 && res_us.result.ModifiedCount === 1) {
         console.log("Slide updated successfully", res_us);
-        setProgress(75);
+        setProgress(50);
 
-        const res = await ConvertPdfToImages(InsertedID);
-        console.log(res);
+        // SSE for PDF to images conversion
+        const eventSource = new EventSource(`${process.env.SERVER_URL!}/convert-pdf-to-images/${InsertedID}`);
 
-        if (res.status_code === 200) {
-          console.log(res);
-          setProgress(100);
-          push(`/spaces/${space_id}/${InsertedID}`);
-        } else {
-          throw new Error('Error converting pdf to images. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.');
-        }
+        let totalImages = 0;
+        let processedImages = 0;
+
+        eventSource.onmessage = function (event) {
+          console.log("Event received:", event.data);
+
+          if (event.data === "[DONE]") {
+            setProgress(100);
+            eventSource.close();
+            push(`/spaces/${space_id}/${InsertedID}`);
+          } else {
+            try {
+              const parsedData = JSON.parse(event.data);
+              if (parsedData.totalImages) {
+                totalImages = parsedData.totalImages;
+                console.log(`Total images to process: ${totalImages}`);
+              } else if (parsedData.processedImage) {
+                processedImages += 1;
+                console.log(`Processed image ${processedImages} of ${totalImages}`);
+                const progress = 50 + ((processedImages / totalImages) * 50);
+                setProgress(progress);
+              }
+            } catch (e) {
+              console.log("Progress update:", event.data);
+            }
+          }
+        };
+
+        eventSource.onerror = function (err) {
+          console.error("EventSource failed:", err);
+          setHasError(true);
+          setErrorText("Error converting pdf to images. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.");
+          eventSource.close();
+        };
       } else {
         throw new Error('Error saving slide. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.');
       }
@@ -209,72 +236,94 @@ export function UploadModal(props: Props) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Slide PDF</DialogTitle>
-          <DialogDescription>Choose a file to upload and give it a name. (only supports pdfs)</DialogDescription>
+          {
+            progress === 0 &&
+            <DialogDescription>
+              Upload a PDF file to create a slide
+            </DialogDescription>
+          }
+          {
+            progress > 0 && progress < 100 &&
+            <DialogDescription>
+              Processing...
+            </DialogDescription>
+          }
+          {
+            progress === 100 &&
+            <DialogDescription>
+              PDF processed successfully
+            </DialogDescription>
+          }
         </DialogHeader>
-        <Form {...form} >
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md w-full flex flex-col gap-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>File name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter a file name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-            <FormField
-              control={form.control}
-              name="file"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>File</FormLabel>
-                    <FormControl>
-                      <Input
-                        onChange={handleOnChange}
-                        type="file"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
+        {
+          progress === 0 ?
+            <Form {...form} >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md w-full flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>File name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter a file name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name="file"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>File</FormLabel>
+                        <FormControl>
+                          <Input
+                            onChange={handleOnChange}
+                            type="file"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <Button type="submit" className="w-full mt-2" onClick={onUpload} disabled={isUploading || form?.getValues()?.name == ''}>
+                  Generate
+                </Button>
 
-            <Button type="submit" className="w-full mt-2" onClick={onUpload} disabled={isUploading || form?.getValues()?.name == ''}>
-              Generate
-            </Button>
-          </form>
-          <Progress value={progress} />
-          {
-            progress > 0 && progress < 100 && <p>This can take up to a couple minutes 🙂</p>
-          }
-          {
-            progress == 100 && <Link href={`/spaces/${props.spaceId}/${slideId}`}>
-              <Button variant="outline" onClick={() => form.reset()}>View</Button>
-            </Link>
-          }
-          {
-            hasError &&
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                {errorText}
-              </AlertDescription>
-            </Alert>
-          }
-
-        </Form>
+              </form>
+            </Form>
+            :
+            <>
+              <Progress value={progress} />
+              {
+                progress > 0 && progress < 100 && <p>This can take up to a couple minutes 🙂</p>
+              }
+              {
+                progress == 100 && <Link href={`/slides/${slideId}`}>
+                  <Button variant="outline" onClick={() => form.reset()} className="w-full">View</Button>
+                </Link>
+              }
+            </>
+        }
+        {
+          hasError &&
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {errorText}
+            </AlertDescription>
+          </Alert>
+        }
       </DialogContent>
     </Dialog>
   )
