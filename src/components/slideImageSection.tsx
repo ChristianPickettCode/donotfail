@@ -41,8 +41,6 @@ const SlideImageSection = (props: Props) => {
   const { push, refresh } = useRouter()
   const [slideImage, setSlideImage] = useState<any>(props.item);
 
-
-
   const handleGenerateText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
     console.log("handleGenerateText")
@@ -80,50 +78,58 @@ const SlideImageSection = (props: Props) => {
       });
   }
 
-  const handleGenerateAudio = (slideImageId: string, index: number) => {
+  // Function to handle audio generation with SSE support
+  const handleGenerateAudio = (slideImageId: string) => {
     setIsGeneratingAudio(true);
-    console.log("handleGenerateAudio, slideImageId: ", slideImageId, "index: ", index)
-    // setGenerationLoading(true);
-    GenerateAudio({ slide_image_id: slideImageId, update: false })
-      .then((res) => {
-        console.log("Audio RESPONSE:", res);
-        if (res?.status_code == 200 && res.data) {
-          console.log("Audio generated successfully");
-          // props.setSlideImages((prev: any) => {
-          //   return prev.map((item: any) => {
-          //     if (item.id === slideImageId) {
-          //       return {
-          //         ...item,
-          //         audio_url: res.data,
-          //       }
-          //     }
-          //     return item;
-          //   })
-          // })
+    console.log("handleGenerateAudio, slideImageId:", slideImageId);
 
-          setSlideImage((prev: any) => {
-            return {
+    try {
+      // SSE for audio generation
+      const eventSource = new EventSource(`${process.env.SERVER_URL!}/generate-audio/${slideImageId}`);
+
+      eventSource.onmessage = function (event) {
+        console.log("Event received:", event.data);
+
+        // Attempt to parse the data as JSON, if it fails, it's a plain text progress update
+        try {
+          const parsedData = JSON.parse(event.data);
+
+          if (parsedData.status === "success" && parsedData.data) {
+            const finalAudioURL = parsedData.data;
+            setSlideImage((prev: any) => ({
               ...prev,
-              audio_url: res.data,
-            }
-          })
+              audio_url: finalAudioURL,
+            }));
 
-          // setGenerationLoading(false);
-          setIsGeneratingAudio(false);
-          // push(`#s${index + 1}`)
-        } else {
-          console.log("Audio generation failed");
-          // push(`#s${index + 1}`)
-          setGenerationLoading(false);
-          refresh()
+            props.setSlideImages((prev: any) => prev.map((item: any) => {
+              if (item.id === slideImageId) {
+                return {
+                  ...item,
+                  audio_url: finalAudioURL,
+                };
+              }
+              return item;
+            }));
 
+            setIsGeneratingAudio(false);
+            eventSource.close();
+          }
+        } catch (e) {
+          console.log("Progress update:", event.data);
+          // Optionally, you can display these progress updates to the user
         }
+      };
 
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+      eventSource.onerror = function (err) {
+        console.error("EventSource failed:", err);
+        setIsGeneratingAudio(false);
+        eventSource.close();
+      };
+    } catch (err) {
+      console.error(err);
+      setIsGeneratingAudio(false);
+    }
+  };
 
   const ping = (slideImageId: string) => {
     Ping()
@@ -172,54 +178,69 @@ const SlideImageSection = (props: Props) => {
       }
     }
   }
+    ;
 
-  // refresh generated text and audio
-  const handleRefresh = async (slideImageId: string, index: number) => {
+  // Function to handle the refresh action
+  const handleRefresh = async (slideImageId: string) => {
     console.log("handleRefresh");
     setGenerationLoading(true);
 
     try {
       // Generate text
-      const response = await GenerateSlideImageText(slideImageId);
-      console.log(response);
+      const textResponse = await GenerateSlideImageText(slideImageId);
+      console.log(textResponse);
 
-      if (response.status !== "success") {
+      if (textResponse.status !== "success") {
         throw new Error("Text generation failed");
       }
 
-      console.log("Text generated successfully");
+      console.log("Text generated successfully", process.env.SERVER_URL!);
 
-      // Generate audio using generated text
-      const res = await GenerateAudio({ slide_image_id: slideImageId, update: true });
-      console.log("Audio RESPONSE:", res);
+      // SSE for audio generation
+      const eventSource = new EventSource(`${process.env.SERVER_URL!}/generate-audio/${slideImageId}`);
 
-      if (res?.status_code === 200 && res.data) {
-        console.log("Audio generated successfully");
+      eventSource.onmessage = function (event) {
+        console.log("Event received:", event.data);
 
-        const updateState = (prev: any) => prev.map((item: any) => {
-          if (item.id === slideImageId) {
-            return {
-              ...item,
-              generated_text: response.data,
-              audio_url: res.data,
-            };
+        // Attempt to parse the data as JSON, if it fails, it's a plain text progress update
+        try {
+          const parsedData = JSON.parse(event.data);
+
+          if (parsedData.status === "success" && parsedData.data) {
+            const finalAudioURL = parsedData.data;
+            setSlideImage((prev: any) => ({
+              ...prev,
+              generated_text: textResponse.data,
+              audio_url: finalAudioURL,
+            }));
+
+            props.setSlideImages((prev: any) => prev.map((item: any) => {
+              if (item.id === slideImageId) {
+                return {
+                  ...item,
+                  generated_text: textResponse.data,
+                  audio_url: finalAudioURL,
+                };
+              }
+              return item;
+            }));
+
+            setGenerationLoading(false);
+            eventSource.close();
           }
-          return item;
-        });
+        } catch (e) {
+          console.log("Progress update:", event.data);
+          // Optionally, you can display these progress updates to the user
+        }
+      };
 
-        setSlideImage((prev: any) => ({
-          ...prev,
-          generated_text: response.data,
-          audio_url: res.data,
-        }));
-
-        props.setSlideImages(updateState);
-      } else {
-        throw new Error("Audio generation failed");
-      }
+      eventSource.onerror = function (err) {
+        console.error("EventSource failed:", err);
+        setGenerationLoading(false);
+        eventSource.close();
+      };
     } catch (err) {
       console.error(err);
-    } finally {
       setGenerationLoading(false);
     }
   };
@@ -246,7 +267,7 @@ const SlideImageSection = (props: Props) => {
                 {generationLoading ? <Loader className='w-4 h-4 m-0' /> : "✨ Get Notes"}
               </Button>
             ) : !slideImage.audio_url ? (
-              <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id, props.index)} disabled={isGeneratingAudio}>
+              <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id)} disabled={isGeneratingAudio}>
                 {isGeneratingAudio ? <Loader className='w-4 h-4 m-0' /> : <PlayIcon size={"1em"} />}
               </Button>
             ) : (
@@ -274,7 +295,7 @@ const SlideImageSection = (props: Props) => {
               </SelectContent>
             </Select> */}
             {slideImage.generated_text && (
-              <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id, props.index)} disabled={generationLoading}>
+              <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
                 {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
               </Button>
             )}
