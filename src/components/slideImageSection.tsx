@@ -31,7 +31,7 @@ type Props = {
   autoPlay: boolean
 }
 
-export const maxDuration = 300;
+export const maxDuration = 300; // 5 minutes
 
 const SlideImageSection = (props: Props) => {
 
