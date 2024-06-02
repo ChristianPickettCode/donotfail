@@ -198,8 +198,8 @@ const SlideImageSection = (props: Props) => {
 
       console.log("Text generated successfully", process.env.SERVER_URL!);
 
-      // SSE for audio generation
-      const eventSource = new EventSource(`${process.env.SERVER_URL!}/generate-audio/${slideImageId}`);
+      // SSE for audio generation with update query true
+      const eventSource = new EventSource(`${process.env.SERVER_URL!}/generate-audio/${slideImageId}?update=true`);
 
       eventSource.onmessage = function (event) {
         console.log("Event received:", event.data);

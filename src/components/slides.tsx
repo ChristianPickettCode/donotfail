@@ -283,17 +283,46 @@ export function Slides(props: Props) {
       title: "Generating all slide notes",
       description: "This might take a minute, please refresh if notes not showing",
       duration: 10000
-    })
-    GenerateAllImageText(props.params.slide_id)
-      .then((res) => {
-        console.log(res);
-        setSlideImages(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    });
 
-  }
+    // Establish SSE connection
+    const eventSource = new EventSource(`${process.env.SERVER_URL!}/generate-all-image-text/${props.params.slide_id}`);
+
+    eventSource.onmessage = function (event) {
+      console.log("Event received:", event.data);
+
+      if (event.data === "[DONE]") {
+        toast({
+          title: "Generation complete",
+          description: "All slide notes have been generated.",
+          duration: 5000
+        });
+        eventSource.close();
+      } else {
+        try {
+          const parsedData = JSON.parse(event.data);
+          if (parsedData.status === "success") {
+            setSlideImages(parsedData.data);
+          } else {
+            console.log("Progress update:", event.data);
+            // Optionally, you can update the progress based on specific messages
+          }
+        } catch (e) {
+          console.log("Progress update:", event.data);
+        }
+      }
+    };
+
+    eventSource.onerror = function (err) {
+      console.error("EventSource failed:", err);
+      toast({
+        title: "Error",
+        description: "An error occurred while generating slide notes. Please try again.",
+        duration: 5000
+      });
+      eventSource.close();
+    };
+  };
 
   const generateAllAudio = () => {
     setGeneratedAllSlideText(true);
@@ -448,7 +477,7 @@ export function Slides(props: Props) {
           ) : null}
 
           {
-            slideImages && slideImages.some(item => !item.audio_url) ? (
+            slideImages && slideImages.some(item => !item.audio_url) && slideImages.filter(item => !item.generated_text).length / slideImages.length < 0.75 ? (
               <DropdownMenuItem onClick={generateAllAudio} disabled={generatedAllSlideText}>Generate All Audio</DropdownMenuItem>
             ) : null}
           {
