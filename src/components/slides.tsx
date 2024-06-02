@@ -66,6 +66,8 @@ export function Slides(props: Props) {
 
   const [spaces, setSpaces] = useState<any[]>([])
 
+  const [audioSpeed, setAudioSpeed] = useState(1.5)
+
 
   const { push, refresh } = useRouter()
   const { toast } = useToast()
@@ -452,6 +454,25 @@ export function Slides(props: Props) {
             </DropdownMenuSub>
           }
 
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <span>Audio speed</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {
+                  [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5].map((speed, index) => (
+                    <DropdownMenuItem key={index} onClick={() => setAudioSpeed(speed)}>
+                      {speed}x
+                    </DropdownMenuItem>
+                  ))
+                }
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+
+
 
 
           {/* <Link href="/spaces">
@@ -501,8 +522,9 @@ export function Slides(props: Props) {
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl md:text-5xl">
             {slide?.name}
           </h1>
-          {/* <div className='relative'>
-            <Select>
+          <div className='flex w-full'>
+            <Button variant="outline" className='ml-auto' onClick={() => setAutoPlay(true)}>🎧 PLAY ALL AUDIO</Button>
+            {/* <Select>
               <SelectTrigger className="absolute right-6 top-2 w-20">
                 <SelectValue>Actions</SelectValue>
               </SelectTrigger>
@@ -526,8 +548,8 @@ export function Slides(props: Props) {
 
                 <SelectItem value="Auto Play All Audio" onClick={() => setAutoPlay(true)}>Auto Play All Audio</SelectItem>
               </SelectContent>
-            </Select>
-          </div> */}
+            </Select> */}
+          </div>
 
 
           {/* {
@@ -574,6 +596,7 @@ export function Slides(props: Props) {
               audioIndex={audioIndex}
               autoPlay={autoPlay}
               setAutoPlay={setAutoPlay}
+              audioSpeed={audioSpeed}
             />
           ))
         }

@@ -30,6 +30,7 @@ type Props = {
   setAudioIndex: any;
   autoPlay: boolean
   setAutoPlay: any
+  audioSpeed: number
 }
 
 export const maxDuration = 300; // 5 minutes
@@ -164,7 +165,7 @@ const SlideImageSection = (props: Props) => {
   const handlePlayAudio = () => {
     if (props.audioPlayer != null) {
       props.audioPlayer.src = slideImage.audio_url
-      props.audioPlayer.playbackRate = 1.75;
+      props.audioPlayer.playbackRate = props.audioSpeed;
       props.audioPlayer.play();
       props.setAudioPlaying(true);
       setThisAudioPlaying(true);
