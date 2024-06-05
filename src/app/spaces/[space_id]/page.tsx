@@ -12,10 +12,12 @@ type Props = {
 export default function Page(props: Props) {
     console.log(props)
     return (
-        <Sidebar2>
-            {/* <Gallery /> */}
+        // <Sidebar2>
+        // {/* <Gallery /> */ }
+        <>
             <SpaceSlides spaceId={props.params.space_id} />
-        </Sidebar2>
+        </>
+        // </Sidebar2>
 
     );
 }

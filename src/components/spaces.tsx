@@ -36,7 +36,7 @@ function Spaces({ }: Props) {
 
 
     return (
-        <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
+        <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6 overflow-scroll">
             {window?.location && window.location?.href.split('/')[3] === "spaces" &&
                 <div className="flex justify-end mb-4">
                     <CreateSpaceModal />
@@ -44,7 +44,7 @@ function Spaces({ }: Props) {
             }
 
             {/* <Button onClick={testSomething}>TEST</Button> */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 overflow-scroll">
                 {
                     spaces?.map((item: any, index) => (
                         <Link key={index} href={`/spaces/${item?.id}`}>

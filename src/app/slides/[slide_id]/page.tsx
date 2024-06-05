@@ -9,7 +9,7 @@ export default function Page({ params }: any) {
         <>
             {/* <NavSmallMenu /> */}
             <Slides params={params} />
-            <CommandBar />
+            {/* <CommandBar /> */}
         </>
     );
 }

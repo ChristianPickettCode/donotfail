@@ -6,9 +6,9 @@ import Spaces from "@/components/spaces";
 
 export default function Page() {
     return (
-        <Sidebar2>
-            <Spaces />
-        </Sidebar2>
+        // <Sidebar2>
+        <Spaces />
+        // </Sidebar2>
 
     );
 }
