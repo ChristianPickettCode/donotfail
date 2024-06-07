@@ -16,6 +16,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useRouter } from 'next/navigation'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { MenuIcon } from 'lucide-react'
 
 type Props = {}
 
@@ -79,11 +81,29 @@ const Page = ({ params }: any) => {
         // <Sidebar2>
 
         // </Sidebar2>
-        <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
-            <div className='flex justify-between'>
-                <h1 className="text-2xl font-semibold">{slide?.name}</h1>
-                <div className="flex justify-end mb-4">
-                    {/* <Select onValueChange={setSelectedSpace} >
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="fixed top-2 left-4"><MenuIcon size={16} /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" side='right'>
+                    <Link href="/">
+                        <DropdownMenuLabel>donotfail.ai</DropdownMenuLabel>
+                    </Link>
+                    <DropdownMenuSeparator />
+
+                    <Link href="/spaces">
+                        <DropdownMenuItem>
+                            Home
+                        </DropdownMenuItem>
+                    </Link>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6 mt-6">
+                <div className='flex justify-between'>
+                    <h1 className="text-2xl font-semibold">{slide?.name}</h1>
+                    <div className="flex justify-end mb-4">
+                        {/* <Select onValueChange={setSelectedSpace} >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Add to space" />
                         </SelectTrigger>
@@ -100,37 +120,38 @@ const Page = ({ params }: any) => {
                         </SelectContent>
                     </Select>
                     <Button onClick={addToSpace}>Add to Space</Button> */}
-                    <Link href={`/slides/${slide_id}`}>
-                        <Button variant="outline" className='mr-2'>View</Button>
-                    </Link>
-                    {/* <DeleteModal params={params} /> */}
+                        <Link href={`/slides/${slide_id}`}>
+                            <Button variant="outline" className='mr-2'>View</Button>
+                        </Link>
+                        {/* <DeleteModal params={params} /> */}
+                    </div>
+
                 </div>
+                {/* <h3 className='mb-2'>Might take up to a minute for all slides to load, please refresh if some are missing</h3> */}
 
-            </div>
-            {/* <h3 className='mb-2'>Might take up to a minute for all slides to load, please refresh if some are missing</h3> */}
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {
-                    slideImages?.map((item: any, index: number) => (
-                        <div key={index} className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                            <Link href={`/slides/${slide_id}/#s${index + 1}`} scroll={false}>
-                                <img
-                                    alt="Course Thumbnail"
-                                    className="h-48 w-full object-cover transition-all duration-300 group-hover:scale-105"
-                                    height="200"
-                                    src={item.image_url}
-                                    style={{
-                                        aspectRatio: "300/200",
-                                        objectFit: "cover",
-                                    }}
-                                    width="300"
-                                />
-                            </Link>
-                        </div>
-                    ))
-                }
-            </div>
-        </main>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {
+                        slideImages?.map((item: any, index: number) => (
+                            <div key={index} className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                <Link href={`/slides/${slide_id}/#s${index + 1}`} scroll={false}>
+                                    <img
+                                        alt="Course Thumbnail"
+                                        className="h-48 w-full object-cover transition-all duration-300 group-hover:scale-105"
+                                        height="200"
+                                        src={item.image_url}
+                                        style={{
+                                            aspectRatio: "300/200",
+                                            objectFit: "cover",
+                                        }}
+                                        width="300"
+                                    />
+                                </Link>
+                            </div>
+                        ))
+                    }
+                </div>
+            </main>
+        </>
 
     )
 }
