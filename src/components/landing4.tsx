@@ -299,7 +299,7 @@ export function Landing4() {
               <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/2">
                   <blockquote className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal xl:text-2xl">
-                    &ldquo;Missing a few classes used to set me back, but with donotfail.ai, I can easily catch up. The AI-generated explanations are clear and detailed, making it easy to understand even the toughest subjects.&ldquo;
+                    &ldquo;Missing a few classes used to set me back, but with donotfail.ai, I can easily catch up. The explanations are clear and detailed, making it easy to understand even the toughest subjects.&ldquo;
                   </blockquote>
                   <div>
                     <div className="font-semibold">Emily R.</div>
@@ -308,7 +308,7 @@ export function Landing4() {
                 </div>
                 <div className="mt-8 md:mt-0 md:w-1/2 md:ml-4">
                   <blockquote className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal xl:text-2xl">
-                    &ldquo;I have seen a significant improvement in my grades since using donotfail.ai. The AI-generated explanations make complex topics much more accessible and easier to grasp&ldquo;
+                    &ldquo;I have seen a significant improvement in my grades since using donotfail.ai. The explanations make complex topics much more accessible and easier to grasp&ldquo;
                   </blockquote>
                   <div>
                     <div className="font-semibold">Michael L.</div>
