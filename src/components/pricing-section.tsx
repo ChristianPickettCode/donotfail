@@ -115,7 +115,7 @@ export function PricingSection() {
   )
 }
 
-function CheckIcon(props) {
+function CheckIcon(props: any) {
   return (
     <svg
       {...props}

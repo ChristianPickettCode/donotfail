@@ -308,7 +308,7 @@ export function Landing4() {
                 </div>
                 <div className="mt-8 md:mt-0 md:w-1/2 md:ml-4">
                   <blockquote className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal xl:text-2xl">
-                    &ldquo;I've seen a significant improvement in my grades since using donotfail.ai. The AI-generated explanations make complex topics much more accessible and easier to grasp&ldquo;
+                    &ldquo;I have seen a significant improvement in my grades since using donotfail.ai. The AI-generated explanations make complex topics much more accessible and easier to grasp&ldquo;
                   </blockquote>
                   <div>
                     <div className="font-semibold">Michael L.</div>
@@ -345,7 +345,7 @@ export function Landing4() {
   )
 }
 
-function ActivityIcon(props) {
+function ActivityIcon(props: any) {
   return (
     <svg
       {...props}
@@ -365,28 +365,7 @@ function ActivityIcon(props) {
 }
 
 
-function DonutIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.5 10a2.5 2.5 0 0 1-2.4-3H18a2.95 2.95 0 0 1-2.6-4.4 10 10 0 1 0 6.3 7.1c-.3.2-.8.3-1.2.3" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  )
-}
-
-
-function FileAudioIcon(props) {
+function FileAudioIcon(props: any) {
   return (
     <svg
       {...props}
@@ -407,28 +386,7 @@ function FileAudioIcon(props) {
   )
 }
 
-
-function HeadphonesIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
-    </svg>
-  )
-}
-
-
-function MenuIcon(props) {
+function MenuIcon(props: any) {
   return (
     <svg
       {...props}
@@ -450,29 +408,8 @@ function MenuIcon(props) {
 }
 
 
-function MicIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" x2="12" y1="19" y2="22" />
-    </svg>
-  )
-}
 
-
-function PuzzleIcon(props) {
+function PuzzleIcon(props: any) {
   return (
     <svg
       {...props}
@@ -492,30 +429,8 @@ function PuzzleIcon(props) {
 }
 
 
-function RocketIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-    </svg>
-  )
-}
 
-
-function ScanIcon(props) {
+function ScanIcon(props: any) {
   return (
     <svg
       {...props}
@@ -538,7 +453,7 @@ function ScanIcon(props) {
 }
 
 
-function StickyNoteIcon(props) {
+function StickyNoteIcon(props: any) {
   return (
     <svg
       {...props}
@@ -559,7 +474,7 @@ function StickyNoteIcon(props) {
 }
 
 
-function UploadIcon(props) {
+function UploadIcon(props: any) {
   return (
     <svg
       {...props}
