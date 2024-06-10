@@ -40,9 +40,9 @@ export function Landing4() {
           <Link href="#features" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
             Features
           </Link>
-          <Link href="#testimonials" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
+          {/* <Link href="#testimonials" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
             Testimonials
-          </Link>
+          </Link> */}
           {/* <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
             Pricing
           </Link> */}
@@ -294,7 +294,7 @@ export function Landing4() {
             </div>
           </div>
         </section> */}
-        <section className="w-full py-12 md:py-24 lg:py-32" id="testimonials">
+        {/* <section className="w-full py-12 md:py-24 lg:py-32" id="testimonials">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
@@ -325,7 +325,7 @@ export function Landing4() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6 space-y-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
