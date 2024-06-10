@@ -42,6 +42,7 @@ const SlideImageSection = (props: Props) => {
   const [thisAudioPlaying, setThisAudioPlaying] = useState(false);
   const { push, refresh } = useRouter()
   const [slideImage, setSlideImage] = useState<any>(props.item);
+  const [streaming, setStreaming] = useState(false);
 
   const handleGenerateText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
@@ -302,7 +303,7 @@ const SlideImageSection = (props: Props) => {
 
         <div className="flex flex-col md:ml-6 w-full md:w-1/2">
           {
-            generationLoading ? <Loader className='w-6 m-0' /> : <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={true} />
+            generationLoading ? <Loader className='w-6 m-0' /> : <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} />
           }
 
         </div>

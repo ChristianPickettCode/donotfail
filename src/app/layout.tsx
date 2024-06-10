@@ -4,6 +4,9 @@ import "./globals.css";
 import { CSPostHogProvider } from './providers'
 import PostHogPageView from "./PostHogPageView";
 import { Toaster } from "@/components/ui/toaster"
+import {
+  ClerkProvider,
+} from '@clerk/nextjs'
 
 // "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 
@@ -21,14 +24,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <CSPostHogProvider>
-        <body className={openSans.className}>
-          <PostHogPageView />
-          {children}
-          <Toaster />
-        </body>
-      </CSPostHogProvider>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <CSPostHogProvider>
+          <body className={openSans.className}>
+            <PostHogPageView />
+            {children}
+            <Toaster />
+          </body>
+        </CSPostHogProvider>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -7,8 +7,23 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { MenuIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from "next/link";
+import { useRouter } from 'next/navigation'
+import { useAuth } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { useClerk } from '@clerk/nextjs';
 
 export default function Page() {
+    const { push } = useRouter()
+    const { isLoaded, userId, sessionId, getToken } = useAuth();
+    const { signOut } = useClerk();
+
+    useEffect(() => {
+        if (!isLoaded) return;
+        if (!userId) {
+            push('/sign-in')
+        }
+    }, [isLoaded, userId])
+
     return (
         <>
             <DropdownMenu>
@@ -25,6 +40,10 @@ export default function Page() {
                         <DropdownMenuItem>
                             Home
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => signOut({ redirectUrl: '/' })} >
+                            Sign Out
+                        </DropdownMenuItem>
+
                     </Link>
                 </DropdownMenuContent>
             </DropdownMenu>
