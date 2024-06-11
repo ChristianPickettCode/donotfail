@@ -36,15 +36,15 @@ export default function Page() {
                     </Link>
                     <DropdownMenuSeparator />
 
-                    <Link href="/spaces">
-                        <DropdownMenuItem>
-                            Home
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => signOut({ redirectUrl: '/' })} >
-                            Sign Out
-                        </DropdownMenuItem>
-
-                    </Link>
+                    <DropdownMenuItem>
+                        <Link href="/spaces">Home</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <Link href="https://tally.so/r/mR4vPP">Feature request</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut({ redirectUrl: '/' })} >
+                        Sign Out
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             <Spaces />
