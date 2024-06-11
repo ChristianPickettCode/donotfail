@@ -28,7 +28,7 @@ export default function Page() {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="fixed top-2 left-4"><MenuIcon size={16} /></Button>
+                    <Button variant="outline" className="fixed top-2 left-4 z-50"><MenuIcon size={16} /></Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" side='right'>
                     <Link href="/">
@@ -36,7 +36,10 @@ export default function Page() {
                     </Link>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <Link href="/spaces">Home</Link>
+                        <Link href="/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <Link href="/spaces">Explore</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Link href="https://tally.so/r/mR4vPP">Feature request</Link>
