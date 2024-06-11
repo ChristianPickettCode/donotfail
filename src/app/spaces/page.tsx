@@ -35,7 +35,6 @@ export default function Page() {
                         <DropdownMenuLabel>donotfail.ai</DropdownMenuLabel>
                     </Link>
                     <DropdownMenuSeparator />
-
                     <DropdownMenuItem>
                         <Link href="/spaces">Home</Link>
                     </DropdownMenuItem>

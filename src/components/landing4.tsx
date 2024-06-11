@@ -105,9 +105,9 @@ export function Landing4() {
           /> */}
 
           <video
-            width="500"
-            height="310"
-            className="mx-4 my-2 aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
+            width="100%"
+            height="auto"
+            className="w-full mt-6 aspect-video overflow-hidden rounded-xl object-cover object-center sm:mx-6 lg:order-last"
             autoPlay
             loop
             muted
