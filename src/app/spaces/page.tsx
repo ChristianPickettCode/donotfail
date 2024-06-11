@@ -1,16 +1,11 @@
 "use client"
-import { Gallery } from "@/components/gallery";
-import { Sidebar } from "@/components/sidebar";
-import { Sidebar2 } from "@/components/sidebar2";
 import Spaces from "@/components/spaces";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MenuIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { useAuth } from "@clerk/nextjs";
 import { useEffect } from "react";
 import { useClerk } from '@clerk/nextjs';
+import { Sidebar3 } from "@/components/sidebar3";
+import { Archive, ArchiveX, MessagesSquare, Users2 } from "lucide-react";
 
 export default function Page() {
     const { push } = useRouter()
@@ -25,32 +20,16 @@ export default function Page() {
     }, [isLoaded, userId])
 
     return (
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="fixed top-2 left-4 z-50"><MenuIcon size={16} /></Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" side='right'>
-                    <Link href="/">
-                        <DropdownMenuLabel>donotfail.ai</DropdownMenuLabel>
-                    </Link>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <Link href="/dashboard">Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <Link href="/spaces">Explore</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <Link href="https://tally.so/r/mR4vPP">Feature request</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => signOut({ redirectUrl: '/' })} >
-                        Sign Out
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        <Sidebar3
+            navLinks={[
+                { title: "Dashboard", label: "", icon: Archive, url: "/spaces" },
+                { title: "Spaces", label: "", icon: ArchiveX, url: "/spaces" },
+                { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
+                { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
+            ]}
+        >
             <Spaces />
-        </>
+        </Sidebar3>
 
     );
 }

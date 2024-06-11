@@ -1,23 +1,11 @@
 "use client"
 import { AddSlideToSpace, GetSlide, GetSlideImages, GetSpaces } from '@/app/action'
-import DeleteModal from '@/components/delete-modal'
-import { Sidebar } from '@/components/sidebar'
-import { Sidebar2 } from '@/components/sidebar2'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { useRouter } from 'next/navigation'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MenuIcon } from 'lucide-react'
+import { Sidebar3 } from "@/components/sidebar3";
+import { Archive, ArchiveX, MessagesSquare, Users2 } from "lucide-react";
 
 type Props = {}
 
@@ -78,28 +66,15 @@ const Page = ({ params }: any) => {
 
 
     return (
-        // <Sidebar2>
-
-        // </Sidebar2>
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="fixed top-2 left-4"><MenuIcon size={16} /></Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" side='right'>
-                    <Link href="/">
-                        <DropdownMenuLabel>donotfail.ai</DropdownMenuLabel>
-                    </Link>
-                    <DropdownMenuSeparator />
-
-                    <Link href="/spaces">
-                        <DropdownMenuItem>
-                            Home
-                        </DropdownMenuItem>
-                    </Link>
-                </DropdownMenuContent>
-            </DropdownMenu>
-            <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6 mt-6">
+        <Sidebar3
+            navLinks={[
+                { title: "Dashboard", label: "", icon: Archive, url: "/spaces" },
+                { title: "Spaces", label: "", icon: ArchiveX, url: "/spaces" },
+                { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
+                { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
+            ]}
+        >
+            <main className="container mx-auto px-4 py-6 md:py-4 lg:py-4">
                 <div className='flex justify-between'>
                     <h1 className="text-2xl font-semibold">{slide?.name}</h1>
                     <div className="flex justify-end mb-4">
@@ -151,7 +126,7 @@ const Page = ({ params }: any) => {
                     }
                 </div>
             </main>
-        </>
+        </Sidebar3>
 
     )
 }

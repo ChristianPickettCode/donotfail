@@ -36,7 +36,7 @@ function Spaces({ }: Props) {
 
 
     return (
-        <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6 overflow-scroll">
+        <main className="container mx-auto px-4 py-6 md:py-4 lg:py-4 overflow-scroll">
             {window?.location && window.location?.href.split('/')[3] === "spaces" &&
                 <div className="flex justify-end mb-4">
                     <CreateSpaceModal />

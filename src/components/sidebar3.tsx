@@ -5,54 +5,47 @@ import { Nav } from './NavSidebar';
 import { AlertCircle, Archive, ArchiveX, BookCheck, File, Inbox, MessagesSquare, Send, ShoppingCart, Trash2, Users2 } from 'lucide-react';
 import { Separator } from './ui/separator';
 
-type Props = {}
+type Props = {
+    children: React.ReactNode;
+    navLinks: {
+        title: string
+        label?: string
+        url?: string
+        icon: any
+    }[]
+}
 
 export function Sidebar3({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+    children, navLinks
+}: Props) {
     const [isCollapsed, setIsCollapsed] = useState(true)
     return (
         <TooltipProvider>
-            <div className="flex h-full overflow-scroll">
+            <div className="flex h-full">
                 <div
                     className={`flex flex-col h-full justify-between ${isCollapsed ? 'w-[50px]' : 'w-1/5'} transition-all duration-300 ease-in-out border-r border-gray-200`}
-                    onDoubleClick={() => {
-                        setIsCollapsed(prev => !prev);
-                    }}
+                    style={{ maxHeight: '100vh', overflowY: 'auto' }}
                 >
                     <div>
                         {/* Existing sidebar content */}
                         <Nav
                             isCollapsed={isCollapsed}
                             links={[
-                                { title: "donotfail.ai", label: "", icon: BookCheck, variant: "default" },
+                                { title: "donotfail.ai", label: "", icon: BookCheck, variant: "default", url: "/" },
                             ]}
                         />
                         <Separator />
-                        <Nav
-                            isCollapsed={isCollapsed}
-                            links={[
-                                { title: "Inbox", label: "128", icon: Inbox, variant: "ghost" },
-                                { title: "Drafts", label: "9", icon: File, variant: "ghost" },
-                                { title: "Sent", label: "", icon: Send, variant: "ghost" },
-                                { title: "Junk", label: "23", icon: ArchiveX, variant: "ghost" },
-                                { title: "Trash", label: "", icon: Trash2, variant: "ghost" },
-                                { title: "Archive", label: "", icon: Archive, variant: "ghost" },
-                            ]}
-                        />
-                        <Separator />
-                        <Nav
-                            isCollapsed={isCollapsed}
-                            links={[
-                                { title: "Social", label: "972", icon: Users2, variant: "ghost" },
-                                { title: "Updates", label: "342", icon: AlertCircle, variant: "ghost" },
-                                { title: "Forums", label: "128", icon: MessagesSquare, variant: "ghost" },
-                                { title: "Shopping", label: "8", icon: ShoppingCart, variant: "ghost" },
-                                { title: "Promotions", label: "21", icon: Archive, variant: "ghost" },
-                            ]}
-                        />
+                        {
+                            navLinks.map((link, index) => (
+                                <Nav
+                                    key={index}
+                                    isCollapsed={isCollapsed}
+                                    links={[
+                                        { title: link.title, label: link.label, icon: link.icon, variant: 'ghost', url: link.url },
+                                    ]}
+                                />
+                            ))
+                        }
                     </div>
                     <div className="px-0 py-0">
                         <Separator />
@@ -60,7 +53,7 @@ export function Sidebar3({
                             <Nav
                                 isCollapsed={isCollapsed}
                                 links={[
-                                    { title: "Social", label: "972", icon: Users2, variant: "ghost" },
+                                    { title: "Social", label: "", icon: Users2, variant: "ghost" },
                                 ]}
                             />
                         </div>

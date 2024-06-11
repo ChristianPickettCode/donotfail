@@ -1,12 +1,10 @@
 "use client"
-import CommandBar from "@/components/commandbar";
-import NavSmallMenu from "@/components/NavSmallMenu";
-import { Sidebar } from "@/components/sidebar";
-import { Sidebar2 } from "@/components/sidebar2";
 import { Slides } from "@/components/slides";
 import { useRouter } from 'next/navigation'
 import { useAuth } from "@clerk/nextjs";
 import { useEffect } from "react";
+import { Sidebar3 } from "@/components/sidebar3";
+import { Archive, ArchiveX, MessagesSquare, Users2 } from "lucide-react";
 
 export default function Page({ params }: any) {
     const { push } = useRouter()
@@ -20,10 +18,15 @@ export default function Page({ params }: any) {
     }, [isLoaded, userId])
 
     return (
-        <>
-            {/* <NavSmallMenu /> */}
+        <Sidebar3
+            navLinks={[
+                { title: "Dashboard", label: "", icon: Archive, url: "/spaces" },
+                { title: "Spaces", label: "", icon: ArchiveX, url: "/spaces" },
+                { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
+                { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
+            ]}
+        >
             <Slides params={params} />
-            {/* <CommandBar /> */}
-        </>
+        </Sidebar3>
     );
 }

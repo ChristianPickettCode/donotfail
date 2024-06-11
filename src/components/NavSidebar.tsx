@@ -16,6 +16,7 @@ interface NavProps {
     links: {
         title: string
         label?: string
+        url?: string
         icon: LucideIcon
         variant: "default" | "ghost"
     }[]
@@ -33,7 +34,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                         <Tooltip key={index} delayDuration={0}>
                             <TooltipTrigger asChild>
                                 <Link
-                                    href="#"
+                                    href={link.url || "#"}
                                     className={cn(
                                         buttonVariants({ variant: link.variant, size: "icon" }),
                                         "h-9 w-9",
@@ -46,18 +47,22 @@ export function Nav({ links, isCollapsed }: NavProps) {
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="flex items-center gap-4">
-                                {link.title}
-                                {link.label && (
-                                    <span className="ml-auto text-muted-foreground">
-                                        {link.label}
-                                    </span>
-                                )}
+                                <Link href={link.url || "#"}>
+                                    {link.title}
+                                    {link.label && (
+
+                                        <span className="ml-auto text-muted-foreground">
+                                            {link.label}
+                                        </span>
+
+                                    )}
+                                </Link>
                             </TooltipContent>
                         </Tooltip>
                     ) : (
                         <Link
                             key={index}
-                            href="#"
+                            href={link.url || "#"}
                             className={cn(
                                 buttonVariants({ variant: link.variant, size: "sm" }),
                                 link.variant === "default" &&

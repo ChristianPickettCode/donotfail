@@ -406,19 +406,9 @@ export function Slides(props: Props) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="fixed top-2 left-4"><MenuIcon size={16} /></Button>
+          <Button variant="outline" className="fixed top-2 right-4"><MenuIcon size={16} /></Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" side='right'>
-          <Link href="/">
-            <DropdownMenuLabel>donotfail.ai</DropdownMenuLabel>
-          </Link>
-          <DropdownMenuSeparator />
-
-          <Link href="/spaces">
-            <DropdownMenuItem>
-              Home
-            </DropdownMenuItem>
-          </Link>
           <Link href={`/spaces/${slide.space_id}/${slide.id}`}>
             <DropdownMenuItem>
               Overview
