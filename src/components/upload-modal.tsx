@@ -146,7 +146,6 @@ export function UploadModal(props: Props) {
     const name = form.getValues().name;
     const space_id = props.spaceId;
     const data = { name, space_id };
-    const [keepOpen, setKeepOpen] = useState(false)
 
     try {
       const res_c = await CreateSlide(data);
