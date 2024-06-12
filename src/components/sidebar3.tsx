@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { TooltipProvider } from './ui/tooltip'
 import { Nav } from './NavSidebar';
-import { AlertCircle, Archive, ArchiveX, BookCheck, DatabaseZap, File, Inbox, MessagesSquare, Send, ShoppingCart, Trash2, Users2 } from 'lucide-react';
+import { AlertCircle, Archive, ArchiveX, BookCheck, DatabaseZap, File, FileSearch2Icon, Inbox, MessagesSquare, PenLineIcon, Send, ShoppingCart, TextSearchIcon, Trash2, Users2, WalletCardsIcon } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 type Props = {
@@ -12,8 +12,10 @@ type Props = {
 const navLinks = [
     { title: "Dashboard", label: "", icon: Inbox, url: "/dashboard" },
     { title: "Spaces", label: "", icon: Archive, url: "/spaces" },
+    // { title: "Flashcards", label: "", icon: WalletCardsIcon, url: "/flashcards" },
+    // { title: "Quizzes", label: "", icon: PenLineIcon, url: "/quizzes" },
+
     { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
-    // { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
 ]
 
 export function Sidebar3({

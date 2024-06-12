@@ -225,7 +225,8 @@ const Quizzes = (props: Props) => {
 
   return (
     <div className="flex flex-col h-screen md:flex-row">
-      <aside className="w-full md:w-1/5 bg-gray-100 p-4 overflow-y-auto">
+      <aside className="w-full md:w-1/5 bg-gray-100 p-2 overflow-y-auto">
+        <h2 className="text-lg font-semibold mb-2 ml-2">Questions</h2>
         <nav>
           <ul className="flex flex-wrap">
             {
@@ -240,7 +241,7 @@ const Quizzes = (props: Props) => {
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-8 flex flex-col">
+      <main className="flex-1 flex flex-col -mt-32">
         {
           questions.length > 0 ? (
             <>

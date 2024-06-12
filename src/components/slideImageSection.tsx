@@ -275,7 +275,9 @@ const SlideImageSection = (props: Props) => {
           </PhotoProvider>
           <div className="flex flex-row items-center space-x-2">
             {!slideImage.generated_text ? (
-              ""
+              <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
+                {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
+              </Button>
             ) : !slideImage.audio_url ? (
               <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id)} disabled={isGeneratingAudio}>
                 {isGeneratingAudio ? <Loader className='w-4 h-4 m-0' /> : <PlayIcon size={"1em"} />}

@@ -59,7 +59,7 @@ function Spaces({ filter }: Props) {
 
 
     return (
-        <main className="container mx-auto px-4 py-6 md:py-4 lg:py-4 overflow-scroll">
+        <main className="mx-auto px-4 py-6 md:py-4 lg:py-4 overflow-scroll">
             <div className="flex justify-end mb-4">
                 <CreateSpaceModal />
             </div>

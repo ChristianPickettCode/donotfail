@@ -70,7 +70,7 @@ export function SpaceSlides(props: Props) {
 
 
     return (
-        <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
+        <main className="mx-auto px-4 py-8 md:py-6 lg:py-6">
             <div className="flex justify-between mb-4">
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300 group-hover:text-primary">{selectedSpace?.name}</h2>
                 <div>
