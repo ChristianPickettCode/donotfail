@@ -500,7 +500,7 @@ export function Slides(props: Props) {
                 : <DropdownMenuItem onClick={generateQuiz} disabled={QuizBtnDisabled}>Generate Quiz</DropdownMenuItem>
           }
 
-          {/* <DropdownMenuItem onClick={() => setAutoPlay(true)}>Auto Play All Audio</DropdownMenuItem> */}
+          <DropdownMenuItem onClick={() => setAutoPlay(true)}>Auto Play All Audio</DropdownMenuItem>
 
 
         </DropdownMenuContent>
@@ -513,7 +513,7 @@ export function Slides(props: Props) {
             {slide?.name}
           </h1>
           <div className='flex w-full'>
-            <Button variant="outline" className='ml-auto' onClick={() => setAutoPlay(true)}>🎧 PLAY ALL AUDIO</Button>
+            {/* <Button variant="outline" className='ml-auto' onClick={() => setAutoPlay(true)}>🎧 PLAY ALL AUDIO</Button> */}
             {/* <Select>
               <SelectTrigger className="absolute right-6 top-2 w-20">
                 <SelectValue>Actions</SelectValue>

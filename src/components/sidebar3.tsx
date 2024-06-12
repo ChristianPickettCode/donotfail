@@ -13,7 +13,7 @@ const navLinks = [
     { title: "Dashboard", label: "", icon: Inbox, url: "/dashboard" },
     { title: "Spaces", label: "", icon: Archive, url: "/spaces" },
     { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
-    { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
+    // { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
 ]
 
 export function Sidebar3({
@@ -25,7 +25,7 @@ export function Sidebar3({
             <div className="flex h-full">
                 <div
                     className={`flex flex-col h-full justify-between ${isCollapsed ? 'w-[50px]' : 'w-1/5'} transition-all duration-300 ease-in-out border-r border-gray-200`}
-                    style={{ maxHeight: '100vh', overflowY: 'auto', position: 'fixed', top: 0 }}
+                    style={{ maxHeight: '100vh', position: 'fixed', top: 0, zIndex: 1000 }}
                 >
                     <div>
                         {/* Existing sidebar content */}
@@ -54,7 +54,7 @@ export function Sidebar3({
                             <Nav
                                 isCollapsed={isCollapsed}
                                 links={[
-                                    { title: "Profile", label: "", icon: Users2, variant: "ghost" },
+                                    { title: "Profile", label: "", icon: Users2, variant: "ghost", url: "/profile" },
                                 ]}
                             />
                         </div>
