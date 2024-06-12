@@ -42,8 +42,16 @@ const Page = (props: Props) => {
                     <CardContent>
                         <form className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
-                                <Input id="name" value={user?.first_name} disabled />
+                                <Label htmlFor="first_name">First Name</Label>
+                                <Input id="first_name" value={user?.first_name} disabled />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="last_name">Last Name</Label>
+                                <Input id="last_name" value={user?.last_name} disabled />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="school">School</Label>
+                                <Input id="school" value={user?.school} disabled />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
@@ -59,7 +67,7 @@ const Page = (props: Props) => {
                         <Button onClick={() => signOut()}>Sign out</Button>
                     </CardFooter>
                 </Card>
-                <Card>
+                {/* <Card>
                     <CardHeader>
                         <CardTitle>Subscription Status</CardTitle>
                         <CardDescription>View and manage your subscription details.</CardDescription>
@@ -82,7 +90,7 @@ const Page = (props: Props) => {
                             </div>
                         </div>
                     </CardContent>
-                </Card>
+                </Card> */}
             </div>
         </Sidebar3>
     )

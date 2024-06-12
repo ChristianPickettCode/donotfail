@@ -14,7 +14,7 @@ import {
 import { Button } from './ui/button'
 import { AddSpaceToUser } from '@/app/action'
 import { useAuth } from '@clerk/nextjs'
-
+import { useRouter } from 'next/navigation'
 
 type Props = {
     spaceId: string
@@ -22,6 +22,7 @@ type Props = {
 }
 
 export function SaveSpaceModal(props: Props) {
+    const { push } = useRouter()
 
 
     const handleSave = () => {
@@ -29,6 +30,7 @@ export function SaveSpaceModal(props: Props) {
         AddSpaceToUser({ user_id: props.userId, space_id: props.spaceId })
             .then((res) => {
                 console.log(res)
+                push('/dashboard')
             })
             .catch((err) => {
                 console.log(err)
