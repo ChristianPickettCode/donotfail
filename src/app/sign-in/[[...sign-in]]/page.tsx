@@ -4,8 +4,8 @@ export default function Page() {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <SignIn
-                fallbackRedirectUrl="/spaces"
-                signUpFallbackRedirectUrl="/spaces"
+                fallbackRedirectUrl="/dashboard"
+                signUpFallbackRedirectUrl="/dashboard"
             />
         </div>
     )

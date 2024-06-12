@@ -2,21 +2,22 @@
 import React, { useState } from 'react'
 import { TooltipProvider } from './ui/tooltip'
 import { Nav } from './NavSidebar';
-import { AlertCircle, Archive, ArchiveX, BookCheck, File, Inbox, MessagesSquare, Send, ShoppingCart, Trash2, Users2 } from 'lucide-react';
+import { AlertCircle, Archive, ArchiveX, BookCheck, DatabaseZap, File, Inbox, MessagesSquare, Send, ShoppingCart, Trash2, Users2 } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 type Props = {
     children: React.ReactNode;
-    navLinks: {
-        title: string
-        label?: string
-        url?: string
-        icon: any
-    }[]
 }
 
+const navLinks = [
+    { title: "Dashboard", label: "", icon: Inbox, url: "/dashboard" },
+    { title: "Spaces", label: "", icon: Archive, url: "/spaces" },
+    { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
+    { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
+]
+
 export function Sidebar3({
-    children, navLinks
+    children
 }: Props) {
     const [isCollapsed, setIsCollapsed] = useState(true)
     return (
@@ -24,7 +25,7 @@ export function Sidebar3({
             <div className="flex h-full">
                 <div
                     className={`flex flex-col h-full justify-between ${isCollapsed ? 'w-[50px]' : 'w-1/5'} transition-all duration-300 ease-in-out border-r border-gray-200`}
-                    style={{ maxHeight: '100vh', overflowY: 'auto' }}
+                    style={{ maxHeight: '100vh', overflowY: 'auto', position: 'fixed', top: 0 }}
                 >
                     <div>
                         {/* Existing sidebar content */}
@@ -53,13 +54,13 @@ export function Sidebar3({
                             <Nav
                                 isCollapsed={isCollapsed}
                                 links={[
-                                    { title: "Social", label: "", icon: Users2, variant: "ghost" },
+                                    { title: "Profile", label: "", icon: Users2, variant: "ghost" },
                                 ]}
                             />
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1 ml-[50px]">
                     {children}
                 </div>
             </div>

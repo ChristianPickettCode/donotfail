@@ -67,12 +67,6 @@ const Page = ({ params }: any) => {
 
     return (
         <Sidebar3
-            navLinks={[
-                { title: "Dashboard", label: "", icon: Archive, url: "/spaces" },
-                { title: "Spaces", label: "", icon: ArchiveX, url: "/spaces" },
-                { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
-                { title: "Sign Out", label: "", icon: Users2, url: "/sign-out" },
-            ]}
         >
             <main className="container mx-auto px-4 py-6 md:py-4 lg:py-4">
                 <div className='flex justify-between'>

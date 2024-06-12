@@ -458,3 +458,101 @@ export async function DeleteQuizQuestion(quizId: string) {
     return { error: errorMessage };
   }
 }
+
+// Get user by id
+export async function GetUser(userId: string) {
+  console.log("GetUser");
+  try {
+    const response = await axios.get(serverUrl + `/user/${userId}`, {});
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Create user
+export async function CreateUser(data: any) {
+  console.log("CreateUser");
+  try {
+    const response = await axios.post(serverUrl + "/user", data, {});
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Get user spaces
+export async function GetUserSpaces(userId: string) {
+  console.log("GetUserSpaces");
+  try {
+    const response = await axios.get(serverUrl + `/user/${userId}/space`, {});
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Add space to user
+export async function AddSpaceToUser(data: {
+  user_id: string;
+  space_id: string;
+}) {
+  console.log("AddSpaceToUser");
+  try {
+    const response = await axios.put(
+      serverUrl + `/user/${data.user_id}/space/${data.space_id}`,
+      data,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Remove space from user
+export async function RemoveSpaceFromUser(data: {
+  user_id: string;
+  space_id: string;
+}) {
+  console.log("RemoveSpaceFromUser");
+  try {
+    const response = await axios.delete(
+      serverUrl + `/user/${data.user_id}/space/${data.space_id}`,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

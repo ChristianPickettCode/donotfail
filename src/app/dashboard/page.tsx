@@ -48,7 +48,7 @@ export default function Page() {
 
     return (
         <Sidebar3>
-            <Spaces />
+            <Spaces filter="user" />
             {
                 onboarding && email != "" && userId ? <OnboardingModal open={true} email={email} userId={userId} /> : null
             }

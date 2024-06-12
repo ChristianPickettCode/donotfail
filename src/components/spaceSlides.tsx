@@ -1,9 +1,12 @@
 "use client"
 import Link from "next/link"
 import { UploadModal } from "./upload-modal"
-import { useEffect, useState } from "react"
-import { AddSlideToSpace, GetSlides, GetSpace, GetSpaceSlides } from "@/app/action"
+import { use, useEffect, useState } from "react"
+import { AddSlideToSpace, GetSlides, GetSpace, GetSpaceSlides, GetUserSpaces } from "@/app/action"
 import posthog from "posthog-js"
+import { Button } from "./ui/button"
+import { SaveSpaceModal } from "./save-space-modal"
+import { useAuth } from "@clerk/nextjs"
 
 const emojiList = ["😇", "🤩", "🥳", "🎉", "🎊", "🎈", "🎁", "🎀", "🌟", "💫", "✨", "🪐", "🌠", "🔥", "🎇", "🎆", "🌌", "🌈", "☄️",
     "💥", "💢", "💫", "💦", "🌊", "💧", "💤", "🌪️", "🌫️", "🌬️", "🌀"]
@@ -18,7 +21,8 @@ type Props = {
 export function SpaceSlides(props: Props) {
     const [slides, setSlides] = useState([])
     const [selectedSpace, setSelectedSpace] = useState<any>(null)
-    console.log(props)
+    const { userId } = useAuth();
+    const [userSpaces, setUserSpaces] = useState<any[]>([])
 
     useEffect(() => {
 
@@ -41,7 +45,18 @@ export function SpaceSlides(props: Props) {
             .catch((err) => {
                 console.log(err)
             })
-    }, [props.spaceId])
+
+        if (userId) {
+            GetUserSpaces(userId)
+                .then((res) => {
+                    console.log(res)
+                    setUserSpaces(res.map((item: any) => item.id))
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+    }, [props.spaceId, userId])
 
     const deleteSlide = (id: string) => {
         console.log("delete slide", id)
@@ -58,7 +73,14 @@ export function SpaceSlides(props: Props) {
         <main className="container mx-auto px-4 py-8 md:py-6 lg:py-6">
             <div className="flex justify-between mb-4">
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300 group-hover:text-primary">{selectedSpace?.name}</h2>
-                <UploadModal spaceId={props.spaceId} />
+                <div>
+                    {
+                        !userSpaces.includes(props.spaceId) ? <SaveSpaceModal spaceId={props.spaceId} userId={userId!} /> : null
+                    }
+
+                    <UploadModal spaceId={props.spaceId} />
+                </div>
+
             </div>
 
             {/* <Button onClick={testSomething}>TEST</Button> */}
