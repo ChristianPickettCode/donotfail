@@ -31,7 +31,7 @@ function Spaces({ filter }: Props) {
                 GetUserSpaces(userId)
                     .then((res) => {
                         console.log("WORKING", res)
-                        if (res != null) {
+                        if (res != null && !res.error) {
                             console.log(res)
                             setSpaces(res)
                         }
