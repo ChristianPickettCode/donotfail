@@ -71,7 +71,7 @@ export function Landing4() {
           <div className="container px-4 md:px-6 space-y-6">
             <div className="space-y-4">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
-                Study Smarter, Not Harder
+                Accelerate your learning
               </h1>
               <p className="max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
                 Missed a class? Get AI-generated notes, explanations, quizzes, flashcards and more just from your <u>slides</u>.
@@ -187,7 +187,7 @@ export function Landing4() {
         <section className="w-full py-12 md:py-24 lg:py-32" id="features">
           <div className="container px-4 md:px-6 space-y-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Accelerate your learning</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Study Smarter, Not Harder</h2>
               <p className="max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                 Our AI-powered platform streamlines your study process, helping you learn more efficiently.
               </p>
