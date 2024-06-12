@@ -51,7 +51,7 @@ const OnboardingModal = (props: Props) => {
                 <DialogHeader>
                     <DialogTitle>Welcome!</DialogTitle>
                     <DialogDescription>
-                        Let's get started by setting up your profile. Please fill in the information below.
+                        {"Let's get started by setting up your profile. Please fill in the information below."}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
