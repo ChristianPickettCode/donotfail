@@ -273,7 +273,7 @@ export function Slides(props: Props) {
       toast({
         title: title,
         description: "Please reload the page in a minute to see the rest of the notes",
-        duration: 10000,
+        duration: 5000,
       })
     }
   }, [slideImages]);
@@ -284,7 +284,7 @@ export function Slides(props: Props) {
     toast({
       title: "Generating all slide notes",
       description: "This might take a minute, please refresh if notes not showing",
-      duration: 10000
+      duration: 5000
     });
 
     // Establish SSE connection
@@ -332,7 +332,7 @@ export function Slides(props: Props) {
     toast({
       title: "Generating all note audio",
       description: "This might take a minute, please refresh if audio not showing",
-      duration: 10000
+      duration: 5000
     })
     GenerateAllAudioForSlide(props.params.slide_id)
       .then((res) => {
@@ -357,7 +357,7 @@ export function Slides(props: Props) {
     toast({
       title: "Generating quiz",
       description: "This might take up to a minute, please refresh if not redirected to quiz page",
-      duration: 10000
+      duration: 5000
     })
     GenerateQuizForSlide(props.params.slide_id)
       .then((res) => {
