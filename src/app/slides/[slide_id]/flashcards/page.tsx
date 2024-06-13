@@ -13,8 +13,8 @@ type Props = {
 const Page = (props: Props) => {
     return (
         <Sidebar3>
-            {/* <FlashcardsPage /> */}
-            <QuizzesPage />
+            <FlashcardsPage />
+            {/* <QuizzesPage /> */}
         </Sidebar3>
     )
 }

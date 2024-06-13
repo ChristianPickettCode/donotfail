@@ -59,13 +59,17 @@ function Spaces({ filter }: Props) {
 
 
     return (
-        <main className="mx-auto px-4 py-6 md:py-4 lg:py-4 overflow-scroll">
-            <div className="flex justify-end mb-4">
+        <main className="mx-auto px-2 py-4 md:py-2 lg:py-2 overflow-scroll">
+            <div className="flex justify-between mb-4">
+                {
+                    window.location.href.split('/')[3] == "spaces" ?
+                        <h1 className="text-2xl font-semibold">All Spaces</h1> :
+                        <h1 className="text-2xl font-semibold">Your Spaces</h1>
+                }
                 <CreateSpaceModal />
             </div>
 
-            {/* <Button onClick={testSomething}>TEST</Button> */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 overflow-scroll">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {
                     spaces?.map((item: any, index) => (
                         <Link key={index} href={`/spaces/${item?.id}`}>

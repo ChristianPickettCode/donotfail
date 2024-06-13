@@ -41,7 +41,7 @@
     "next": "14.2.3",
     "pdf-img-convert": "^1.2.1",
     "posthog-js": "^1.131.3",
-    "react": "^18",
+    "react": "^18.3.1",
     "react-canvas-confetti": "^2.0.7",
     "react-card-flip": "^1.2.3",
     "react-confetti": "^6.1.0",

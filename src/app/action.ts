@@ -556,3 +556,50 @@ export async function RemoveSpaceFromUser(data: {
     return { error: errorMessage };
   }
 }
+
+// Generate quiz from slide image
+export async function GenerateQuizFromSlideImage(
+  slideId: string,
+  slideImageId: string
+) {
+  console.log("GenerateQuizFromSlideImage");
+  try {
+    const response = await axios.post(
+      serverUrl + `/generate-quiz/${slideId}/${slideImageId}`,
+      {},
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Get quiz questions for slide image
+export async function GetQuizQuestionsForSlideImage(
+  slideId: string,
+  slideImageId: string
+) {
+  console.log("GetQuizQuestionsForSlideImage");
+  try {
+    const response = await axios.get(
+      serverUrl + `/quiz-questions/${slideId}/${slideImageId}`,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

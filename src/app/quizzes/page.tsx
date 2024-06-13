@@ -12,7 +12,7 @@ type Props = {
 const Page = (props: Props) => {
     return (
         <Sidebar3>
-            <QuizzesPage />
+            <QuizzesPage slideId={props.params.slide_id} />
         </Sidebar3>
     )
 }

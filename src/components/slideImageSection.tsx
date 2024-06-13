@@ -4,7 +4,7 @@ import { Separator } from './ui/separator'
 import MarkdownWithLatex from '@/app/MarkdownWithLatex'
 import { Button } from './ui/button'
 import { PhotoProvider, PhotoView } from 'react-photo-view'
-import { AudioLinesIcon, PauseIcon, PlayIcon, RefreshCwIcon } from 'lucide-react'
+import { AudioLinesIcon, PauseIcon, PenLineIcon, PlayIcon, RefreshCwIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { GenerateAudio, GenerateSlideImageText, Ping } from '@/app/action'
 import Loader from './ui/loader'
@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SlideImageQuiz } from './slide-image-quiz'
 
 type Props = {
   index: number;
@@ -43,6 +44,8 @@ const SlideImageSection = (props: Props) => {
   const { push, refresh } = useRouter()
   const [slideImage, setSlideImage] = useState<any>(props.item);
   const [streaming, setStreaming] = useState(false);
+
+  const [showQuiz, setShowQuiz] = useState(false);
 
   const handleGenerateText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
@@ -258,6 +261,56 @@ const SlideImageSection = (props: Props) => {
     }
   };
 
+  const handleGenerateQuiz = (slideImageId: string) => {
+    console.log("handleGenerateQuiz");
+    setGenerationLoading(true);
+
+    try {
+      const eventSource = new EventSource(`${process.env.SERVER_URL!}/generate-quiz/${slideImageId}`);
+      eventSource.onmessage = function (event) {
+        console.log("Event received:", event.data);
+
+        try {
+          const parsedData = JSON.parse(event.data);
+
+          if (parsedData.status === "success" && parsedData.data) {
+            console.log("Quiz generated successfully");
+            const generatedQuiz = parsedData.data;
+
+            setSlideImage((prev: any) => ({
+              ...prev,
+              generated_quiz: generatedQuiz,
+            }));
+
+            props.setSlideImages((prev: any) => prev.map((item: any) => {
+              if (item.id === slideImageId) {
+                return {
+                  ...item,
+                  generated_quiz: generatedQuiz,
+                };
+              }
+              return item;
+            }));
+
+            setGenerationLoading(false);
+            eventSource.close();
+          }
+        } catch (e) {
+          console.log("Progress update:", event.data);
+        }
+      };
+
+      eventSource.onerror = function (err) {
+        console.error("EventSource failed:", err);
+        setGenerationLoading(false);
+        eventSource.close();
+      };
+    } catch (err) {
+      console.error(err);
+      setGenerationLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (props.audioIndex == props.index && props.autoPlay) {
       handlePlayAudio();
@@ -300,13 +353,26 @@ const SlideImageSection = (props: Props) => {
                 {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
               </Button>
             )}
+            {/* Generate Quiz */}
+            {slideImage.generated_text && (
+              <Button variant="outline" className="h-10" onClick={() => setShowQuiz(!showQuiz)}>
+                <PenLineIcon size={"1em"} />
+              </Button>
+            )}
+
+
           </div>
         </div>
 
-        <div className="flex flex-col md:ml-6 w-full md:w-1/2">
-          {
+        <div className="flex flex-col md:ml-6 w-full md:w-1/2 sm:mt-4">
+          {/* {
             generationLoading ? <Loader className='w-6 m-0' /> : <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} />
+          } */}
+          {
+            slideImage.generated_text && showQuiz ? <SlideImageQuiz slideImageId={slideImage.id} slideId={slideImage.slide_id} /> :
+              <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} />
           }
+          {/* <SlideImageQuiz /> */}
 
         </div>
 
