@@ -92,7 +92,7 @@ export function SlideImageQuiz(props: Props) {
       {/* Generate */}
       {
         questions.length === 0 ? (
-          <Button onClick={generateQuestions} className="mb-4 ml-2" disabled={loading}>
+          <Button onClick={generateQuestions} disabled={loading}>
             Generate quiz questions
           </Button>
         )

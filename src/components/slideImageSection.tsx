@@ -326,7 +326,7 @@ const SlideImageSection = (props: Props) => {
               <img src={slideImage.image_url} className="w-full h-auto object-contain mb-4" alt="Slide Image" />
             </PhotoView>
           </PhotoProvider>
-          <div className="flex flex-row items-center space-x-2">
+          <div className="flex flex-row items-center space-x-2 pb-4">
             {!slideImage.generated_text ? (
               <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
                 {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
@@ -364,7 +364,7 @@ const SlideImageSection = (props: Props) => {
           </div>
         </div>
 
-        <div className="flex flex-col md:ml-6 w-full md:w-1/2 sm:mt-4">
+        <div className="flex flex-col md:ml-6 w-full md:w-1/2">
           {/* {
             generationLoading ? <Loader className='w-6 m-0' /> : <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} />
           } */}
