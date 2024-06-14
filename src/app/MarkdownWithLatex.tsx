@@ -11,7 +11,7 @@ const MarkdownWithLatex = ({ markdownText, streaming, highlightSpeedMultiplier, 
     const [index, setIndex] = useState(0);
     const words = markdownText.split(' ');
     const [highlightedIndex, setHighlightedIndex] = useState(-1); // Start with no highlighted word
-    const baseSpeed = 61; // Base speed in milliseconds per character
+    const baseSpeed = 63; // Base speed in milliseconds per character
 
     useEffect(() => {
         if (streaming) {

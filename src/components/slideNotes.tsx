@@ -30,7 +30,7 @@ function SlideNotes(props: Props) {
                     <p className="text-lg">{note.content}</p> */}
 
                     Slide {index + 1}
-                    <MarkdownWithLatex markdownText={note} streaming={false} />
+                    {/* <MarkdownWithLatex markdownText={note} streaming={false} /> */}
                 </div>
             ))}
         </main>
