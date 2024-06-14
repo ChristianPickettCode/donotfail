@@ -6,10 +6,12 @@ import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import 'katex/dist/katex.min.css';
 
-const MarkdownWithLatex = ({ markdownText, streaming }: { markdownText: string, streaming: boolean }) => {
+const MarkdownWithLatex = ({ markdownText, streaming, highlightSpeedMultiplier, highlightOn }: { markdownText: string, streaming: boolean, highlightSpeedMultiplier: number, highlightOn: boolean }) => {
     const [displayText, setDisplayText] = useState('');
     const [index, setIndex] = useState(0);
     const words = markdownText.split(' ');
+    const [highlightedIndex, setHighlightedIndex] = useState(-1); // Start with no highlighted word
+    const baseSpeed = 61; // Base speed in milliseconds per character
 
     useEffect(() => {
         if (streaming) {
@@ -25,7 +27,7 @@ const MarkdownWithLatex = ({ markdownText, streaming }: { markdownText: string, 
         }
     }, [index, streaming, words, markdownText]);
 
-    const preprocessMarkdown = (text: string) => {
+    const preprocessMarkdown = (text: any) => {
         return text
             .replace(/\\\[/g, '$$$')
             .replace(/\\\]/g, '$$$')
@@ -38,6 +40,34 @@ const MarkdownWithLatex = ({ markdownText, streaming }: { markdownText: string, 
         singleDollarTextMath: false,
     };
 
+    const isLatexWord = (word: any) => {
+        const latexDelimiters = ['$$$', '\\(', '\\)', '\\[', '\\]'];
+        return latexDelimiters.some(delimiter => word.includes(delimiter));
+    };
+
+    const highlightedText = displayText.split(' ')
+        .map((word, idx) =>
+            highlightOn && idx === highlightedIndex && !isLatexWord(word) ? `<span className="bg-red-200">${word}</span>` : word
+        )
+        .join(' ');
+
+    useEffect(() => {
+        if (highlightOn) {
+            setHighlightedIndex(0); // Start from the beginning when highlightOn is turned on
+        } else {
+            setHighlightedIndex(-1); // Reset highlight when turned off
+        }
+    }, [highlightOn]);
+
+    useEffect(() => {
+        if (highlightOn && highlightedIndex < words.length && highlightedIndex >= 0) {
+            const intervalId = setTimeout(() => {
+                setHighlightedIndex((prevIndex) => prevIndex + 1);
+            }, baseSpeed * words[highlightedIndex].length / highlightSpeedMultiplier); // Adjust speed based on word length and multiplier
+            return () => clearTimeout(intervalId);
+        }
+    }, [highlightedIndex, highlightSpeedMultiplier, highlightOn, words]);
+
     return (
         <div>
             <ReactMarkdown
@@ -45,7 +75,7 @@ const MarkdownWithLatex = ({ markdownText, streaming }: { markdownText: string, 
                 remarkPlugins={[[remarkMath, remarkMathOptions], remarkGfm]}
                 rehypePlugins={[rehypeRaw, rehypeKatex]}
             >
-                {preprocessMarkdown(displayText)}
+                {preprocessMarkdown(highlightedText)}
             </ReactMarkdown>
         </div>
     );

@@ -46,6 +46,8 @@ const SlideImageSection = (props: Props) => {
   const [streaming, setStreaming] = useState(false);
 
   const [showQuiz, setShowQuiz] = useState(false);
+  const [highlightSpeedMultiplier, setHighlightSpeedMultiplier] = useState(1.0);
+  const [highlightOn, setHighlightOn] = useState(false);
 
   const handleGenerateText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
@@ -161,6 +163,7 @@ const SlideImageSection = (props: Props) => {
   const handlePauseAudio = () => {
     if (props.audioPlayer != null) {
       props.audioPlayer.pause();
+      setHighlightOn(false);
       props.setAudioPlaying(false);
       setThisAudioPlaying(false);
     }
@@ -171,6 +174,8 @@ const SlideImageSection = (props: Props) => {
       props.audioPlayer.src = slideImage.audio_url
       props.audioPlayer.playbackRate = props.audioSpeed;
       props.audioPlayer.play();
+      setHighlightOn(true);
+      setHighlightSpeedMultiplier(props.audioSpeed);
       props.setAudioPlaying(true);
       setThisAudioPlaying(true);
       props.audioPlayer.onended = () => {
@@ -370,7 +375,7 @@ const SlideImageSection = (props: Props) => {
           } */}
           {
             slideImage.generated_text && showQuiz ? <SlideImageQuiz slideImageId={slideImage.id} slideId={slideImage.slide_id} /> :
-              <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} />
+              <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} highlightSpeedMultiplier={highlightSpeedMultiplier} highlightOn={highlightOn} />
           }
           {/* <SlideImageQuiz /> */}
 

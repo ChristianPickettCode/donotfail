@@ -59,7 +59,7 @@ function Spaces({ filter }: Props) {
 
 
     return (
-        <main className="mx-auto px-2 py-4 md:py-2 lg:py-2 overflow-scroll">
+        <main className="mx-auto px-2 py-4 md:py-2 lg:py-2 overflow-auto">
             <div className="flex justify-between mb-4">
                 {
                     window.location.href.split('/')[3] == "spaces" ?
