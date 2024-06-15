@@ -4,6 +4,7 @@ import "./globals.css";
 import { CSPostHogProvider } from './providers'
 import PostHogPageView from "./PostHogPageView";
 import { Toaster } from "@/components/ui/toaster"
+import { Analytics } from "@vercel/analytics/react"
 import {
   ClerkProvider,
 } from '@clerk/nextjs'
@@ -30,6 +31,7 @@ export default function RootLayout({
           <body className={openSans.className}>
             <PostHogPageView />
             {children}
+            <Analytics />
             <Toaster />
           </body>
         </CSPostHogProvider>
