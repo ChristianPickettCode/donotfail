@@ -68,7 +68,7 @@ const Page = ({ params }: any) => {
     return (
         <Sidebar3
         >
-            <main className="mx-auto px-4 py-6 md:py-4 lg:py-4">
+            <main className="mx-auto p-4 overflow-auto">
                 <div className='flex justify-between'>
                     <h1 className="text-2xl font-semibold">{slide?.name}</h1>
                     <div className="flex justify-end mb-4">

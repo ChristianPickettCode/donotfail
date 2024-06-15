@@ -375,7 +375,7 @@ const SlideImageSection = (props: Props) => {
           } */}
           {
             slideImage.generated_text && showQuiz ? <SlideImageQuiz slideImageId={slideImage.id} slideId={slideImage.slide_id} /> :
-              <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} highlightSpeedMultiplier={highlightSpeedMultiplier} highlightOn={highlightOn} />
+              <MarkdownWithLatex markdownText={slideImage.generated_text ? slideImage.generated_text : ""} streaming={streaming} highlightSpeedMultiplier={highlightSpeedMultiplier} highlightOn={false} />
           }
           {/* <SlideImageQuiz /> */}
 
