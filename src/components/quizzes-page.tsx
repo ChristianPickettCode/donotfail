@@ -321,64 +321,79 @@ export function QuizzesPage(props: Props) {
             </div>
           </div>
         </div>
-        <div className="space-y-6">
-          <div className="p-6 bg-white rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-6">
-              {selectedQuestion?.question}
-            </h3>
-            <form className="space-y-4">
+        {
+          !isDone ? (
+            <div className="space-y-6">
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h3 className="text-lg font-semibold mb-6">
+                  {selectedQuestion?.question}
+                </h3>
+                <form className="space-y-4">
 
-              <RadioGroup
-                className="mb-4"
-                value={answer}
-                onValueChange={(value) => setAnswer(value)}
-              >
-                {selectedQuestion?.answer_choices?.map((option: any, index: number) => (
-                  <div key={index} className="flex items-center">
-                    <RadioGroupItem value={`r-${index}`} id={`r-${index}`} />
-                    <Label htmlFor={`r-${index}`} className="ml-2">{option}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {confettiIsVisible && isClient && <Confetti />}
-              {AnswerResponse && (
-                isCorrect ? (
-                  <Alert
-                    variant="destructive"
-                    className="mt-2 w-[60%] text-green-600 border-green-600"
+                  <RadioGroup
+                    className="mb-4"
+                    value={answer}
+                    onValueChange={(value) => setAnswer(value)}
                   >
-                    <CheckCircle className="h-4 w-4" color="green" />
-                    <AlertTitle>Correct</AlertTitle>
-                    <AlertDescription>
-                      You have answered the question correctly.
-                    </AlertDescription>
-                  </Alert>
-                ) : (
-                  <Alert
-                    variant="destructive"
-                    className="mt-2 w-[60%] text-red-600 border-red-600"
-                  >
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Incorrect</AlertTitle>
-                    <AlertDescription>
-                      <p>You have answered the question incorrectly.</p>
-                      <p>Answer : {selectedQuestion?.answer}</p>
-                    </AlertDescription>
-                  </Alert>
-                )
+                    {selectedQuestion?.answer_choices?.map((option: any, index: number) => (
+                      <div key={index} className="flex items-center">
+                        <RadioGroupItem value={`r-${index}`} id={`r-${index}`} />
+                        <Label htmlFor={`r-${index}`} className="ml-2">{option}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                  {confettiIsVisible && isClient && <Confetti />}
+                  {AnswerResponse && (
+                    isCorrect ? (
+                      <Alert
+                        variant="destructive"
+                        className="mt-2 text-green-600 border-green-600"
+                      >
+                        <CheckCircle className="h-4 w-4" color="green" />
+                        <AlertTitle>Correct</AlertTitle>
+                        <AlertDescription>
+                          You have answered the question correctly.
+                          <p>Answer : {selectedQuestion?.answer}</p>
+                          {selectedQuestion?.rationale ? <p>Explanation : {selectedQuestion?.rationale}</p> : ""}
+                        </AlertDescription>
+                      </Alert>
+                    ) : (
+                      <Alert
+                        variant="destructive"
+                        className="mt-2 text-red-600 border-red-600"
+                      >
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Incorrect</AlertTitle>
+                        <AlertDescription>
+                          <p>You have answered the question incorrectly.</p>
+                          <p>Answer : {selectedQuestion?.answer}</p>
+                          {selectedQuestion?.rationale ? <p>Explanation : {selectedQuestion?.rationale}</p> : ""}
+                        </AlertDescription>
+                      </Alert>
+                    )
+                  )}
+                </form>
+              </div>
+              {AnswerResponse ? (
+                <Button className="mt-4" onClick={nextQuestion}>
+                  Next Question
+                </Button>
+              ) : (
+                <Button className="mt-4" onClick={checkAnswer}>
+                  Submit Answer
+                </Button>
               )}
-            </form>
-          </div>
-          {AnswerResponse ? (
-            <Button className="mt-4" onClick={nextQuestion}>
-              Next Question
-            </Button>
+            </div>
           ) : (
-            <Button className="mt-4" onClick={checkAnswer}>
-              Submit Answer
-            </Button>
-          )}
-        </div>
+            <div className="p-6 bg-white rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-6">
+                You have completed all the questions.
+              </h3>
+              <Confetti />
+            </div>
+          )
+        }
+
       </div>
     </div >
   )

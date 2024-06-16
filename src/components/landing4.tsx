@@ -123,7 +123,7 @@ export function Landing4() {
 
 
         </section>
-        <section className="w-full py-12 md:py-14 lg:py-22 bg-gray-100 dark:bg-gray-800">
+        {/* <section className="w-full py-12 md:py-14 lg:py-22 bg-gray-100 dark:bg-gray-800">
           <div className="container px-4 md:px-6">
             <div className="space-y-2 text-center">
               <div className="flex flex-col items-center justify-center space-y-4 text-center mb-6">
@@ -151,39 +151,9 @@ export function Landing4() {
                 </Card>
 
               </div>
-              {/* <Carousel
-                opts={{
-                  align: "center",
-                  loop: true,
-                }}
-                plugins={[
-                  Autoplay({
-                    delay: 2000,
-                  }),
-                ]}
-                className="w-full mx-4"
-              >
-                <CarouselContent>
-                  {uniArray.map((uni, index) => (
-                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
-                      <div className="p-1">
-                        <img
-                          src={uni.logo}
-                          width="140"
-                          height="70"
-                          alt="Logo"
-                          className="aspect-[2/1] overflow-hidden rounded-lg object-contain object-center"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel> */}
             </div>
           </div>
-        </section>
+        </section> */}
         <section className="w-full py-12 md:py-24 lg:py-32" id="features">
           <div className="container px-4 md:px-6 space-y-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
