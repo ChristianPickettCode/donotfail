@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 type Props = {
     open: boolean
@@ -24,6 +25,20 @@ const OnboardingModal = (props: Props) => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [school, setSchool] = useState("")
+    const [accessCode, setAccessCode] = useState("")
+    const { push } = useRouter()
+
+    useEffect(() => {
+        let value
+
+        value = localStorage.getItem("accessCode") || ""
+        if (!value) {
+            push("/early-access")
+        }
+        console.log(value)
+        setAccessCode(value)
+
+    }, [])
 
 
     const handleSubmit = () => {
@@ -32,6 +47,7 @@ const OnboardingModal = (props: Props) => {
             first_name: firstName,
             last_name: lastName,
             email: props.email,
+            access_code: accessCode,
             school,
         }
         console.log(data)
@@ -78,20 +94,6 @@ const OnboardingModal = (props: Props) => {
                         />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="email" className="text-right">
-                            Email
-                        </Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            className="col-span-3"
-                            // onChange={(e) => setEmail(e.target.value)}
-                            value={props.email}
-                            disabled
-                        />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="school" className="text-right">
                             School
                         </Label>
@@ -100,6 +102,29 @@ const OnboardingModal = (props: Props) => {
                             placeholder="Your School"
                             className="col-span-3"
                             onChange={(e) => setSchool(e.target.value)}
+                        />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="email" className="text-right">
+                            Email
+                        </Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            className="col-span-3"
+                            value={props.email}
+                            disabled
+                        />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="accessCode" className="text-right">
+                            Code
+                        </Label>
+                        <Input
+                            id="accessCode"
+                            value={accessCode}
+                            className="col-span-3"
+                            disabled
                         />
                     </div>
                 </div>

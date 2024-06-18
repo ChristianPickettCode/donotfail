@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sidebar3 } from "@/components/sidebar3";
 import { Archive, ArchiveX, MessagesSquare, Users2 } from "lucide-react";
+import DeleteModal from '@/components/delete-modal'
 
 type Props = {}
 
@@ -92,7 +93,7 @@ const Page = ({ params }: any) => {
                         <Link href={`/slides/${slide_id}`}>
                             <Button variant="outline" className='mr-2'>View</Button>
                         </Link>
-                        {/* <DeleteModal params={params} /> */}
+                        <DeleteModal params={params} />
                     </div>
 
                 </div>

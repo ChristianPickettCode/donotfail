@@ -16,14 +16,17 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { CreateSpace } from "@/app/action"
+import { AddSpaceToUser, CreateSpace } from "@/app/action"
 import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
     name: z.string(),
 })
 
-export function CreateSpaceModal() {
+type Props = {
+    userId: string
+}
+export function CreateSpaceModal(props: Props) {
 
     const [open, setOpen] = useState(false)
     const { push } = useRouter()
@@ -49,8 +52,16 @@ export function CreateSpaceModal() {
             CreateSpace(data)
                 .then((res_c) => {
                     console.log(res_c)
-                    setOpen(false)
-                    push(`/spaces/${res_c.InsertedID}`)
+                    AddSpaceToUser({ user_id: props.userId, space_id: res_c.InsertedID })
+                        .then((res) => {
+                            setOpen(false)
+                            console.log(res)
+                            push('/dashboard')
+                            push(`/spaces/${res_c.InsertedID}`)
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
                 })
                 .catch((err) => {
                     console.log(err)
