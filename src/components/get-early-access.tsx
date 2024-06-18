@@ -79,7 +79,7 @@ export function GetEarlyAccess() {
           </Alert>)
         }
         <p className="text-gray-500 dark:text-gray-400 mt-2">
-          Don't have an access code?{" "}
+          {"Don't have an access code?"}
           <Link href="https://tally.so/r/nWoDXQ" className="underline" prefetch={false}>
             Join the waitlist
           </Link>
