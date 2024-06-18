@@ -93,7 +93,7 @@ const Page = ({ params }: any) => {
                         <Link href={`/slides/${slide_id}`}>
                             <Button variant="outline" className='mr-2'>View</Button>
                         </Link>
-                        <DeleteModal params={params} />
+                        {/* <DeleteModal params={params} /> */}
                     </div>
 
                 </div>
