@@ -74,9 +74,9 @@ export function SpaceSlides(props: Props) {
             <div className="flex justify-between mb-4">
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300 group-hover:text-primary">{selectedSpace?.name}</h2>
                 <div>
-                    {
+                    {/* {
                         !userSpaces.includes(props.spaceId) ? <SaveSpaceModal spaceId={props.spaceId} userId={userId!} /> : null
-                    }
+                    } */}
 
                     <UploadModal spaceId={props.spaceId} />
                 </div>
