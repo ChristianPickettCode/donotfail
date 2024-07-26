@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 import { PhotoProvider, PhotoView } from 'react-photo-view'
 import { AudioLinesIcon, PauseIcon, PenLineIcon, PlayIcon, RefreshCwIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { GenerateAudio, GenerateSlideImageText, Ping } from '@/app/action'
+import { GenerateAudio, GenerateSlideImageText, Ping, RemoveCredits } from '@/app/action'
 import Loader from './ui/loader'
 import {
   Select,
@@ -16,6 +16,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { SlideImageQuiz } from './slide-image-quiz'
+import { useAuth } from '@clerk/nextjs'
+import { toast } from './ui/use-toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
 
 type Props = {
   index: number;
@@ -48,6 +51,8 @@ const SlideImageSection = (props: Props) => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [highlightSpeedMultiplier, setHighlightSpeedMultiplier] = useState(1.0);
   const [highlightOn, setHighlightOn] = useState(false);
+
+  const { userId } = useAuth()
 
   const handleGenerateText = (slideImageId: string, index: number) => {
     setGenerationLoading(true);
@@ -87,7 +92,31 @@ const SlideImageSection = (props: Props) => {
   }
 
   // Function to handle audio generation with SSE support
-  const handleGenerateAudio = (slideImageId: string) => {
+  const handleGenerateAudio = async (slideImageId: string) => {
+    try {
+      const response = await RemoveCredits({ user_id: userId!, credits: 1 })
+      console.log(response);
+      if (response.status_code === 200) {
+        console.log("Credits removed successfully");
+      } else {
+        toast({
+          title: `${response.error}`,
+          // description: `${response.error}`,
+          duration: 5000
+        });
+        return;
+      }
+
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: "Error removing credits",
+        // description: "Error removing credits",
+        duration: 5000
+      });
+      return;
+    }
+
     setIsGeneratingAudio(true);
     console.log("handleGenerateAudio, slideImageId:", slideImageId);
 
@@ -197,6 +226,34 @@ const SlideImageSection = (props: Props) => {
     setGenerationLoading(true);
 
     try {
+      const response = await RemoveCredits({ user_id: userId!, credits: 2 })
+      console.log(response);
+      if (response.status_code === 200) {
+        console.log("Credits removed successfully");
+        setGenerationLoading(false);
+        handleGenerateText(slideImageId, props.index);
+      } else {
+        setGenerationLoading(false);
+        toast({
+          title: `${response.error}`,
+          // description: `${response.error}`,
+          duration: 5000
+        });
+        return;
+      }
+
+    } catch (err) {
+      console.log(err);
+      setGenerationLoading(false);
+      toast({
+        title: "Error removing credits",
+        // description: "Error removing credits",
+        duration: 5000
+      });
+      return;
+    }
+
+    try {
       const eventSourceText = new EventSource(`${process.env.SERVER_URL!}/generate-image-text/${slideImageId}`);
       eventSourceText.onmessage = function (event) {
         console.log("Text Event received:", event.data);
@@ -206,9 +263,12 @@ const SlideImageSection = (props: Props) => {
 
           if (parsedData.status === "success" && parsedData.data) {
             console.log("Text generated successfully");
+            eventSourceText.close();
             const generatedText = parsedData.data;
 
+            // if user can generate audio, generate audio, check user plan
             const eventSourceAudio = new EventSource(`${process.env.SERVER_URL!}/generate-audio/${slideImageId}?update=true`);
+
             eventSourceAudio.onmessage = function (event) {
               console.log("Audio Event received:", event.data);
 
@@ -217,6 +277,7 @@ const SlideImageSection = (props: Props) => {
 
                 if (audioParsedData.status === "success" && audioParsedData.data) {
                   const finalAudioURL = audioParsedData.data;
+                  setStreaming(true);
                   setSlideImage((prev: any) => ({
                     ...prev,
                     generated_text: generatedText,
@@ -248,7 +309,26 @@ const SlideImageSection = (props: Props) => {
               eventSourceAudio.close();
             };
 
-            eventSourceText.close();
+            // setSlideImage((prev: any) => ({
+            //   ...prev,
+            //   generated_text: generatedText,
+            //   // audio_url: finalAudioURL,
+            // }));
+
+            // props.setSlideImages((prev: any) => prev.map((item: any) => {
+            //   if (item.id === slideImageId) {
+            //     return {
+            //       ...item,
+            //       generated_text: generatedText,
+            //       // audio_url: finalAudioURL,
+            //     };
+            //   }
+            //   return item;
+            // }));
+
+            // setGenerationLoading(false);
+
+
           }
         } catch (e) {
           console.log("Text Progress update:", event.data);
@@ -331,42 +411,71 @@ const SlideImageSection = (props: Props) => {
               <img src={slideImage.image_url} className="w-full h-auto object-contain mb-4" alt="Slide Image" />
             </PhotoView>
           </PhotoProvider>
-          <div className="flex flex-row items-center space-x-2 pb-4">
-            {!slideImage.generated_text ? (
-              <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
-                {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
-              </Button>
-            ) : !slideImage.audio_url ? (
-              <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id)} disabled={isGeneratingAudio}>
-                {isGeneratingAudio ? <Loader className='w-4 h-4 m-0' /> : <PlayIcon size={"1em"} />}
-              </Button>
-            ) : (
-              <>
-                {props.audioPlaying && thisAudioPlaying ? (
-                  <Button variant="outline" className="h-10" onClick={handlePauseAudio}>
-                    <PauseIcon size={"1em"} />
-                  </Button>
-                ) : (
-                  <Button variant="outline" className="h-10" onClick={() => handlePlayAudio()}>
-                    <PlayIcon size={"1em"} />
-                  </Button>
-                )}
-              </>
-            )}
-            {slideImage.generated_text && (
-              <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
-                {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
-              </Button>
-            )}
-            {/* Generate Quiz */}
-            {slideImage.generated_text && (
-              <Button variant="outline" className="h-10" onClick={() => setShowQuiz(!showQuiz)}>
-                <PenLineIcon size={"1em"} />
-              </Button>
-            )}
+          <TooltipProvider delayDuration={100}>
+            <div className="flex flex-row items-center space-x-2 pb-4">
+              {!slideImage.generated_text ? (
+
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="outline" className="ml-2 h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
+                      {generationLoading ? <Loader className='w-4 h-4 m-0' /> : <RefreshCwIcon size={"1em"} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className='mr-2'>
+                    <p>✨2</p>
+                  </TooltipContent>
+                </Tooltip>
+
+              ) : !slideImage.audio_url ? (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="outline" className="h-10" onClick={() => handleGenerateAudio(slideImage.id)} disabled={isGeneratingAudio}>
+                      {isGeneratingAudio ? <Loader className='w-4 h-4 m-0' /> : <PlayIcon size={"1em"} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className='mr-4'>
+                    <p>✨1</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <>
+                  {props.audioPlaying && thisAudioPlaying ? (
+                    <Button variant="outline" className="h-10" onClick={handlePauseAudio}>
+                      <PauseIcon size={"1em"} />
+                    </Button>
+                  ) : (
+                    <Button variant="outline" className="h-10" onClick={() => handlePlayAudio()}>
+                      <PlayIcon size={"1em"} />
+                    </Button>
+                  )}
+                </>
+              )}
+              {slideImage.generated_text && (
+
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="outline" className="h-10" onClick={() => handleRefresh(slideImage.id)} disabled={generationLoading}>
+                      {generationLoading ? <Loader className='w-4 h-4 m-0' /> :
+
+                        <RefreshCwIcon size={"1em"} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className='mr-4'>
+                    <p>✨2</p>
+                  </TooltipContent>
+                </Tooltip>
+
+              )}
+              {/* Generate Quiz */}
+              {slideImage.generated_text && (
+                <Button variant="outline" className="h-10" onClick={() => setShowQuiz(!showQuiz)}>
+                  <PenLineIcon size={"1em"} />
+                </Button>
+              )}
 
 
-          </div>
+            </div>
+          </TooltipProvider>
         </div>
 
         <div className="flex flex-col md:ml-6 w-full md:w-1/2">

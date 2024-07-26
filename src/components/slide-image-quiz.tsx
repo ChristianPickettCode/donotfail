@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-import { GenerateQuizFromSlideImage, GetQuizQuestionsForSlideImage } from "@/app/action";
+import { GenerateQuizFromSlideImage, GetQuizQuestionsForSlideImage, RemoveCredits } from "@/app/action";
 import Loader from "./ui/loader";
+import { useAuth } from "@clerk/nextjs";
+import { toast } from "./ui/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 type Props = {
   slideId: string
@@ -17,6 +20,7 @@ export function SlideImageQuiz(props: Props) {
   const itemsPerPage = 4;
   const totalPages = Math.ceil(questions.length / itemsPerPage);
   const [loading, setLoading] = useState(false);
+  const { userId } = useAuth();
 
   const toggleKeepQuestion = (id: any) => {
     setQuestions(questions.map((question) => (question.id === id ? { ...question, keep: !question.keep } : question)))
@@ -34,7 +38,24 @@ export function SlideImageQuiz(props: Props) {
     setCurrentPage(currentPage - 1);
   }
 
-  const generateQuestions = () => {
+  const generateQuestions = async () => {
+    try {
+      const res = await RemoveCredits({ user_id: userId!, credits: 3 })
+      console.log(res)
+      if (res.error) {
+        toast({
+          title: `${res.error}`,
+          // description: `${res.error}`,
+          duration: 5000
+        });
+        return;
+      }
+    } catch (err) {
+      console.log(err)
+      return;
+    }
+
+
     setLoading(true);
     GenerateQuizFromSlideImage(props.slideId, props.slideImageId)
       .then((res) => {
@@ -87,52 +108,70 @@ export function SlideImageQuiz(props: Props) {
   }, [props.slideId, props.slideImageId])
 
   return (
-    <div className="container mx-auto px-0 py-0">
-      {/* <h1 className="text-3xl font-bold mb-4 px-2">Quiz Questions</h1> */}
-      {/* Generate */}
-      {
-        questions.length === 0 ? (
-          <Button onClick={generateQuestions} disabled={loading}>
-            Generate quiz questions
-          </Button>
-        )
-          :
-          <>
-            <ul className="space-y-2 overflow-y-auto px-2 pb-4">
-              {currentItems.map((question) => (
+    <TooltipProvider>
+      <div className="container mx-auto px-0 py-0">
+        {/* <h1 className="text-3xl font-bold mb-4 px-2">Quiz Questions</h1> */}
+        {/* Generate */}
+        {
+          questions.length === 0 ? (
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger>
+                <Button onClick={generateQuestions} disabled={loading}>
+                  Generate 3 Quiz Questions
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className='mr-4'>
+                <p>✨3</p>
+              </TooltipContent>
+            </Tooltip>
 
-                <Accordion key={question.id} type="single" collapsible>
-                  <AccordionItem value={`item-${question.id}`}>
-                    <AccordionTrigger className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex justify-between items-center w-full">
-                      <h2 className="text-base font-semibold text-left mr-2">{question.title}</h2>
-                    </AccordionTrigger>
-                    <AccordionContent className="py-4 pl-4">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="text-base font-semibold">{question.answer}</div>
-                        </div>
-                        {/* <div className="flex space-x-4">
+          )
+            :
+            <>
+              <ul className="space-y-2 overflow-y-auto px-2 pb-4">
+                {currentItems.map((question) => (
+
+                  <Accordion key={question.id} type="single" collapsible>
+                    <AccordionItem value={`item-${question.id}`}>
+                      <AccordionTrigger className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex justify-between items-center w-full">
+                        <h2 className="text-base font-semibold text-left mr-2">{question.title}</h2>
+                      </AccordionTrigger>
+                      <AccordionContent className="py-4 pl-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <div className="text-base font-semibold">{question.answer}</div>
+                          </div>
+                          {/* <div className="flex space-x-4">
                           <Button variant={question.keep ? "default" : "outline"} onClick={() => toggleKeepQuestion(question.id)} className="w-20">
                             {question.keep ? "Keep" : "Remove"}
                           </Button>
                         </div> */}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              ))}
-            </ul>
-            <div className="flex justify-between mt-0">
-              <Button onClick={generateQuestions} className="mb-4 ml-2" disabled={loading}>
-                Generate more
-              </Button>
-              <div className="flex gap-2 mr-2">
-                <Button onClick={goToPrevPage} disabled={currentPage === 1} className="w-20">Prev</Button>
-                <Button onClick={goToNextPage} disabled={currentPage === totalPages} className="w-20">Next</Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                ))}
+              </ul>
+              <div className="flex justify-between mt-0">
+
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger>
+                    <Button onClick={generateQuestions} className="mb-4 ml-2" disabled={loading}>
+                      Generate 3 more
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className='mr-4'>
+                    <p>✨3</p>
+                  </TooltipContent>
+                </Tooltip>
+                <div className="flex gap-2 mr-2">
+                  <Button onClick={goToPrevPage} disabled={currentPage === 1} className="w-20">Prev</Button>
+                  <Button onClick={goToNextPage} disabled={currentPage === totalPages} className="w-20">Next</Button>
+                </div>
               </div>
-            </div>
-          </>
-      }
-    </div>
+            </>
+        }
+      </div>
+    </TooltipProvider>
   )
 }

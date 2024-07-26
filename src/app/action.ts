@@ -624,3 +624,65 @@ export async function VerifyAccessCode(data: { code: string }) {
     return { error: errorMessage };
   }
 }
+
+// Get user credits
+export async function GetUserCredits(userId: string) {
+  console.log("GetUserCredits");
+  try {
+    const response = await axios.get(serverUrl + `/credits/${userId}`, {});
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Add credits
+export async function AddCredits(data: { user_id: string; credits: number }) {
+  console.log("AddCredits");
+  try {
+    const response = await axios.post(
+      serverUrl + `/credits/${data.user_id}/add/${data.credits}`,
+      data,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+// Remove credits
+export async function RemoveCredits(data: {
+  user_id: string;
+  credits: number;
+}) {
+  console.log("RemoveCredits");
+  try {
+    const response = await axios.post(
+      serverUrl + `/credits/${data.user_id}/remove/${data.credits}`,
+      data,
+      {}
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

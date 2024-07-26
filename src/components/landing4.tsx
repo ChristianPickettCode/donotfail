@@ -13,6 +13,8 @@ import { Card, CardContent } from "./ui/card"
 import { Book, BookCheckIcon, BookHeartIcon } from "lucide-react"
 
 import { useAuth } from "@clerk/nextjs";
+import { HeaderLanding } from "./headerLanding";
+import { FooterLanding } from "./footerLanding";
 
 const uniArray = [
   { name: "Stanford", logo: "/unis/stanford.png" },
@@ -28,44 +30,7 @@ export function Landing4() {
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <header className="flex items-center justify-between px-4 md:px-6 h-16 border-b">
-        <Link href="#" className="flex items-center gap-2" prefetch={false}>
-          <BookCheckIcon className="h-6 w-6" />
-          <span className="font-bold text-lg">DoNotFail.ai</span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-6">
-          {/* <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            How It Works
-          </Link> */}
-          <Link href="#features" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            Features
-          </Link>
-          {/* <Link href="#testimonials" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            Testimonials
-          </Link> */}
-          {/* <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            Pricing
-          </Link> */}
-          {/* <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            Dashboard
-          </Link> */}
-
-          {/* /sign-up */}
-          <Link
-            href={isLoaded && userId ? '/dashboard' : '/early-access'}
-            // href={'https://tally.so/r/nWoDXQ'}
-            className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
-            prefetch={false}
-          >
-            {isLoaded && userId ? 'Dashboard' : 'Get early access'}
-            {/* Get early access */}
-          </Link>
-        </nav>
-        <Button variant="outline" size="icon" className="md:hidden">
-          <MenuIcon className="h-6 w-6" />
-          <span className="sr-only">Toggle navigation</span>
-        </Button>
-      </header>
+      <HeaderLanding isLoaded={isLoaded} userId={userId!} />
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 md:flex md:flex-row">
           <div className="container px-4 md:px-6 space-y-6">
@@ -159,7 +124,7 @@ export function Landing4() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Study Smarter, Not Harder</h2>
               <p className="max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                Our AI-powered platform streamlines your study process, helping you learn more efficiently.
+                A platform to streamlines your study process, helping you learn more efficiently.
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-3">
@@ -312,20 +277,7 @@ export function Landing4() {
           </div>
         </section> */}
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        {/* <p className="text-xs text-gray-500 dark:text-gray-400">&copy; 2024 DoNotFailAI. All rights reserved.</p> */}
-        <a href="mailto:founders@donotfail.ai" className="text-xs text-gray-500 dark:text-gray-400">
-          founders@donotfail.ai
-        </a>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link href="#" className="text-xs hover:underline underline-offset-4" prefetch={false}>
-            Terms of Service
-          </Link>
-          <Link href="#" className="text-xs hover:underline underline-offset-4" prefetch={false}>
-            Privacy
-          </Link>
-        </nav>
-      </footer>
+      <FooterLanding />
     </div>
   )
 }

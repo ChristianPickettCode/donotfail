@@ -16,7 +16,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { set, useForm } from "react-hook-form"
 import { useState } from "react"
-import { CreateSlide, UpdateSlide } from "@/app/action"
+import { AddCredits, CreateSlide, RemoveCredits, UpdateSlide } from "@/app/action"
 import { getSignedURL } from "@/utils/aws/requests"
 import { Progress } from "./ui/progress"
 import { useRouter } from "next/navigation"
@@ -29,6 +29,7 @@ import {
   AlertTitle,
 } from "@/components/ui/alert"
 import Link from "next/link"
+import { useAuth } from "@clerk/nextjs"
 
 
 const formSchema = z.object({
@@ -51,13 +52,16 @@ export function UploadModal(props: Props) {
 
   const [file, setFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
-  const [progress, setProgress] = useState(0)
+  const [preProcessingProgress, setPreProcessingProgress] = useState(0)
+  const [postProcessingProgress, setPostProcessingProgress] = useState(0)
   const [slideId, setSlideId] = useState("")
   const { push, refresh } = useRouter()
   const [hasError, setHasError] = useState(false)
   const [errorText, setErrorText] = useState("")
   const [isUploading, setIsUploading] = useState(false)
   const [progressText, setProgressText] = useState("Uploading...")
+  const [numImages, setNumImages] = useState(0)
+  const { userId } = useAuth()
 
   const computeSHA256 = async (file: File) => {
     const buffer = await file.arrayBuffer()
@@ -95,7 +99,7 @@ export function UploadModal(props: Props) {
   const onUpload = () => {
     console.log('uploading')
     console.log(form.getValues())
-    // VAlidate pdf and type
+    // Validate pdf and type
     if (!form.getValues().name) {
       setHasError(true)
       setErrorText('Please enter a name for the file.')
@@ -122,7 +126,7 @@ export function UploadModal(props: Props) {
     setIsUploading(true)
     console.log('uploading')
     console.log(form.getValues())
-    handleCreateSlide()
+    handleCreateAndUploadSlidePDF()
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,7 +144,7 @@ export function UploadModal(props: Props) {
     }
   }
 
-  const handleCreateSlide = async () => {
+  const handleCreateAndUploadSlidePDF = async () => {
     console.log('Creating slide');
 
     const name = form.getValues().name;
@@ -149,7 +153,7 @@ export function UploadModal(props: Props) {
 
     try {
       const res_c = await CreateSlide(data);
-      setProgress(10);
+      setPreProcessingProgress(20);
 
       if (res_c.status_code !== 200) {
         throw new Error('Error creating slide. Please refresh and try again.');
@@ -161,7 +165,7 @@ export function UploadModal(props: Props) {
       setSlideId(InsertedID);
 
       const res_uf = await handleUpload(file as File, InsertedID);
-      setProgress(30);
+      setPreProcessingProgress(40);
       console.log('File upload result:', res_uf);
 
       const fileUrl = res_uf.url.split("?")[0];
@@ -180,7 +184,7 @@ export function UploadModal(props: Props) {
 
       if (res_us.status_code === 200 && res_us.result.ModifiedCount === 1) {
         console.log("Slide updated successfully", res_us);
-        setProgress(50);
+        setPreProcessingProgress(60);
 
         // SSE for PDF to images conversion
         const eventSource = new EventSource(`${process.env.SERVER_URL!}/convert-pdf-to-images/${InsertedID}`);
@@ -192,58 +196,23 @@ export function UploadModal(props: Props) {
           console.log("Event received:", event.data);
 
           if (event.data === "[DONE]") {
-            setProgress(70);
+            setPreProcessingProgress(100);
+            setProgressText("Processing complete");
             eventSource.close();
 
-            // Start generating text for all images
-            const textEventSource = new EventSource(`${process.env.SERVER_URL!}/generate-all-image-text/${InsertedID}`);
-
-            let totalTexts = 0;
-            let processedTexts = 0;
-
-            textEventSource.onmessage = function (event) {
-              console.log("Event received:", event.data);
-
-              if (event.data === "[DONE]") {
-                setProgress(100);
-                textEventSource.close();
-                push(`/slides/${InsertedID}`);
-              } else {
-                try {
-                  const parsedData = JSON.parse(event.data);
-                  if (parsedData.totalImages) {
-                    totalTexts = parsedData.totalImages;
-                    console.log(`Total images to process: ${totalTexts}`);
-                  } else if (parsedData.processedImage) {
-                    processedTexts += 1;
-                    console.log(`Processed image text ${processedTexts} of ${totalTexts}`);
-                    const progress = 70 + ((processedTexts / totalTexts) * 30);
-                    setProgress(progress);
-                    setProgressText(`Generating notes... ${processedTexts}/${totalTexts}`)
-                  }
-                } catch (e) {
-                  console.log("Progress update:", event.data);
-                }
-              }
-            };
-
-            textEventSource.onerror = function (err) {
-              console.error("EventSource failed:", err);
-              setHasError(true);
-              setErrorText("Error generating text for images. Please refresh and try again.");
-              textEventSource.close();
-            };
           } else {
             try {
               const parsedData = JSON.parse(event.data);
               if (parsedData.totalImages) {
                 totalImages = parsedData.totalImages;
+                setNumImages(totalImages);
                 console.log(`Total images to process: ${totalImages}`);
               } else if (parsedData.processedImage) {
                 processedImages += 1;
                 console.log(`Processed image ${processedImages} of ${totalImages}`);
-                const progress = 50 + ((processedImages / totalImages) * 20);
-                setProgress(progress);
+                const progress = 60 + ((processedImages / totalImages) * 40);
+                setProgressText(`Processing... ${processedImages}/${totalImages}`)
+                setPreProcessingProgress(progress);
               }
             } catch (e) {
               console.log("Progress update:", event.data);
@@ -265,7 +234,88 @@ export function UploadModal(props: Props) {
       setErrorText(error.message);
       console.log(error);
     }
+  }
+
+
+
+  const handleGenerateText = async (InsertedID: string) => {
+
+    try {
+      const res = await RemoveCredits({ user_id: userId!, credits: numImages });
+      if (res.status_code !== 200) {
+        console.log(res);
+        throw new Error(res.error);
+      }
+
+      console.log("Credits removed successfully", res);
+
+    } catch (error: any) {
+      setHasError(true);
+      setErrorText(error.message);
+      console.log(error);
+      return;
+    }
+
+    console.log('Generating text for images...');
+    setProgressText("Generating notes...");
+    setPostProcessingProgress(10);
+
+    try {
+      // Start generating text for all images
+      const textEventSource = new EventSource(`${process.env.SERVER_URL!}/generate-all-image-text/${InsertedID}`);
+
+      let totalTexts = 0;
+      let processedTexts = 0;
+
+      textEventSource.onmessage = function (event) {
+        console.log("Event received:", event.data);
+
+        if (event.data === "[DONE]") {
+          setPostProcessingProgress(100);
+          setProgressText("Notes generated");
+          textEventSource.close();
+          // push(`/slides/${InsertedID}`);
+        } else {
+          try {
+            const parsedData = JSON.parse(event.data);
+            if (parsedData.totalImages) {
+              totalTexts = parsedData.totalImages;
+              console.log(`Total images to process: ${totalTexts}`);
+            } else if (parsedData.processedImage) {
+              processedTexts += 1;
+              console.log(`Processed image text ${processedTexts} of ${totalTexts}`);
+              const progress = 10 + ((processedTexts / totalTexts) * 100)
+              setPostProcessingProgress(progress);
+              setProgressText(`Generating notes... ${processedTexts}/${totalTexts}`)
+            }
+          } catch (e) {
+            console.log("Progress update:", event.data);
+          }
+        }
+      }
+    } catch (error: any) {
+      setHasError(true);
+      setErrorText(error.message);
+      console.log(error);
+    }
   };
+
+  // const handleAddCredit = async () => {
+  //   try {
+  //     const res = await AddCredits({ user_id: userId!, credits: 100 });
+  //     console.log(res);
+  //     if (res.status_code !== 200) {
+  //       console.log(res);
+  //       throw new Error(res.error);
+  //     }
+
+  //     console.log("Credits added successfully", res);
+  //   } catch (error: any) {
+  //     setHasError(true);
+  //     setErrorText(error.message);
+  //     console.log(error);
+  //   }
+  // }
 
 
   return (
@@ -277,20 +327,20 @@ export function UploadModal(props: Props) {
         <DialogHeader>
           <DialogTitle>Add Slide PDF</DialogTitle>
           {
-            progress === 0 &&
+            preProcessingProgress === 0 &&
             <DialogDescription>
               Upload a PDF file to create a slide
             </DialogDescription>
           }
-          {
-            progress === 100 &&
+          {/* {
+            preProcessingProgress === 100 &&
             <DialogDescription>
               PDF processed successfully
             </DialogDescription>
-          }
+          } */}
         </DialogHeader>
         {
-          progress === 0 ?
+          preProcessingProgress === 0 ?
             <Form {...form} >
               <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md w-full flex flex-col gap-4">
                 <FormField
@@ -336,30 +386,53 @@ export function UploadModal(props: Props) {
               </form>
             </Form>
             :
-            <>
-              <><Progress value={Math.round(progress * 10) / 10} />{Math.round(progress * 10) / 10}%</>
+            postProcessingProgress === 0 ? <>
+              <>
+                <Progress value={Math.round(preProcessingProgress * 10) / 10} />
+                {/* {Math.round(preProcessingProgress * 10) / 10}% */}
+                <p>{progressText}</p>
+              </>
               {
-                progress > 0 && progress < 100 &&
+                preProcessingProgress > 0 && preProcessingProgress < 100 &&
                 <>
-                  <p>{progressText}</p>
-                  <p>This can take up to a couple minutes 🙂</p>
+                  {/* <p>This can take up to a couple minutes 🙂</p> */}
                 </>
               }
-              {
-                progress > 75 &&
+              {/* {
+                preProcessingProgress > 75 && preProcessingProgress < 100 &&
                 <>
                   <Link href={`/slides/${slideId}`}>
                     <Button variant="outline" onClick={() => form.reset()} className="w-full">View</Button>
                   </Link>
                 </>
+              } */}
+              {
+                preProcessingProgress === 100 &&
+                <>
+                  {/* <Button variant="outline" onClick={handleAddCredit} className="w-full">Add Credits</Button> */}
+                  <Button variant="outline" onClick={() => handleGenerateText(slideId)} className="w-full">Generate Notes - ✨{numImages} Credits</Button>
+                </>
               }
-            </>
+            </> :
+              <>
+                <Progress value={Math.round(postProcessingProgress * 10) / 10} />
+                <p>{progressText}</p>
+
+                {
+                  postProcessingProgress === 100 &&
+                  <>
+                    <Link href={`/slides/${slideId}`}>
+                      <Button variant="outline" onClick={() => form.reset()} className="w-full">View</Button>
+                    </Link>
+                  </>
+                }
+              </>
         }
         {
           hasError &&
           <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
+            {/* <AlertCircle className="h-4 w-4" /> */}
+            <AlertTitle>😕 Oh no</AlertTitle>
             <AlertDescription>
               {errorText}
             </AlertDescription>

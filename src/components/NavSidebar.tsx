@@ -10,6 +10,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "./ui/tooltip"
+import CreditsModal from "./credits-modal"
 
 interface NavProps {
     isCollapsed: boolean
@@ -23,6 +24,7 @@ interface NavProps {
 }
 
 export function Nav({ links, isCollapsed }: NavProps) {
+
     return (
         <div
             data-collapsed={isCollapsed}
@@ -33,31 +35,44 @@ export function Nav({ links, isCollapsed }: NavProps) {
                     isCollapsed ? (
                         <Tooltip key={index} delayDuration={0}>
                             <TooltipTrigger asChild>
-                                <Link
-                                    href={link.url || "#"}
-                                    className={cn(
-                                        buttonVariants({ variant: link.variant, size: "icon" }),
-                                        "h-9 w-9",
-                                        link.variant === "default" &&
-                                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                                    )}
-                                >
-                                    <link.icon className="h-4 w-4" />
-                                    <span className="sr-only">{link.title}</span>
-                                </Link>
+                                {
+                                    link.title === "Credits" && (
+                                        <CreditsModal />
+                                    ) || (
+                                        <Link
+                                            href={link.url || "#"}
+                                            className={cn(
+                                                buttonVariants({ variant: link.variant, size: "icon" }),
+                                                "h-9 w-9",
+                                                link.variant === "default" &&
+                                                "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                                            )}
+                                        >
+                                            <link.icon className="h-4 w-4" />
+                                            <span className="sr-only">{link.title}</span>
+                                        </Link>
+                                    )
+                                }
                             </TooltipTrigger>
-                            <TooltipContent side="right" className="flex items-center gap-4">
-                                <Link href={link.url || "#"}>
-                                    {link.title}
-                                    {link.label && (
-
-                                        <span className="ml-auto text-muted-foreground">
-                                            {link.label}
-                                        </span>
-
-                                    )}
-                                </Link>
-                            </TooltipContent>
+                            {
+                                link.title === "Credits" && (
+                                    <TooltipContent side="right" className="flex items-center gap-4">
+                                        {link.title}
+                                        {/* <CreditsModal /> */}
+                                    </TooltipContent>
+                                ) || (
+                                    <TooltipContent side="right" className="flex items-center gap-4">
+                                        <Link href={link.url || "#"}>
+                                            {link.title}
+                                            {link.label && (
+                                                <span className="ml-auto text-muted-foreground">
+                                                    {link.label}
+                                                </span>
+                                            )}
+                                        </Link>
+                                    </TooltipContent>
+                                )
+                            }
                         </Tooltip>
                     ) : (
                         <Link

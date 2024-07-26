@@ -271,11 +271,12 @@ export function Slides(props: Props) {
       const fraction = 1 - slideImages.filter(item => !item.generated_text).length / slideImages.length;
       const title = `Notes are still being generated (${Math.round(fraction * 100)}% complete)`;
       if (fraction < 0.95) {
-        toast({
-          title: title,
-          description: "Please reload the page in a minute to see the rest of the notes",
-          duration: 5000,
-        })
+        // toast({
+        //   title: title,
+        //   description: "Please reload the page in a minute to see the rest of the notes",
+        //   duration: 5000,
+        // })
+        console.log(title);
       }
     }
   }, [slideImages]);

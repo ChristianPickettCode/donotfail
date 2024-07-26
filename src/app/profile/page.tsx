@@ -7,7 +7,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useAuth, useClerk } from '@clerk/nextjs'
-import { GetUser } from '../action'
+import { GetUser, GetUserCredits } from '../action'
+import { toast } from '@/components/ui/use-toast'
 
 type Props = {}
 
@@ -16,6 +17,27 @@ const Page = (props: Props) => {
     const { userId } = useAuth()
 
     const [user, setUser] = useState<any>(null)
+    const [credits, setCredits] = useState(0)
+
+    const GetCredits = async () => {
+        try {
+            const res = await GetUserCredits(userId!)
+            console.log(res)
+            if (res.error) {
+                toast({
+                    title: `${res.error}`,
+                    // description: `${res.error}`,
+                    duration: 5000
+                });
+                return;
+            }
+            setCredits(res.credits)
+        } catch (err) {
+            console.log(err)
+            return;
+        }
+    }
+
 
     useEffect(() => {
         if (!userId) {
@@ -25,6 +47,7 @@ const Page = (props: Props) => {
             .then((res) => {
                 console.log(res)
                 setUser(res)
+                GetCredits()
             })
             .catch((err) => {
                 console.log(err)
@@ -57,40 +80,43 @@ const Page = (props: Props) => {
                                 <Label htmlFor="email">Email</Label>
                                 <Input id="email" type="email" value={user?.email} disabled />
                             </div>
-                            {/* <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
-                                <Input id="password" type="password" placeholder="Enter a new password" />
-                            </div> */}
                         </form>
                     </CardContent>
                     <CardFooter className="border-t p-6">
                         <Button onClick={() => signOut()}>Sign out</Button>
                     </CardFooter>
                 </Card>
-                {/* <Card>
+                <Card>
                     <CardHeader>
                         <CardTitle>Subscription Status</CardTitle>
                         <CardDescription>View and manage your subscription details.</CardDescription>
                     </CardHeader>
                     <CardContent>
+
                         <div className="grid gap-4">
-                            <div className="flex items-center justify-between">
+                            {/* <div className="flex items-center justify-between">
                                 <div>
                                     <div className="font-medium">Pro Plan</div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Expires on 2024-06-30</div>
                                 </div>
                                 <Button variant="outline">Manage Subscription</Button>
-                            </div>
+                            </div> */}
                             <div className="flex items-center justify-between">
                                 <div>
                                     <div className="font-medium">Remaining Credits</div>
-                                    <div className="text-sm text-gray-500 dark:text-gray-400">You have 50 credits remaining</div>
+
+
+                                    <div className="text-sm text-gray-500 dark:text-gray-400">You have {credits} credits remaining</div>
+
                                 </div>
-                                <Button variant="outline">Top Up Credits</Button>
+                                {/* <Button variant="outline" disabled={true}>Top Up Credits</Button> */}
+                                <Link href="https://tally.so/r/w52PoM">
+                                    <Button variant="outline" className='mt-6 '>Request more credits</Button>
+                                </Link>
                             </div>
                         </div>
                     </CardContent>
-                </Card> */}
+                </Card>
             </div>
         </Sidebar3>
     )

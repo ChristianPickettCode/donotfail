@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { TooltipProvider } from './ui/tooltip'
 import { Nav } from './NavSidebar';
-import { BookCheck, Inbox, MessagesSquare, Users2 } from 'lucide-react';
+import { BookCheck, Inbox, MessagesSquare, StarsIcon, Users2 } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 type Props = {
@@ -16,6 +16,7 @@ const navLinks = [
     // { title: "Quizzes", label: "", icon: PenLineIcon, url: "/quizzes" },
 
     { title: "Feature request", label: "", icon: MessagesSquare, url: "https://tally.so/r/mR4vPP" },
+    { title: "Credits", label: "", icon: StarsIcon, url: "" }
 ]
 
 export function Sidebar3({
