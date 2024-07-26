@@ -42,7 +42,9 @@ export function PricingSection() {
                 </div>
               </CardContent>
               <CardFooter className="mt-auto">
-                <Button className="w-full">Get Started</Button>
+                <Link href="/sign-in" className="w-full">
+                  <Button className="w-full">Get Started</Button>
+                </Link>
               </CardFooter>
             </Card>
             <Card className="border-2 border-gray-200 dark:border-gray-700 flex flex-col">
@@ -75,7 +77,9 @@ export function PricingSection() {
                 </div>
               </CardContent>
               <CardFooter className="mt-auto">
-                <Button className="w-full">Get Started</Button>
+                <Link href="/sign-in" className="w-full">
+                  <Button className="w-full">Get Started</Button>
+                </Link>
               </CardFooter>
             </Card>
             <Card className="border-2 border-gray-200 dark:border-gray-700 flex flex-col">
@@ -116,7 +120,9 @@ export function PricingSection() {
                 </div>
               </CardContent>
               <CardFooter className="mt-auto">
-                <Button className="w-full">Get Started</Button>
+                <Link href="/sign-in" className="w-full">
+                  <Button className="w-full">Get Started</Button>
+                </Link>
               </CardFooter>
             </Card>
           </div>
