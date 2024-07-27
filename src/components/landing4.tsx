@@ -39,7 +39,7 @@ export function Landing4() {
                 Accelerate your learning
               </h1>
               <p className="max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                Missed a class? Get AI-generated notes, explanations, quizzes, flashcards and more just from your <u>slides</u>.
+                Missed a class? Get AI-generated notes, explanations, quizzes and more just from your <u>slides</u>.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
