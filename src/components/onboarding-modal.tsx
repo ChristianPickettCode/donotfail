@@ -33,7 +33,8 @@ const OnboardingModal = (props: Props) => {
 
         value = localStorage.getItem("accessCode") || ""
         if (!value) {
-            push("/early-access")
+            // push("/early-access")
+            push('/')
         }
         console.log(value)
         setAccessCode(value)

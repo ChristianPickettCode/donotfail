@@ -223,11 +223,11 @@ export function UploadModal(props: Props) {
         eventSource.onerror = function (err) {
           console.error("EventSource failed:", err);
           setHasError(true);
-          setErrorText("Error converting pdf to images. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.");
+          setErrorText("Error converting pdf to images. Please refresh and try again.");
           eventSource.close();
         };
       } else {
-        throw new Error('Error saving slide. Please refresh and try again. If the slide is created but empty or if there are missing slides (at the end), please delete it and try again.');
+        throw new Error('Error saving slide. Please refresh and try again.');
       }
     } catch (error: any) {
       setHasError(true);

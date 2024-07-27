@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 import { PhotoProvider, PhotoView } from 'react-photo-view'
 import { AudioLinesIcon, PauseIcon, PenLineIcon, PlayIcon, RefreshCwIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { GenerateAudio, GenerateSlideImageText, Ping, RemoveCredits } from '@/app/action'
+import { GenerateAudio, GenerateSlideImageText, GetSlide, GetSlideImages, Ping, RemoveCredits } from '@/app/action'
 import Loader from './ui/loader'
 import {
   Select,
@@ -167,27 +167,6 @@ const SlideImageSection = (props: Props) => {
       setIsGeneratingAudio(false);
     }
   };
-
-  const ping = (slideImageId: string) => {
-    Ping()
-      .then((res) => {
-        console.log(res.data);
-        props.setSlideImages((prev: any) => {
-          return prev.map((item: any) => {
-            if (item.id === slideImageId) {
-              return {
-                ...item,
-                generated_text: res.data,
-              }
-            }
-            return item;
-          })
-        })
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 
   const handlePauseAudio = () => {
     if (props.audioPlayer != null) {
@@ -401,6 +380,55 @@ const SlideImageSection = (props: Props) => {
       handlePlayAudio();
     }
   }, [props.audioIndex, props.autoPlay])
+
+  useEffect(() => {
+    GetSlideImages(slideImage.slide_id)
+      .then((res) => {
+        console.log(res);
+        res.forEach((item: any, index: number) => {
+          if (index > 0 && res[index - 1].generated_text && !item.generated_text) {
+            // every 1 second , max 10 seconds, check if the current slide has generated text
+            let count = 0;
+            const interval = setInterval(() => {
+              count++;
+              console.log("Checking for generated text", count);
+              if (item.generated_text) {
+                clearInterval(interval);
+                // props.setSlideImages((prev: any) => {
+                //   return prev.map((item: any) => {
+                //     if (item.id === slideImage.id) {
+                //       return {
+                //         ...item,
+                //         generated_text: item.generated_text,
+                //       }
+                //     }
+                //     return item;
+                //   })
+                // })
+              } else {
+                GetSlideImages(slideImage.slide_id)
+                  .then((res) => {
+                    console.log(res);
+                    setStreaming(true);
+                    props.setSlideImages(res);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }
+              if (count >= 10) {
+                clearInterval(interval);
+              }
+            }, 1000);
+
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+  }, [slideImage.slide_id])
 
   return (
     <div key={props.index} id={`s${props.index + 1}`}>
