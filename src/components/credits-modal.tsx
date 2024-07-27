@@ -17,6 +17,7 @@ const CreditsModal = (props: Props) => {
     const [credits, setCredits] = useState(0)
 
     const GetCredits = async () => {
+        if (!userId) return;
         try {
             const res = await GetUserCredits(userId!)
             console.log(res)
