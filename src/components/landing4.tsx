@@ -51,8 +51,8 @@ export function Landing4() {
                 prefetch={false}
               >
                 {/* Start now for free */}
-                {/* {isLoaded && userId ? 'Dashboard' : 'Get early access'} */}
-                Dashboard
+                {isLoaded && userId ? 'Dashboard' : 'Sign up'}
+                {/* Dashboard */}
               </Link>
               {/* <Link
                 href="#"
