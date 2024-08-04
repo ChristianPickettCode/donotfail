@@ -28,18 +28,18 @@ const OnboardingModal = (props: Props) => {
     const [accessCode, setAccessCode] = useState("")
     const { push } = useRouter()
 
-    useEffect(() => {
-        let value
+    // useEffect(() => {
+    //     let value
 
-        value = localStorage.getItem("accessCode") || ""
-        if (!value) {
-            // push("/early-access")
-            push('/')
-        }
-        console.log(value)
-        setAccessCode(value)
+    //     // value = localStorage.getItem("accessCode") || ""
+    //     // if (!value) {
+    //     //     // push("/early-access")
+    //     //     push('/')
+    //     // }
+    //     // console.log(value)
+    //     // setAccessCode(value)
 
-    }, [])
+    // }, [])
 
 
     const handleSubmit = () => {

@@ -24,11 +24,14 @@ const Page = (props: Props) => {
             const res = await GetUserCredits(userId!)
             console.log(res)
             if (res.error) {
-                toast({
-                    title: `${res.error}`,
-                    // description: `${res.error}`,
-                    duration: 5000
-                });
+                if (res.error != "mongo: no documents in result") {
+                    toast({
+                        title: `${res.error}`,
+                        // description: `${res.error}`,
+                        duration: 5000
+                    });
+                }
+
                 return;
             }
             setCredits(res.credits)
