@@ -25,7 +25,7 @@ const OnboardingModal = (props: Props) => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [school, setSchool] = useState("")
-    const [accessCode, setAccessCode] = useState("")
+    // const [accessCode, setAccessCode] = useState("")
     const { push } = useRouter()
 
     // useEffect(() => {
@@ -48,7 +48,7 @@ const OnboardingModal = (props: Props) => {
             first_name: firstName,
             last_name: lastName,
             email: props.email,
-            access_code: accessCode,
+            // access_code: accessCode,
             school,
         }
         console.log(data)
@@ -117,7 +117,7 @@ const OnboardingModal = (props: Props) => {
                             disabled
                         />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    {/* <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="accessCode" className="text-right">
                             Code
                         </Label>
@@ -127,7 +127,7 @@ const OnboardingModal = (props: Props) => {
                             className="col-span-3"
                             disabled
                         />
-                    </div>
+                    </div> */}
                 </div>
                 <DialogFooter>
                     <Button onClick={handleSubmit}>Complete Setup</Button>
